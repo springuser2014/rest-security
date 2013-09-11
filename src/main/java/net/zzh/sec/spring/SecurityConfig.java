@@ -6,7 +6,7 @@ import org.springframework.context.annotation.ImportResource;
 
 @Configuration
 @ComponentScan("net.zzh.sec.security")
-@ImportResource({ "classpath*:secSecurityConfig.xml" })
+@ImportResource({ "classpath*:*secSecurityConfig.xml" })
 public class SecurityConfig {
 
     public SecurityConfig() {

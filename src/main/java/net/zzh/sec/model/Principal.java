@@ -57,14 +57,17 @@ public class Principal implements INameableEntity {
 
     // API
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public void setId(final Long idToSet) {
         id = idToSet;
     }
 
+    @Override
     public String getName() {
         return name;
     }

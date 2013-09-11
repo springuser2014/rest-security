@@ -9,7 +9,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 @Configuration
-@ImportResource("classpath*:secContextConfig.xml")
+@ImportResource("classpath*:*secContextConfig.xml")
 @ComponentScan({ "net.zzh.sec.model" })
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @PropertySource({ "classpath:env-${envTarget:dev}.properties", "classpath:web-${webTarget:dev}.properties" })
