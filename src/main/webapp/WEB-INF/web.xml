@@ -7,10 +7,11 @@
 
 	<display-name>rest</display-name>
 
-	<!-- Spring security -->
 	<listener>
 		<listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
 	</listener>
+	
+	<!-- Spring security SSL认证 -->
 
 	<filter>
 		<filter-name>springSecurityFilterChain</filter-name>
@@ -27,7 +28,7 @@
 	</filter>
 	<filter-mapping>
 		<filter-name>etagFilter</filter-name>
-		<url-pattern>/api/*</url-pattern>
+		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
 	<!-- Spring -->
@@ -72,7 +73,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>rest</servlet-name>
-		<url-pattern>/api/*</url-pattern>
+		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
 
 	<!-- Disables servlet container welcome file handling. Needed for compatibility 

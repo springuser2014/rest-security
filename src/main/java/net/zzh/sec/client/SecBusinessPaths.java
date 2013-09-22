@@ -30,7 +30,7 @@ public final class SecBusinessPaths {
     }
 
     public final String getRootUri() {
-        return getContext() + "/api/";
+        return getContext() + "/";
     }
 
     public final String getUserUri() {

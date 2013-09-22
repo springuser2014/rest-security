@@ -5,13 +5,34 @@
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
 		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd">
 
-	<http create-session="stateless" entry-point-ref="digestEntryPoint">
-		<http-basic />
-
-		<custom-filter ref="digestFilter" after="BASIC_AUTH_FILTER" />
+	<http use-expressions="true">
+	<!-- <http create-session="stateless" entry-point-ref="digestEntryPoint">
+		<http-basic /> -->
+		
+		<intercept-url pattern="/login*" access="isAnonymous()" />
+		<intercept-url pattern="/**" access="isAuthenticated()" />
+	
+		<form-login login-page='/login' default-target-url="/homepage.html"
+			authentication-failure-url="/login/?error=true" />
+	
+		<logout logout-success-url="/" />
+		
+		<!-- 匿名访问 -->
+		<intercept-url pattern="/" access="IS_AUTHENTICATED_ANONYMOUSLY" requires-channel="any"/>
+		<intercept-url pattern="/resources/**" access="IS_AUTHENTICATED_ANONYMOUSLY" requires-channel="any"/>
+		
+		<!-- 默认登出url：/j_spring_security_logout logout-success-url:成功注销后跳转到的页面 -->
+		<logout invalidate-session="true" logout-url="/logout" logout-success-url="/" />
+		
+		<!-- <remember-me key="rememberMeKey" user-service-ref="userDetailsService"/> -->
+		
+		<!-- 检测失效的sessionId,超时时定位到另外一个URL -->
+		<session-management invalid-session-url="/session-timeout" />
+		
+		<!-- <custom-filter ref="digestFilter" after="BASIC_AUTH_FILTER" /> -->
 	</http>
 	
-	<global-method-security secured-annotations="enabled" />
+	<!-- <global-method-security secured-annotations="enabled" /> -->
 
 	<beans:bean id="digestFilter" class="org.springframework.security.web.authentication.www.DigestAuthenticationFilter">
 		<beans:property name="userDetailsService" ref="myUserDetailsService" />
@@ -26,5 +47,9 @@
 	<authentication-manager erase-credentials="false">
 		<authentication-provider user-service-ref="myUserDetailsService" />
 	</authentication-manager>
-
+	
+	<!-- 定义上下文返回的消息的国际化。 -->
+	<beans:bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<beans:property name="basename" value="classpath:org/springframework/security/messages_zh_CN" />
+	</beans:bean>
 </beans:beans>
