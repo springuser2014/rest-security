@@ -9,11 +9,12 @@
 	<!-- <http create-session="stateless" entry-point-ref="digestEntryPoint">
 		<http-basic /> -->
 		
-		<intercept-url pattern="/login*" access="isAnonymous()" />
+		<intercept-url pattern="/login*" access="permitAll" />
 		<intercept-url pattern="/**" access="isAuthenticated()" />
 	
-		<form-login login-page='/login' default-target-url="/homepage.html"
-			authentication-failure-url="/login/?error=true" />
+		<form-login login-page="/login"
+			authentication-failure-handler-ref="ajaxAuthenticationFailureHandler"
+			authentication-success-handler-ref="ajaxAuthenticationSuccessHandler"> 
 	
 		<logout logout-success-url="/" />
 		
