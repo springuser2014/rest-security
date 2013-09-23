@@ -8,22 +8,20 @@
 	<http use-expressions="true">
 	<!-- <http create-session="stateless" entry-point-ref="digestEntryPoint">
 		<http-basic /> -->
-		
-		<intercept-url pattern="/login*" access="permitAll" />
-		<intercept-url pattern="/**" access="isAuthenticated()" />
-	
-		<form-login login-page="/login"
-			authentication-failure-handler-ref="ajaxAuthenticationFailureHandler"
-			authentication-success-handler-ref="ajaxAuthenticationSuccessHandler"> 
-	
-		<logout logout-success-url="/" />
-		
+		<form-login />
+		<logout />
+		<remember-me />
 		<!-- 匿名访问 -->
-		<intercept-url pattern="/" access="IS_AUTHENTICATED_ANONYMOUSLY" requires-channel="any"/>
-		<intercept-url pattern="/resources/**" access="IS_AUTHENTICATED_ANONYMOUSLY" requires-channel="any"/>
-		
+		<intercept-url pattern="/" access="permitAll" />
+		<intercept-url pattern="/login" access="permitAll" />
+		<intercept-url pattern="/resources/**" access="permitAll" />
+		<!-- 登陆 -->
+		<!-- <form-login login-page="/login"
+			authentication-failure-handler-ref="ajaxAuthenticationFailureHandler"
+			authentication-success-handler-ref="ajaxAuthenticationSuccessHandler"/> -->
+	
 		<!-- 默认登出url：/j_spring_security_logout logout-success-url:成功注销后跳转到的页面 -->
-		<logout invalidate-session="true" logout-url="/logout" logout-success-url="/" />
+		<!-- <logout invalidate-session="true" logout-url="/logout" logout-success-url="/" /> -->
 		
 		<!-- <remember-me key="rememberMeKey" user-service-ref="userDetailsService"/> -->
 		
