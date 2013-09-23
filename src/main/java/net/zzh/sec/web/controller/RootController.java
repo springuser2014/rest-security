@@ -34,7 +34,7 @@ public class RootController {
 		model.addAttribute("title", "This is a good day!");
 		model.addAttribute("theme", "Skyrim");
 
-		return "index";
+		return "login";
 	}
 	/*
 	@RequestMapping(value = WebConstants.PATH_SEP, method = RequestMethod.GET)

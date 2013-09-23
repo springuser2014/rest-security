@@ -8,20 +8,19 @@
 	<http use-expressions="true">
 	<!-- <http create-session="stateless" entry-point-ref="digestEntryPoint">
 		<http-basic /> -->
-		<form-login />
-		<logout />
-		<remember-me />
+		
 		<!-- 匿名访问 -->
 		<intercept-url pattern="/" access="permitAll" />
 		<intercept-url pattern="/login" access="permitAll" />
 		<intercept-url pattern="/resources/**" access="permitAll" />
+		
 		<!-- 登陆 -->
-		<!-- <form-login login-page="/login"
+		<form-login login-page="/login"
 			authentication-failure-handler-ref="ajaxAuthenticationFailureHandler"
-			authentication-success-handler-ref="ajaxAuthenticationSuccessHandler"/> -->
+			authentication-success-handler-ref="ajaxAuthenticationSuccessHandler"/>
 	
 		<!-- 默认登出url：/j_spring_security_logout logout-success-url:成功注销后跳转到的页面 -->
-		<!-- <logout invalidate-session="true" logout-url="/logout" logout-success-url="/" /> -->
+		<logout invalidate-session="true" logout-url="/logout" logout-success-url="/" />
 		
 		<!-- <remember-me key="rememberMeKey" user-service-ref="userDetailsService"/> -->
 		
@@ -48,7 +47,14 @@
 	</authentication-manager>
 	
 	<!-- 定义上下文返回的消息的国际化。 -->
-	<beans:bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+	<!-- <beans:bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
 		<beans:property name="basename" value="classpath:org/springframework/security/messages_zh_CN" />
+	</beans:bean> -->
+	<beans:bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<beans:property name="basename" value="messages"/>
 	</beans:bean>
+	
+	<!-- 主题 -->
+	<beans:bean id="themeSource" class="org.springframework.ui.context.support.ResourceBundleThemeSource"/>
+	<beans:bean id="themeResolver" class="net.zzh.sec.web.controller.ThemeResolver"/>
 </beans:beans>
