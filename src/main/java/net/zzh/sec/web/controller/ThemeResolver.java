@@ -19,6 +19,7 @@ public class ThemeResolver extends AbstractThemeResolver {
 	 */
 	@Override
 	public String resolveThemeName(HttpServletRequest arg0) {
+		System.out.println("ThemeResolver.");
 		return "default";
 	}
 

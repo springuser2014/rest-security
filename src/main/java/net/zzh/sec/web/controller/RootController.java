@@ -1,24 +1,28 @@
 package net.zzh.sec.web.controller;
 
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.zzh.common.util.LinkUtil;
-import net.zzh.common.web.WebConstants;
-import net.zzh.sec.web.common.UriMappingConstants;
+import net.zzh.sec.model.Principal;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.google.common.net.HttpHeaders;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 
 @Controller
 public class RootController {
-
+	
+	ObjectMapper objectMapper = new ObjectMapper();
+	
 	public RootController() {
 		super();
 	}
@@ -26,16 +30,35 @@ public class RootController {
 	// API
 
 	// search
+	
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public Principal findOne(@PathVariable("id") final Long id, final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
+        return new Principal();
+    }
 
-	@RequestMapping(value = WebConstants.PATH_SEP, method = RequestMethod.GET)
-	public String loadView(String viewName, Model model) {
-		System.out.println("to all page - " + viewName);
-
-		model.addAttribute("title", "This is a good day!");
-		model.addAttribute("theme", "Skyrim");
-
+	@RequestMapping(value = "/hello", method = RequestMethod.GET)  
+	public String login(ModelMap model) {
+		System.out.println("/login");
+		String message = "Welcome to Spring 4.0 !";
+		model.addAttribute("title", message); 
+		model.addAttribute("msg", message); 
 		return "login";
 	}
+/*
+	@RequestMapping(value = WebConstants.PATH_SEP, method = RequestMethod.GET)
+	public ModelAndView test() {
+		System.out.println("to all page - " + WebConstants.PATH_SEP);
+
+		
+		model.addAttribute("title", "This is a good day!");
+		model.addAttribute("theme", "Skyrim");
+		
+		String message = "Welcome to Spring 4.0 !";
+		return new ModelAndView("index", "title", message);
+	}
+	
+*/
 	/*
 	@RequestMapping(value = WebConstants.PATH_SEP, method = RequestMethod.GET)
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
