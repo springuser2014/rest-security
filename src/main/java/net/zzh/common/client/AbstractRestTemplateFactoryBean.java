@@ -55,8 +55,8 @@ public abstract class AbstractRestTemplateFactoryBean implements FactoryBean<Res
         restTemplate = new RestTemplate(requestFactory);
 
         restTemplate.getMessageConverters().remove(5); // removing the Jaxb2RootElementHttpMessageConverter
-        restTemplate.getMessageConverters().add(marshallingHttpMessageConverter());
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+        restTemplate.getMessageConverters().add(marshallingHttpMessageConverter());
     }
 
     //

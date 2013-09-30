@@ -5,10 +5,10 @@
 <head>
 	<meta charset="UTF-8">
 	<title>${title}</title>
-	<link rel="stylesheet" href='<spring:theme code='app'/>' type="text/css"/>
+	<link rel="stylesheet" href='<spring:theme code='jquery-ui'/>' type="text/css"/>
 </head>
 <body>
-	<spring:message code="message.header"/>
+	<%-- <spring:message code="message.header"/> --%>
 	<p>theme: ${theme}</p>
 </body>
 </html>

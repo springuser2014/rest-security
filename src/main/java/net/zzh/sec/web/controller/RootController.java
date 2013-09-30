@@ -5,9 +5,11 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.zzh.common.web.WebConstants;
 import net.zzh.sec.model.Principal;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,7 +32,23 @@ public class RootController {
 	// API
 
 	// search
+
+	@RequestMapping(value = WebConstants.PATH_SEP, method = RequestMethod.GET)  
+	public String index(ModelMap model) {
+		System.out.println(WebConstants.PATH_SEP);
+		String message = "Welcome to Spring 4.0 !";
+		model.addAttribute("title", message); 
+		model.addAttribute("theme", message); 
+		return "index";
+	}
 	
+	/**
+	 * 默认返回xml，如果返回类型为Map或List则返回json
+	 * @param id
+	 * @param uriBuilder
+	 * @param response
+	 * @return xml
+	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseBody
     public Principal findOne(@PathVariable("id") final Long id, final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
