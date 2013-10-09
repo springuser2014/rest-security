@@ -60,17 +60,6 @@
 		<authentication-provider user-service-ref="myUserDetailsService" />
 	</authentication-manager>
 
-	<!-- 定义上下文返回的消息的国际化。 -->
-	<!-- <beans:bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource"> 
-		<beans:property name="basename" value="classpath:org/springframework/security/messages_zh_CN" 
-		/> </beans:bean> -->
-	<!-- <beans:bean id="messageSource"
-		class="org.springframework.context.support.ResourceBundleMessageSource">
-		<beans:property name="basename" value="messages" />
-	</beans:bean> -->
-
 	<!-- 主题 -->
-	<beans:bean id="themeSource"
-		class="org.springframework.ui.context.support.ResourceBundleThemeSource" />
 	<beans:bean id="themeResolver" class="net.zzh.sec.web.controller.ThemeResolver" />
 </beans:beans>

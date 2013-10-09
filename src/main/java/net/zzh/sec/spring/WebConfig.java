@@ -24,7 +24,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
 @Configuration
-@ComponentScan({ "net.zzh.common.web", "net.zzh.sec.web" })
+@ComponentScan({ "net.zzh.common.web", "net.zzh.sec.web", "net.zzh.ui.web" })
 @EnableWebMvc
 public class WebConfig extends WebMvcConfigurerAdapter {
 
@@ -40,7 +40,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
         registry.addViewController("/sample.html");
     }
-*/
+*//*
     @Bean
     public ViewResolver viewResolver() {
         final InternalResourceViewResolver bean = new InternalResourceViewResolver();
@@ -50,7 +50,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         bean.setSuffix(".jsp");
 
         return bean;
-    }
+    }*/
 /*
     // beans
 

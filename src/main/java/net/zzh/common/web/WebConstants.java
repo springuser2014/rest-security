@@ -6,5 +6,4 @@ package net.zzh.common.web;
 public interface WebConstants {
 
     String PATH_SEP = "/";
-
 }
