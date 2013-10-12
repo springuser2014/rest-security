@@ -1,66 +1,113 @@
 package net.zzh.sec.spring;
 
+import net.zzh.common.web.WebConstants;
+import net.zzh.sec.security.MyUserDetailsService;
+import net.zzh.sec.web.servlet.MyThemeResolver;
+
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.ui.context.ThemeSource;
 import org.springframework.ui.context.support.ResourceBundleThemeSource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ThemeResolver;
-import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
-import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
-import org.springframework.web.servlet.theme.AbstractThemeResolver;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
-import org.springframework.web.servlet.view.JstlView;
 
 @Configuration
-@ComponentScan("net.zzh.sec.security")
-@ImportResource({ "classpath*:*secSecurityConfig.xml" })
-public class SecurityConfig {
+@ComponentScan("net.zzh.sec.security, net.zzh.sec.web.servlet")
+//@ImportResource({ "classpath*:*secSecurityConfig.xml" })
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled=true)
+public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
-    public SecurityConfig() {
-        super();
-    }
+	private MyUserDetailsService myUserDetailsService = new MyUserDetailsService();
+	
+	public SecurityConfig() {
+		super();
+	}
 
 	// API
+	
+	@Override
+	public void configure(WebSecurity web) throws Exception {
+		web.ignoring().antMatchers("/resources/**");
+	}
+	
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http.authorizeUrls()
+			.antMatchers("/favicon.ico","/resources/**").permitAll()
+			.antMatchers("/","/signup","/signout","/about").permitAll()
+			.antMatchers("/admin/**").hasRole("ADMIN")
+			.anyRequest().authenticated()
+			.and()
+		.logout()
+			.deleteCookies("JSESSIONID")
+			.logoutUrl("/signout")
+			.logoutSuccessUrl("/")
+			.and()
+		.formLogin()
+			.loginPage("/signin")
+			.loginProcessingUrl("/signin/authenticate")
+			.failureUrl("/signin?param.error=bad_credentials")
+			.usernameParameter("u")
+			.passwordParameter("p")
+			.permitAll();
+	}
+
+    @Override
+    protected void registerAuthentication(AuthenticationManagerBuilder auth) throws Exception {
+        auth.inMemoryAuthentication()
+                .withUser("user").password("password").roles("USER").and()
+                .withUser("admin").password("password").roles("USER", "ADMIN");
+    }
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
+    @Bean
+    @Override
+    public UserDetailsService userDetailsServiceBean() throws Exception {
+        return myUserDetailsService;
+    }
     
-	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
-		registry.addResourceHandler("**/*.html").addResourceLocations("/");
-	}
-
-	public void addInterceptors(InterceptorRegistry registry) {
- 
-		LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
-		localeChangeInterceptor.setParamName("lang");
-		registry.addInterceptor(localeChangeInterceptor);
-	}
-
 	@Bean
 	public LocaleResolver localeResolver() {
- 
+
 		CookieLocaleResolver cookieLocaleResolver = new CookieLocaleResolver();
 		cookieLocaleResolver.setDefaultLocale(StringUtils.parseLocaleString("zh_CN"));
 		return cookieLocaleResolver;
 	}
 
 	@Bean
-	public ViewResolver viewResolver() {
- 
-		InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-		//viewResolver.setViewClass(JstlView.class);
-		viewResolver.setPrefix("/WEB-INF/app/");
-		viewResolver.setSuffix(".jsp");
-		return viewResolver;
+	public ThemeSource themeSource() {
+		
+		ResourceBundleThemeSource themeSource = new ResourceBundleThemeSource();
+		themeSource.setBasenamePrefix(WebConstants.THEME_PREFIX);
+		return themeSource;
 	}
 
+	@Bean
+	public ThemeResolver themeResolver() {
+		MyThemeResolver myThemeResolver = new MyThemeResolver();
+		myThemeResolver.setDefaultThemeName(WebConstants.ORIGINAL_DEFAULT_THEME_NAME);
+		return myThemeResolver;
+	}
+	
 	@Bean
 	public MessageSource messageSource() {
 
@@ -74,13 +121,4 @@ public class SecurityConfig {
 		messageSource.setCacheSeconds(0);
 		return messageSource;
 	}
-
-	@Bean
-	public ThemeSource themeSource() {
-		
-		ResourceBundleThemeSource themeSource = new ResourceBundleThemeSource();
-		themeSource.setBasenamePrefix("theme-");
-		return themeSource;
-	}
-	
 }

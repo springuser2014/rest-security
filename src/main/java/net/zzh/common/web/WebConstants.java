@@ -6,4 +6,8 @@ package net.zzh.common.web;
 public interface WebConstants {
 
     String PATH_SEP = "/";
+    String PATH_SESSION_TIMEOUT = "/session-timeout";
+    
+    String THEME_PREFIX = "theme-";
+    String ORIGINAL_DEFAULT_THEME_NAME = "default";
 }
