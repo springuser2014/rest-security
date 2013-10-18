@@ -57,11 +57,11 @@ public class RootController {
 
 	@RequestMapping(value = "/hello", method = RequestMethod.GET)  
 	public String login(ModelMap model) {
-		System.out.println("/login");
+		System.out.println("/signin");
 		String message = "Welcome to Spring 4.0 !";
 		model.addAttribute("title", message); 
 		model.addAttribute("msg", message); 
-		return "login";
+		return "signin";
 	}
 /*
 	@RequestMapping(value = WebConstants.PATH_SEP, method = RequestMethod.GET)

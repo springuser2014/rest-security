@@ -8,6 +8,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -28,7 +29,7 @@ import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 @ComponentScan("net.zzh.sec.security, net.zzh.sec.web.servlet")
 //@ImportResource({ "classpath*:*secSecurityConfig.xml" })
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled=true)
+//@EnableGlobalMethodSecurity(prePostEnabled=true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 	private MyUserDetailsService myUserDetailsService = new MyUserDetailsService();
@@ -38,17 +39,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	}
 
 	// API
-	
+	/**
+	 * Ignore any request that starts with "/resources/".
+	 * This is similar to configuring http@security=none when using the XML namespace configuration. 
+	 */
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/resources/**");
+		//web.ignoring().antMatchers("/resources/**");
+		web.ignoring().antMatchers("/images/**","/scripts/**","/styles/**","/ui/**");
 	}
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeUrls()
-			.antMatchers("/favicon.ico","/resources/**").permitAll()
-			.antMatchers("/","/signup","/signout","/about").permitAll()
+			.antMatchers("/favicon.ico","/images/**","/scripts/**","/styles/**","/ui/**").permitAll()
+			.antMatchers("/","/signup","/signout","/about","/pages/**").permitAll()
 			.antMatchers("/admin/**").hasRole("ADMIN")
 			.anyRequest().authenticated()
 			.and()
@@ -58,14 +63,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 			.logoutSuccessUrl("/")
 			.and()
 		.formLogin()
+			// login-processing-url仅仅处理HTTP POST
+			// login-page仅仅通过HTTP GET进入
 			.loginPage("/signin")
-			.loginProcessingUrl("/signin/authenticate")
+			.loginProcessingUrl("/signin")
 			.failureUrl("/signin?param.error=bad_credentials")
 			.usernameParameter("u")
 			.passwordParameter("p")
 			.permitAll();
 	}
-
+	
     @Override
     protected void registerAuthentication(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()

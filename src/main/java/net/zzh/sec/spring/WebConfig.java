@@ -1,59 +1,80 @@
 package net.zzh.sec.spring;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.core.Ordered;
 import org.springframework.data.repository.support.DomainClassConverter;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.format.support.FormattingConversionService;
+import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
+import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.theme.ThemeChangeInterceptor;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
+import org.springframework.web.servlet.view.JstlView;
+import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
 @Configuration
 @ComponentScan({ "net.zzh.common.web", "net.zzh.sec.web", "net.zzh.ui.web" })
-@EnableWebMvc
+//@ImportResource({ "classpath*:*secContextConfig.xml" })
+@EnableWebMvc // Add @EnableWebMVC, this is the same as <mvc:annotation-driven/>
 public class WebConfig extends WebMvcConfigurerAdapter {
 	@Autowired
-    private FormattingConversionService mvcConversionService;
+	private FormattingConversionService mvcConversionService;
 	
 	// API
-
+	
+	/**
+	 * Set default servlet handler, this is the same as <mvc:default-servlet-handler/>
+	 * This tag allows for mapping the DispatcherServlet to "/"
+	 */
+	@Override
+	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
+		configurer.enable();
+	}
+	
+	/**
+	 * Declare our static resources.
+	 */
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		super.addResourceHandlers(registry);
 		registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
-		registry.addResourceHandler("/resources/**").addResourceLocations("/resources/").setCachePeriod(31556926);
+		//registry.addResourceHandler("/resources/**").addResourceLocations("/resources/").setCachePeriod(31556926);
+		registry.addResourceHandler("/images/**").addResourceLocations("/resources/images/");
+		registry.addResourceHandler("/scripts/**").addResourceLocations("/resources/scripts/");
+		registry.addResourceHandler("/styles/**").addResourceLocations("/resources/styles/");
+		registry.addResourceHandler("/ui/**").addResourceLocations("/resources/ui/");
 	}
 	
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(new LocaleChangeInterceptor());
-		registry.addInterceptor(new ThemeChangeInterceptor()).addPathPatterns("/**").excludePathPatterns("/mobile/**");
+		//registry.addInterceptor(new ThemeChangeInterceptor()).addPathPatterns("/**").excludePathPatterns("/mobile/**");
 		//registry.addInterceptor(new SecurityInterceptor()).addPathPatterns("/secure/*");
 	}
 
 	@Override
 	public void addViewControllers(final ViewControllerRegistry registry) {
 		super.addViewControllers(registry);
-
-		registry.addViewController("/anonymous");
-		registry.addViewController("/signin");
-		registry.addViewController("/homepage");
-		registry.addViewController("/console");
-		
 		registry.addViewController("/html5.html");
 		
 		registry.addViewController("/session-timeout").setViewName("/");
@@ -76,6 +97,24 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		viewResolver.setSuffix(".jsp");
 		return viewResolver;
 	}
+
+	/**
+	 * Setup a simple strategy: 1. Only path extension is taken into account,
+	 * Accept headers are ignored. 2. Return HTML by default when not sure.
+	 */
+	@Override
+	public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+		configurer.ignoreAcceptHeader(true);
+		Map<String, MediaType> mediaTypes = new HashMap<String, MediaType>();
+		mediaTypes.put("json", MediaType.APPLICATION_JSON);
+		mediaTypes.put("xml", MediaType.APPLICATION_XML);
+		mediaTypes.put("xml2", MediaType.TEXT_XML);
+		mediaTypes.put("xhtml", MediaType.APPLICATION_XHTML_XML);
+		mediaTypes.put("html", MediaType.TEXT_HTML);
+		configurer.mediaTypes(mediaTypes);
+		configurer.defaultContentType(MediaType.TEXT_HTML);
+	}
+
 	
 	@Bean
 	public LocaleChangeInterceptor localeChangeInterceptor() {
