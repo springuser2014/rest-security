@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @EnableTransactionManagement
 @ImportResource("classpath*:*secPersistenceConfig.xml")
-@ComponentScan({ "net.zzh.sec.persistence" })
+@ComponentScan({ "net.zzh.sec.persistence", "net.zzh.common.persistence.service" })
 @PropertySource({ "classpath:persistence-${persistenceTarget:mysql}.properties" })
 public class PersistenceJPAConfig {
 

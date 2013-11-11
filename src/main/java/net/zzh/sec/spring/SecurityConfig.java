@@ -46,13 +46,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		//web.ignoring().antMatchers("/resources/**");
-		web.ignoring().antMatchers("/images/**","/scripts/**","/styles/**","/ui/**");
+		web.ignoring().antMatchers("/img/**","/js/**","/css/**","/ui/**");
 	}
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeUrls()
-			.antMatchers("/favicon.ico","/images/**","/scripts/**","/styles/**","/ui/**").permitAll()
+			.antMatchers("/favicon.ico","/img/**","/js/**","/css/**","/ui/**").permitAll()
 			.antMatchers("/","/signup","/signout","/about","/pages/**").permitAll()
 			.antMatchers("/admin/**").hasRole("ADMIN")
 			.anyRequest().authenticated()
