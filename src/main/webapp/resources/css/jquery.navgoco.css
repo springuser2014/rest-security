@@ -1,0 +1,81 @@
+.navgoco, .navgoco ul, .navgoco li {
+	list-style: none;
+}
+
+.navgoco ul {
+	padding: 0;
+	margin: 0 0 0 18px;
+}
+
+.navgoco {
+	padding: 4px;
+	margin: 0px;
+}
+
+.navgoco > li {
+	margin: 4px 0;
+}
+
+.navgoco > li li {
+	margin: 2px 0;
+}
+
+.navgoco a {
+	color: #333;
+	display: block;
+	outline: none;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+	text-decoration: none;
+}
+
+.navgoco a .caret {
+	float: right;
+	width: 0;
+	height: 0;
+	display: inline-block;
+	vertical-align: top;
+	border-top: 4px solid #000;
+	border-right: 4px solid transparent;
+	border-left: 4px solid transparent;
+	content: "";
+    margin-top: 8px;
+	margin-left: 2px;
+}
+
+.navgoco a:hover .caret {
+	border-top-color: #fff;
+}
+
+.navgoco li.open > a > .caret {
+	border-top: none;
+	border-bottom: 4px solid #000;
+	border-right: 4px solid transparent;
+	border-left: 4px solid transparent;
+}
+
+.navgoco li.open > a:hover > .caret {
+	border-bottom-color: #fff;
+}
+
+.navgoco a:hover, .navgoco li.active > a {
+	background-color: #5D5D5D;
+	color: #f5f5f5;
+}
+
+.navgoco > li.active > a  {
+	background-color: #4D90FE;
+}
+
+.navgoco li a {
+	font-size: 12px;
+	line-height: 18px;
+	padding: 2px 10px;
+}
+
+.navgoco > li > a {
+	font-size: 14px;
+	line-height: 20px;
+	padding: 4px 10px;
+}
