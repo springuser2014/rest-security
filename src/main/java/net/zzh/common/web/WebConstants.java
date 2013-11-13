@@ -6,6 +6,10 @@ package net.zzh.common.web;
 public interface WebConstants {
 
     String PATH_SEP = "/";
+    String PATH_SIGNIN = "/signin";
+    String PATH_SIGNUP = "/signup";
+    String PATH_SIGNOUT = "/signout";
+    String PATH_ABOUT = "/about";
     String PATH_SESSION_TIMEOUT = "/session-timeout";
     
     String THEME_PREFIX = "theme-";

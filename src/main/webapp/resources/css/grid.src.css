@@ -204,6 +204,7 @@ body {
 
 .nav-fixedbar .nav-tabs > li > a {
 	color: #777;
+	float: right;
 }
 
 .nav-fixedbar .nav-tabs > li > a:hover,

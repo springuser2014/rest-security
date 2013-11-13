@@ -33,7 +33,7 @@ public class RootController {
 
 	// search
 
-	@RequestMapping(value = WebConstants.PATH_SEP, method = RequestMethod.GET)  
+	@RequestMapping(value = WebConstants.PATH_SEP, method = RequestMethod.GET)
 	public String index(ModelMap model, HttpServletRequest request) {
 		System.out.println(WebConstants.PATH_SEP);
 		String ua=request.getHeader("User-Agent").toLowerCase();

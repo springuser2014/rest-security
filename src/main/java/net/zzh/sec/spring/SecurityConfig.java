@@ -10,6 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -33,7 +34,7 @@ import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 	private MyUserDetailsService myUserDetailsService = new MyUserDetailsService();
-	
+	static AccessDecisionManager ACCESS_DECISION_MGR;
 	public SecurityConfig() {
 		super();
 	}
@@ -45,17 +46,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	 */
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		//web.ignoring().antMatchers("/resources/**");
-		web.ignoring().antMatchers("/css/**", "/fonts/**", "/img/**", "/js/**", "/ui/**");
+		web.ignoring().antMatchers("/favicon.ico", "/css/**", "/fonts/**", "/img/**", "/js/**", "/ui/**");
 	}
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeUrls()
-			.antMatchers("/favicon.ico", "/css/**", "/fonts/**", "/img/**", "/js/**", "/ui/**").permitAll()
-			.antMatchers("/","/signup","/signout","/about","/pages/**").permitAll()
-			.antMatchers("/admin/**").hasRole("ADMIN")
-			.anyRequest().authenticated()
+			.antMatchers(WebConstants.PATH_SEP, WebConstants.PATH_SIGNUP,
+					WebConstants.PATH_SIGNIN, WebConstants.PATH_SIGNOUT,
+					WebConstants.PATH_ABOUT, "/pages/**").permitAll() // 任何人(包括没有经过验证的)都可以访问
+			.antMatchers("/admin/**").hasRole("ADMIN") // “/admin/”开头的URL必须要是管理员用户，譬如”admin”用户
+			//.anyRequest().authenticated() // 所有其他的URL都需要用户进行验证
+			.anyRequest().permitAll()
+			.accessDecisionManager(ACCESS_DECISION_MGR)
 			.and()
 		.logout()
 			.deleteCookies("JSESSIONID")
@@ -65,9 +68,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		.formLogin()
 			// login-processing-url仅仅处理HTTP POST
 			// login-page仅仅通过HTTP GET进入
-			.loginPage("/signin")
-			.loginProcessingUrl("/signin")
-			.failureUrl("/signin?param.error=bad_credentials")
+			.loginPage(WebConstants.PATH_SIGNIN)
+			.loginProcessingUrl(WebConstants.PATH_SIGNIN)
+			.failureUrl(WebConstants.PATH_SIGNIN + "?param.error=bad_credentials")
 			.usernameParameter("u")
 			.passwordParameter("p")
 			.permitAll();

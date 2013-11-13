@@ -136,8 +136,8 @@
 				<li class="active"><a href="#">Home</a></li>
 				<li><a href="#">News and Events</a>
 					<ul>
-						<li><a href="#" data-link='signin.html' data-index='321'>Hot News</a></li>
-						<li><a href="#" data-link='false'>RSS Feeds</a></li>
+						<li><a href="#" data-link='signin' data-index='321'>Hot News</a></li>
+						<li><a href="#" data-link='hello' data-index='45'>RSS Feeds</a></li>
 						<li><a href="#">Peach Events</a></li>
 						<li><a href="#">User Groups</a></li>
 					</ul>
