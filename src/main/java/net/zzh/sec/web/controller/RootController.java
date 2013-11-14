@@ -23,8 +23,6 @@ import com.google.common.collect.Lists;
 @Controller
 public class RootController {
 	
-	ObjectMapper objectMapper = new ObjectMapper();
-	
 	public RootController() {
 		super();
 	}

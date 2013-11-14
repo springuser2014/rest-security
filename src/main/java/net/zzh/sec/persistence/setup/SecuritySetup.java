@@ -1,5 +1,6 @@
 package net.zzh.sec.persistence.setup;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -10,10 +11,12 @@ import net.zzh.sec.model.Principal;
 import net.zzh.sec.model.Privilege;
 import net.zzh.sec.model.Proc;
 import net.zzh.sec.model.Role;
+import net.zzh.sec.model.Test;
 import net.zzh.sec.persistence.service.IPrincipalService;
 import net.zzh.sec.persistence.service.IPrivilegeService;
 import net.zzh.sec.persistence.service.IProcService;
 import net.zzh.sec.persistence.service.IRoleService;
+import net.zzh.sec.persistence.service.ITestService;
 import net.zzh.sec.util.SecurityConstants;
 import net.zzh.sec.util.SecurityConstants.Privileges;
 import net.zzh.sec.util.SecurityConstants.Roles;
@@ -54,6 +57,9 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 	
 	@Autowired
 	private IProcService procService;
+	
+	@Autowired
+	private ITestService testService;
 
 	@Autowired
 	private ApplicationContext eventPublisher;
@@ -85,6 +91,8 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 			createPrincipals();
 			
 			//System.out.println(logger.isDebugEnabled());
+			//procService.delete(0);
+			
 			
 			//List list = privilegeService.searchAll("SELECT priv_id,description,name FROM rest.privilege");
 			//System.out.println(list.size());
@@ -94,12 +102,24 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 			/*
 			 *  success
 			 */
+			
+			// Create
+			//Test test = new Test();
+			//test.setTestName((new Date()).toString());
+			//testService.create(test);
+			
+			// Update
+			//Test test = testService.findOne(1);
+			//test.setTestName((new Date()).toString());
+			//testService.update(test);
+			
 			//Proc proc = procService.findOne(1);
 			//System.out.println(proc.getName());
 			//List list = procService.findAllPaginated(1, 6);
 			//Page page = persistenceService.findPaginated(1, 10, "SELECT id,name FROM Proc");
 			//Page page = persistenceService.findNativeQueryPaginated(1, 10, "SELECT proc_id, proc_name FROM proc");
 			
+			// Find
 			//List list = privilegeService.findAll();
 			//Privilege Privilege = privilegeService.findOne(1);
 			//Privilege = privilegeService.findByName("ROLE_PRIVILEGE_READ");
@@ -141,11 +161,11 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 	 * @param name
 	 */
 	final void createPrivilegeIfNotExisting(final String name) {
-		final Privilege entityByName = privilegeService.findByName(name);
+		/*final Privilege entityByName = privilegeService.findByName(name);
 		if (entityByName == null) {
 			final Privilege entity = new Privilege(name);
 			privilegeService.create(entity);
-		}
+		}*/
 	}
 
 	/**
@@ -153,7 +173,7 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 	 * 创建角色
 	 */
 	private void createRoles() {
-		final Privilege canPrivilegeRead = privilegeService.findByName(Privileges.CAN_PRIVILEGE_READ);
+/*		final Privilege canPrivilegeRead = privilegeService.findByName(Privileges.CAN_PRIVILEGE_READ);
 		final Privilege canPrivilegeWrite = privilegeService.findByName(Privileges.CAN_PRIVILEGE_WRITE);
 		final Privilege canRoleRead = privilegeService.findByName(Privileges.CAN_ROLE_READ);
 		final Privilege canRoleWrite = privilegeService.findByName(Privileges.CAN_ROLE_WRITE);
@@ -168,6 +188,7 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 		Preconditions.checkNotNull(canUserWrite);
 
 		createRoleIfNotExisting(Roles.ROLE_ADMIN, Sets.<Privilege> newHashSet(canUserRead, canUserWrite, canRoleRead, canRoleWrite, canPrivilegeRead, canPrivilegeWrite));
+		*/
 	}
 
 	/**
@@ -176,12 +197,12 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 	 * @param privileges
 	 */
 	final void createRoleIfNotExisting(final String name, final Set<Privilege> privileges) {
-		final Role entityByName = roleService.findByName(name);
+		/*final Role entityByName = roleService.findByName(name);
 		if (entityByName == null) {
 			final Role entity = new Role(name);
 			entity.setPrivileges(privileges);
 			roleService.create(entity);
-		}
+		}*/
 	}
 
 	/**
@@ -189,10 +210,11 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 	 * 创建管理员
 	 */
 	final void createPrincipals() {
-		final Role roleAdmin = roleService.findByName(Roles.ROLE_ADMIN);
+		/*final Role roleAdmin = roleService.findByName(Roles.ROLE_ADMIN);
 
 		// createPrincipalIfNotExisting(SecurityConstants.ADMIN_USERNAME, SecurityConstants.ADMIN_PASS, Sets.<Role> newHashSet(roleAdmin));
 		createPrincipalIfNotExisting(SecurityConstants.ADMIN_EMAIL, SecurityConstants.ADMIN_PASS, Sets.<Role> newHashSet(roleAdmin));
+		*/
 	}
 
 	/**
@@ -202,11 +224,11 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 	 * @param roles
 	 */
 	final void createPrincipalIfNotExisting(final String loginName, final String pass, final Set<Role> roles) {
-		final Principal entityByName = principalService.findByName(loginName);
+		/*final Principal entityByName = principalService.findByName(loginName);
 		if (entityByName == null) {
 			final Principal entity = new Principal(loginName, pass, roles);
 			principalService.create(entity);
-		}
+		}*/
 	}
 
 }
