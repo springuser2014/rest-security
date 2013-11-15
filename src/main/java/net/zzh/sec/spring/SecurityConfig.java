@@ -56,9 +56,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 					WebConstants.PATH_SIGNIN, WebConstants.PATH_SIGNOUT,
 					WebConstants.PATH_ABOUT, "/pages/**").permitAll() // 任何人(包括没有经过验证的)都可以访问
 			.antMatchers("/admin/**").hasRole("ADMIN") // “/admin/”开头的URL必须要是管理员用户，譬如”admin”用户
-			//.anyRequest().authenticated() // 所有其他的URL都需要用户进行验证
-			.anyRequest().permitAll()
-			.accessDecisionManager(ACCESS_DECISION_MGR)
+			.anyRequest().authenticated() // 所有其他的URL都需要用户进行验证
+			//.anyRequest().permitAll()
+			//.accessDecisionManager(ACCESS_DECISION_MGR)
 			.and()
 		.logout()
 			.deleteCookies("JSESSIONID")
@@ -78,9 +78,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	
     @Override
     protected void registerAuthentication(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .withUser("user").password("password").roles("USER").and()
-                .withUser("admin").password("password").roles("USER", "ADMIN");
+        auth.userDetailsService(userDetailsServiceBean());
     }
 
     @Bean

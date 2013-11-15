@@ -27,11 +27,11 @@ public class PrivilegeServiceImpl extends AbstractService<Privilege> implements 
     // API
 
     // find
-
+/*
     public Privilege findByName(final String name) {
         return getDao().findByName(name);
     }
-
+*/
     // Spring
 
     @Override

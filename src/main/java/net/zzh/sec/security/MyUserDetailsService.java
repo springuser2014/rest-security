@@ -44,6 +44,7 @@ public final class MyUserDetailsService implements UserDetailsService {
      */
     public final UserDetails loadUserByUsername(final String username) {
 		System.out.println("loadUserByUsername - check");
+		/*
         Preconditions.checkNotNull(username);
 
         final Principal principal = principalService.findByName(username);
@@ -63,6 +64,8 @@ public final class MyUserDetailsService implements UserDetailsService {
 
 		System.out.println("loadUserByUsername - success");
         return new User(principal.getName(), principal.getPassword(), auths);
+        */
+		return null;
     }
 
 }

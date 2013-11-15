@@ -37,12 +37,6 @@ public class TestServiceImpl extends AbstractService<Test> implements ITestServi
 
     // find
 
-	@Override
-	public Test findByName(String name) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
     // Spring
 
     @Override

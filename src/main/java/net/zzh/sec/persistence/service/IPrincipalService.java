@@ -5,6 +5,6 @@ import net.zzh.sec.model.Principal;
 
 public interface IPrincipalService extends IService<Principal> {
 
-    Principal getCurrentPrincipal();
+    //Principal getCurrentPrincipal();
 
 }

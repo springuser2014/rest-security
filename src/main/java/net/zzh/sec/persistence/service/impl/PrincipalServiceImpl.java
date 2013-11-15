@@ -28,20 +28,20 @@ public class PrincipalServiceImpl extends AbstractService<Principal> implements 
     // API
 
     // find
-
+/*
     @Transactional(readOnly = true)
     public Principal findByName(final String name) {
         return dao.findByName(name);
     }
-
+*/
     // other
-
+/*
     @Transactional(readOnly = true)
     public Principal getCurrentPrincipal() {
         final String principalName = SpringSecurityUtil.getNameOfCurrentPrincipal();
         return getDao().findByName(principalName);
     }
-
+*/
     // Spring
 
     @Override

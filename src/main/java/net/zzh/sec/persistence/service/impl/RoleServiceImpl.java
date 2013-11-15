@@ -27,11 +27,11 @@ public class RoleServiceImpl extends AbstractService<Role> implements IRoleServi
     // API
 
     // get/find
-
+/*
     public Role findByName(final String name) {
         return getDao().findByName(name);
     }
-
+*/
     // create
 
     @Override

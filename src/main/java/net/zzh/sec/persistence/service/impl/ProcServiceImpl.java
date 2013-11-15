@@ -36,13 +36,13 @@ public class ProcServiceImpl extends AbstractService<Proc> implements IProcServi
     // API
 
     // find
-
+/*
 	@Override
 	public Proc findByName(String name) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+*/
     // Spring
 
     @Override
