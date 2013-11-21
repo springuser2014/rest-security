@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import net.zzh.common.persistence.service.IPersistenceService;
 import net.zzh.sec.model.Principal;
 import net.zzh.sec.model.Privilege;
 import net.zzh.sec.model.Role;
@@ -32,6 +33,9 @@ public final class MyUserDetailsService implements UserDetailsService {
 
     @Autowired
     private IPrincipalService principalService;
+
+	@Autowired
+	private IPersistenceService persistenceService;
 
     public MyUserDetailsService() {
         super();
@@ -65,7 +69,12 @@ public final class MyUserDetailsService implements UserDetailsService {
 		System.out.println("loadUserByUsername - success");
         return new User(principal.getName(), principal.getPassword(), auths);
         */
-		return null;
+        Preconditions.checkNotNull(username);
+        final String[] roleStringsAsArray = {};
+        final List<GrantedAuthority> auths = AuthorityUtils.createAuthorityList(roleStringsAsArray);
+
+		System.out.println("loadUserByUsername - success");
+        return new User(username, "123145", auths);
     }
 
 }

@@ -36,6 +36,7 @@ public class AuthenticationController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public User createAuthentication() {
+    	System.out.println(UriMappingConstants.AUTHENTICATION);
         final Authentication authenticationInSpring = SpringSecurityUtil.getCurrentAuthentication();
 
         final Function<GrantedAuthority, Privilege> springAuthorityToPrivilegeFunction = new Function<GrantedAuthority, Privilege>() {
