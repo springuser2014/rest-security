@@ -70,7 +70,7 @@ public final class MyUserDetailsService implements UserDetailsService {
         return new User(principal.getName(), principal.getPassword(), auths);
         */
         Preconditions.checkNotNull(username);
-        final String[] roleStringsAsArray = {};
+        final String[] roleStringsAsArray = {"11","22","33"};
         final List<GrantedAuthority> auths = AuthorityUtils.createAuthorityList(roleStringsAsArray);
 
 		System.out.println("loadUserByUsername - success");
