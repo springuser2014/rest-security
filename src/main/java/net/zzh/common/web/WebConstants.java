@@ -6,6 +6,7 @@ package net.zzh.common.web;
 public interface WebConstants {
 
     String PATH_SEP = "/";
+    String PATH_HOME = "/home";
     String PATH_SIGNIN = "/signin";
     String PATH_SIGNUP = "/signup";
     String PATH_SIGNOUT = "/signout";

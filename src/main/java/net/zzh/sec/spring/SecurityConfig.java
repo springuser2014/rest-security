@@ -1,12 +1,16 @@
 package net.zzh.sec.spring;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.servlet.Filter;
 import javax.servlet.http.HttpServletRequest;
 
 import net.zzh.common.web.WebConstants;
+import net.zzh.sec.security.AuthSuccessHandler;
+import net.zzh.sec.security.CookieService;
 import net.zzh.sec.security.MyUserDetailsService;
 import net.zzh.sec.security.SecurityLoginFailureHandler;
 import net.zzh.sec.security.SecurityLoginSuccessHandler;
@@ -21,19 +25,40 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.security.access.AccessDecisionManager;
+import org.springframework.security.access.AccessDecisionVoter;
+import org.springframework.security.access.ConfigAttribute;
+import org.springframework.security.access.vote.AffirmativeBased;
+import org.springframework.security.access.vote.AuthenticatedVoter;
+import org.springframework.security.access.vote.RoleVoter;
+import org.springframework.security.authentication.AnonymousAuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.FilterChainProxy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandlerImpl;
+import org.springframework.security.web.access.ExceptionTranslationFilter;
+import org.springframework.security.web.access.intercept.DefaultFilterInvocationSecurityMetadataSource;
+import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.savedrequest.NullRequestCache;
+import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter;
+import org.springframework.security.web.util.AntPathRequestMatcher;
+import org.springframework.security.web.util.RequestMatcher;
 import org.springframework.ui.context.ThemeSource;
 import org.springframework.ui.context.support.ResourceBundleThemeSource;
 import org.springframework.util.StringUtils;
@@ -51,7 +76,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	@Autowired
 	private ApplicationContext context;
 	
+	private static final String ANON_PROVIDER_KEY = "9000234288201316478";
+	
 	static AccessDecisionManager ACCESS_DECISION_MGR;
+	
 	public SecurityConfig() {
 		super();
 	}
@@ -82,12 +110,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 			.authorizeUrls()
 				//Anyone can access the urls
 				.antMatchers(
-						WebConstants.PATH_SEP,
+						//WebConstants.PATH_SEP,
 						WebConstants.PATH_SIGNUP,
 						WebConstants.PATH_SIGNIN,
 						WebConstants.PATH_SIGNOUT,
-						WebConstants.PATH_ABOUT,
-						"/pages/**"
+						WebConstants.PATH_ABOUT//,
+						//"/pages/**"
 				).permitAll()
 				//The rest of the our application is protected.
 				//.antMatchers("/admin/**").hasRole("ADMIN")
@@ -114,6 +142,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 				.permitAll()
 				.and()
 				*/
+				
 			.httpBasic()
 				.authenticationEntryPoint(loginAuthEntryPoint())
 				.and()
@@ -138,28 +167,32 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		LoginUrlAuthenticationEntryPoint loginAuthEntryPoint = new LoginUrlAuthenticationEntryPoint(WebConstants.PATH_SIGNIN);
 		return loginAuthEntryPoint;
 	}
-	
-	private UsernamePasswordAuthenticationFilter getUserNamePasswordAuthenticationFilter() throws Exception {
-		UsernamePasswordAuthenticationFilter filter = new UsernamePasswordAuthenticationFilter();
 
-		filter.setAllowSessionCreation(false);
-		filter.setAuthenticationManager(authenticationManagerBean());
-		
-		// Set the Auth Success handler
-		SecurityLoginSuccessHandler ajaxSecurityLoginSuccessHandler = new SecurityLoginSuccessHandler();
-		ajaxSecurityLoginSuccessHandler.setDefaultTargetUrl(WebConstants.PATH_SIGNIN);
-		filter.setAuthenticationSuccessHandler(ajaxSecurityLoginSuccessHandler);
+	/**
+	 * @return Cookie Service for management of Cookies
+	 */
+	@Bean
+	public CookieService getCookieService() {
+		return new CookieService.Impl();
+	}
 
-		// Set the Auth Failure handler
-		SecurityLoginFailureHandler ajaxSecurityLoginFailureHandler = new SecurityLoginFailureHandler();
-		ajaxSecurityLoginFailureHandler.setDefaultFailureUrl(WebConstants.PATH_SIGNIN);
-		filter.setAuthenticationFailureHandler(ajaxSecurityLoginFailureHandler);
-		
-		filter.setAuthenticationFailureHandler(new SecurityLoginFailureHandler());
+	/**
+	 * @return The Authentication Manager to user
+	 * @throws Exception 
+	 */
+	private ProviderManager getAuthenticationManager() throws Exception {
+		List<AuthenticationProvider> authManagers = new ArrayList<AuthenticationProvider>();
+		DaoAuthenticationProvider daoProvider = new DaoAuthenticationProvider();
 
-		filter.setFilterProcessesUrl("/j_spring_security_check");
-		
-		return filter;
+		daoProvider.setUserDetailsService(userDetailsServiceBean());
+
+		authManagers.add(daoProvider);
+
+		authManagers.add(new AnonymousAuthenticationProvider(ANON_PROVIDER_KEY));
+
+		ProviderManager providerManager = new ProviderManager(authManagers);
+
+		return providerManager;
 	}
 
 	@Bean(name = "springSecurityFilterChain")
@@ -195,6 +228,145 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 		return new FilterChainProxy(chain);
 	}
+
+	// Filters
+	
+	/**
+	 * @return Filter that checks if a cookie exists for the user, if so loads
+	 *         the user details and sets the authentication context
+	 */
+	/*private CookieAuthenticationFilter getCookieAuthenticationFilter() {
+		return new CookieAuthenticationFilter(getLdapUserDetailService(), getCookieService());
+	}*/
+
+	/**
+	 * @return Filter for handling logout
+	 */
+	/*private LogoutFilter getLogoutFilter() {
+		return new LogoutFilter("/logoutSuccess.html", new CookieLogoutHandler(getCookieService()));
+	}*/
+
+	/**
+	 * @return Filter for authentication the user.
+	 * @throws Exception 
+	 */
+	private UsernamePasswordAuthenticationFilter getUserNamePasswordAuthenticationFilter() throws Exception {
+		UsernamePasswordAuthenticationFilter filter = new UsernamePasswordAuthenticationFilter();
+
+		filter.setAllowSessionCreation(false);
+		filter.setAuthenticationManager(getAuthenticationManager());
+		filter.setAuthenticationSuccessHandler(new AuthSuccessHandler(getCookieService()));
+		filter.setAuthenticationFailureHandler(new SimpleUrlAuthenticationFailureHandler(WebConstants.PATH_SIGNIN+"?login_error=1"));
+
+		filter.setFilterProcessesUrl("/j_spring_security_check");
+
+		return filter;
+	}
+
+	/**
+	 * @return Filter that manages the ROLE prefix
+	 */
+	private SecurityContextHolderAwareRequestFilter getSecurityContextHolderAwareRequestFilter() {
+		SecurityContextHolderAwareRequestFilter filter = new SecurityContextHolderAwareRequestFilter();
+		filter.setRolePrefix("ROLE_");
+		return filter;
+	}
+
+	/**
+	 * @return Anonymous Authentication Filter for IS_AUTHENTICATED_ANONYMOUSLY
+	 */
+	private AnonymousAuthenticationFilter getAnonymousAuthenticationFilter() {
+		return new AnonymousAuthenticationFilter("ClientApplication", "anonymousUser", AuthorityUtils.createAuthorityList(ANONYMOUS));
+	}
+
+	/**
+	 * @return Exception Translation filter
+	 */
+	private ExceptionTranslationFilter getExceptionTranslationFilter() {
+		LoginUrlAuthenticationEntryPoint entryPoint = new LoginUrlAuthenticationEntryPoint(WebConstants.PATH_SIGNIN);
+		AccessDeniedHandlerImpl errorHandler = new AccessDeniedHandlerImpl();
+		errorHandler.setErrorPage("/login.html?login_error=1");
+
+		ExceptionTranslationFilter filter = new ExceptionTranslationFilter(entryPoint, new NullRequestCache());
+
+		filter.setAccessDeniedHandler(errorHandler);
+
+		return filter;
+	}
+
+	private static final String ANONYMOUS = "IS_AUTHENTICATED_ANONYMOUSLY";
+
+	/**
+	 * Performs security handling of HTTP resources via a filter implementation
+	 * 
+	 * @return A FilterSecurityInterceptor
+	 * @throws Exception 
+	 */
+	private FilterSecurityInterceptor getFilterSecurityInterceptor() throws Exception {
+		FilterSecurityInterceptor interceptor = new FilterSecurityInterceptor();
+		LinkedHashMap<RequestMatcher, Collection<ConfigAttribute>> requestMap = new LinkedHashMap<RequestMatcher, Collection<ConfigAttribute>>();
+
+		// Map anonymous access URL's
+		Collection<ConfigAttribute> configAttributeCollection = new ArrayList<ConfigAttribute>();
+
+		configAttributeCollection.add(new org.springframework.security.access.SecurityConfig(ANONYMOUS));
+
+		requestMap.put(new AntPathRequestMatcher(WebConstants.PATH_SIGNIN+"*"), configAttributeCollection);
+		requestMap.put(new AntPathRequestMatcher("/favicon.ico"), configAttributeCollection);
+		requestMap.put(new AntPathRequestMatcher("/css*"), configAttributeCollection);
+		requestMap.put(new AntPathRequestMatcher("/fonts*"), configAttributeCollection);
+		requestMap.put(new AntPathRequestMatcher("/js*"), configAttributeCollection);
+		requestMap.put(new AntPathRequestMatcher("/img*"), configAttributeCollection);
+		requestMap.put(new AntPathRequestMatcher("/ui*"), configAttributeCollection);
+
+		// Map /* for all user based resources
+		Collection<ConfigAttribute> configAttributeCollection2 = new ArrayList<ConfigAttribute>();
+		configAttributeCollection2.add(new org.springframework.security.access.SecurityConfig("ROLE_USER"));
+
+		requestMap.put(new AntPathRequestMatcher(WebConstants.PATH_SEP+"*"), configAttributeCollection2);
+
+		FilterInvocationSecurityMetadataSource metaSource = new DefaultFilterInvocationSecurityMetadataSource(requestMap);
+
+		interceptor.setSecurityMetadataSource(metaSource);
+
+		// Set auth manager for the filter
+		interceptor.setAuthenticationManager(getAuthenticationManager());
+
+		// Access Decision Manager
+		@SuppressWarnings("rawtypes")
+		List<AccessDecisionVoter> accessDecisionVoters = new ArrayList<AccessDecisionVoter>();
+
+		accessDecisionVoters.add(new RoleVoter());
+		accessDecisionVoters.add(new AuthenticatedVoter());
+		AffirmativeBased decisionManager = new AffirmativeBased(accessDecisionVoters);
+
+		interceptor.setAccessDecisionManager(decisionManager);
+
+		return interceptor;
+	}
+	/*
+	private UsernamePasswordAuthenticationFilter getUserNamePasswordAuthenticationFilter() throws Exception {
+		UsernamePasswordAuthenticationFilter filter = new UsernamePasswordAuthenticationFilter();
+
+		filter.setAllowSessionCreation(false);
+		filter.setAuthenticationManager(authenticationManagerBean());
+		
+		// Set the Auth Success handler
+		SecurityLoginSuccessHandler ajaxSecurityLoginSuccessHandler = new SecurityLoginSuccessHandler();
+		ajaxSecurityLoginSuccessHandler.setDefaultTargetUrl(WebConstants.PATH_SIGNIN);
+		filter.setAuthenticationSuccessHandler(ajaxSecurityLoginSuccessHandler);
+
+		// Set the Auth Failure handler
+		SecurityLoginFailureHandler ajaxSecurityLoginFailureHandler = new SecurityLoginFailureHandler();
+		ajaxSecurityLoginFailureHandler.setDefaultFailureUrl(WebConstants.PATH_SIGNIN);
+		filter.setAuthenticationFailureHandler(ajaxSecurityLoginFailureHandler);
+		
+		filter.setAuthenticationFailureHandler(new SecurityLoginFailureHandler());
+
+		filter.setFilterProcessesUrl("/j_spring_security_check");
+		
+		return filter;
+	}*/
 
 	@Bean
 	@Override
