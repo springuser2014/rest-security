@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  *
  */
 @Controller
+@RequestMapping(value = WebConstants.PATH_SIGNIN)
 public class SigninController {
 
 	/**
@@ -30,8 +32,8 @@ public class SigninController {
 		super();
 	}
 
-	@RequestMapping(value = WebConstants.PATH_SIGNIN, method = RequestMethod.GET)
-	public String signin(ModelMap model, HttpServletRequest request) {
+	@RequestMapping(method = RequestMethod.GET)
+	public String signin(@RequestParam(required=false) String login_error, ModelMap model, HttpServletRequest request) {
 		System.out.println(WebConstants.PATH_SIGNIN);
 		
 		String message = "This is a sign in page.";
@@ -42,11 +44,15 @@ public class SigninController {
 		return "signin";
 	}
 	
-	@RequestMapping(value = WebConstants.PATH_SIGNIN, method = RequestMethod.POST)
+	@RequestMapping(method = RequestMethod.POST)
     @ResponseBody
 	public Map signinCheck(ModelMap model, HttpServletRequest request) {
 		System.out.println(WebConstants.PATH_SIGNIN + "-check");
 		
+		String username = request.getParameter("u");
+		String password = request.getParameter("p");
+
+		System.out.println("username: "+ username + ", " + "password: " + password);
 		
 		Map map = new HashMap();
 		map.put("access", true);

@@ -120,6 +120,7 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 			//Page page = persistenceService.findNativeQueryPaginated(1, 10, "SELECT proc_id, proc_name FROM proc");
 			
 			// Find
+			//List list = persistenceService.findByNativeSQL("select principal_id, name, password, locked from principal");
 			//List list = privilegeService.findAll();
 			//Privilege Privilege = privilegeService.findOne(1);
 			//Privilege = privilegeService.findByName("ROLE_PRIVILEGE_READ");

@@ -38,6 +38,8 @@ public class CookieAuthenticationFilter extends GenericFilterBean {
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpServletResponse response = (HttpServletResponse) res;
 
+		System.out.println("CookieAuthenticationFilter");
+		
 		if (request.getAttribute(FILTER_APPLIED) != null) {
 			// ensure that filter is only applied once per request
 			chain.doFilter(request, response);

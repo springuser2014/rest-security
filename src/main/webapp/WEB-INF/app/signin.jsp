@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <!DOCTYPE html>
 <html lang="zh">
 	<head>
@@ -68,10 +68,10 @@
 
 	<div class="container">
 
-		<form class="form-signin">
+		<form class="form-signin" action="j_spring_security_check">
 		<h2 class="form-signin-heading">Please sign in</h2>
-		<input id="u" type="text" class="form-control" placeholder="User name/Email address" autofocus>
-		<input id="p" type="password" class="form-control" placeholder="Password">
+		<input id="u" name="j_username" type="text" class="form-control" placeholder="User name/Email address" autofocus>
+		<input id="p" name="j_password" type="password" class="form-control" placeholder="Password">
 		<label class="checkbox">
 			<input type="checkbox" value="remember-me"> Remember me
 		</label>
@@ -88,6 +88,7 @@
 	
 	<script type="text/javascript">
 		$(function() {
+			/* 
 			$('button[type=submit]').click(function() {
 				var passPhrase = +new Date();;
 				$.ajax({
@@ -113,6 +114,7 @@
 				});
 				return false;
 			});
+			 */
 		});
 	</script>
 	</body>

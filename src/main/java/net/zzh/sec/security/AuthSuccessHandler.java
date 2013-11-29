@@ -36,7 +36,7 @@ public class AuthSuccessHandler implements AuthenticationSuccessHandler {
 		String principal = ((UserDetails) principalObj).getUsername();
 
 		response.addCookie(cookieService.createCookie(principal));
-		response.sendRedirect(WebConstants.PATH_SEP);
+		response.sendRedirect(WebConstants.PATH_HOME);
 	}
 
 }

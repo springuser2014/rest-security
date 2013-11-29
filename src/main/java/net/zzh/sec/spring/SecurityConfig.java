@@ -6,10 +6,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.servlet.Filter;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import net.zzh.common.web.WebConstants;
 import net.zzh.sec.security.AuthSuccessHandler;
+import net.zzh.sec.security.CookieAuthenticationFilter;
+import net.zzh.sec.security.CookieLogoutHandler;
 import net.zzh.sec.security.CookieService;
 import net.zzh.sec.security.MyUserDetailsService;
 import net.zzh.sec.security.SecurityLoginFailureHandler;
@@ -55,6 +58,10 @@ import org.springframework.security.web.authentication.AnonymousAuthenticationFi
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.authentication.www.DigestAuthenticationEntryPoint;
+import org.springframework.security.web.authentication.www.DigestAuthenticationFilter;
 import org.springframework.security.web.savedrequest.NullRequestCache;
 import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter;
 import org.springframework.security.web.util.AntPathRequestMatcher;
@@ -120,9 +127,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 				//The rest of the our application is protected.
 				//.antMatchers("/admin/**").hasRole("ADMIN")
 				.anyRequest().authenticated() // 所有其他的URL都需要用户进行验证
-				//.anyRequest().permitAll()
-				//.accessDecisionManager(ACCESS_DECISION_MGR)
 				.and()
+			
+			.exceptionHandling()
+				.accessDeniedPage(WebConstants.PATH_DENIED)
+				// this entry point handles when you request a protected page
+				// and
+				// you are not yet authenticated
+				.authenticationEntryPoint(digestEntryPoint())
+				.and()
+			
 			//Configures the logout function
 			.logout()
 				.deleteCookies("JSESSIONID")
@@ -142,23 +156,44 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 				.permitAll()
 				.and()
 				*/
-				
-			.httpBasic()
-				.authenticationEntryPoint(loginAuthEntryPoint())
+			/*
+			.formLogin()
+				// login-processing-url仅仅处理HTTP POST
+				// login-page仅仅通过HTTP GET进入
+				.loginPage(WebConstants.PATH_SIGNIN)
+				.failureUrl(WebConstants.PATH_SIGNIN + "?param.error=bad_credentials")
+				.defaultSuccessUrl(WebConstants.PATH_HOME)
+				.usernameParameter("u")
+				.passwordParameter("p")
+				.permitAll()
 				.and()
-			.addFilter(getFilterChainProxy())
-			//.userDetailsService(new MyUserDetailsService())
-			//Adds the SocialAuthenticationFilter to Spring Security's filter chain.
-			//	.apply(new SpringSocialConfigurer())
-			//	.and()
+				*/
+			/*.httpBasic()
+				.authenticationEntryPoint(loginAuthEntryPoint())
+				.and()*/
+			
+			.addFilterAfter(digestAuthenticationFilter(digestEntryPoint()), BasicAuthenticationFilter.class)
+			//.addFilter(getFilterChainProxy())
+			//.addFilter(getUserNamePasswordAuthenticationFilter())
+			
 			.setSharedObject(ApplicationContext.class, context);
 	}
 	
-	@Override
+	/*@Override
 	protected void registerAuthentication(AuthenticationManagerBuilder auth) throws Exception {
 		auth
-			.userDetailsService(userDetailsServiceBean())
+			.userDetailsService(getMyUserDetailsService())
 			.passwordEncoder(passwordEncoder());
+	}*/
+	
+	@Bean
+	public DigestAuthenticationEntryPoint digestEntryPoint() {
+		
+		DigestAuthenticationEntryPoint digestEntryPoint = new DigestAuthenticationEntryPoint();
+		digestEntryPoint.setKey("acegi");
+		digestEntryPoint.setRealmName("Contacts Realm via Digest Authentication");
+		
+		return digestEntryPoint;
 	}
 	
 	@Bean
@@ -168,6 +203,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		return loginAuthEntryPoint;
 	}
 
+	/**
+	 * Responsible for extracting User/Group information
+	 * 
+	 * @return MyUserDetailsService
+	 */
+	@Bean
+	public MyUserDetailsService getMyUserDetailsService() {
+		return new MyUserDetailsService();
+	}
 	/**
 	 * @return Cookie Service for management of Cookies
 	 */
@@ -184,7 +228,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		List<AuthenticationProvider> authManagers = new ArrayList<AuthenticationProvider>();
 		DaoAuthenticationProvider daoProvider = new DaoAuthenticationProvider();
 
-		daoProvider.setUserDetailsService(userDetailsServiceBean());
+		daoProvider.setUserDetailsService(getMyUserDetailsService());
 
 		authManagers.add(daoProvider);
 
@@ -194,7 +238,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 		return providerManager;
 	}
-
+/*
 	@Bean(name = "springSecurityFilterChain")
 	public FilterChainProxy getFilterChainProxy() {
 		SecurityFilterChain chain = new SecurityFilterChain() {
@@ -210,13 +254,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 				List<Filter> filters = new ArrayList<Filter>();
 
 				try {
-					//filters.add(getCookieAuthenticationFilter());
-					//filters.add(getLogoutFilter());
+					filters.add(getCookieAuthenticationFilter());
+					filters.add(getLogoutFilter());
 					filters.add(getUserNamePasswordAuthenticationFilter());
-					//filters.add(getSecurityContextHolderAwareRequestFilter());
-					//filters.add(getAnonymousAuthenticationFilter());
-					//filters.add(getExceptionTranslationFilter());
-					//filters.add(getFilterSecurityInterceptor());
+					filters.add(getSecurityContextHolderAwareRequestFilter());
+					filters.add(getAnonymousAuthenticationFilter());
+					filters.add(getExceptionTranslationFilter());
+					filters.add(getFilterSecurityInterceptor());
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -228,23 +272,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 		return new FilterChainProxy(chain);
 	}
-
+*/
 	// Filters
 	
+	public DigestAuthenticationFilter digestAuthenticationFilter(DigestAuthenticationEntryPoint digestAuthenticationEntryPoint) {
+		DigestAuthenticationFilter digestAuthenticationFilter = new DigestAuthenticationFilter();
+		digestAuthenticationFilter.setAuthenticationEntryPoint(digestEntryPoint());
+		digestAuthenticationFilter.setUserDetailsService(getMyUserDetailsService());
+		return digestAuthenticationFilter;
+	}
+
 	/**
 	 * @return Filter that checks if a cookie exists for the user, if so loads
 	 *         the user details and sets the authentication context
 	 */
-	/*private CookieAuthenticationFilter getCookieAuthenticationFilter() {
-		return new CookieAuthenticationFilter(getLdapUserDetailService(), getCookieService());
-	}*/
+	private CookieAuthenticationFilter getCookieAuthenticationFilter() {
+		return new CookieAuthenticationFilter(getMyUserDetailsService(), getCookieService());
+	}
 
 	/**
 	 * @return Filter for handling logout
 	 */
-	/*private LogoutFilter getLogoutFilter() {
-		return new LogoutFilter("/logoutSuccess.html", new CookieLogoutHandler(getCookieService()));
-	}*/
+	private LogoutFilter getLogoutFilter() {
+		return new LogoutFilter(WebConstants.PATH_SEP, new CookieLogoutHandler(getCookieService()));
+	}
 
 	/**
 	 * @return Filter for authentication the user.
@@ -255,9 +306,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 		filter.setAllowSessionCreation(false);
 		filter.setAuthenticationManager(getAuthenticationManager());
-		filter.setAuthenticationSuccessHandler(new AuthSuccessHandler(getCookieService()));
-		filter.setAuthenticationFailureHandler(new SimpleUrlAuthenticationFailureHandler(WebConstants.PATH_SIGNIN+"?login_error=1"));
-
+		//filter.setAuthenticationSuccessHandler(new AuthSuccessHandler(getCookieService()));
+		//filter.setAuthenticationFailureHandler(new SimpleUrlAuthenticationFailureHandler(WebConstants.PATH_SIGNIN + "?param.error=bad_credentials"));
+		filter.setAuthenticationSuccessHandler(new SecurityLoginSuccessHandler());
+		filter.setAuthenticationFailureHandler(new SecurityLoginFailureHandler());
+		
 		filter.setFilterProcessesUrl("/j_spring_security_check");
 
 		return filter;
@@ -265,9 +318,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 	/**
 	 * @return Filter that manages the ROLE prefix
+	 * @throws ServletException 
 	 */
-	private SecurityContextHolderAwareRequestFilter getSecurityContextHolderAwareRequestFilter() {
+	private SecurityContextHolderAwareRequestFilter getSecurityContextHolderAwareRequestFilter() throws ServletException {
 		SecurityContextHolderAwareRequestFilter filter = new SecurityContextHolderAwareRequestFilter();
+		filter.afterPropertiesSet();
 		filter.setRolePrefix("ROLE_");
 		return filter;
 	}
@@ -285,7 +340,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	private ExceptionTranslationFilter getExceptionTranslationFilter() {
 		LoginUrlAuthenticationEntryPoint entryPoint = new LoginUrlAuthenticationEntryPoint(WebConstants.PATH_SIGNIN);
 		AccessDeniedHandlerImpl errorHandler = new AccessDeniedHandlerImpl();
-		errorHandler.setErrorPage("/login.html?login_error=1");
+		errorHandler.setErrorPage(WebConstants.PATH_SIGNIN + "?param.error=bad_credentials");
 
 		ExceptionTranslationFilter filter = new ExceptionTranslationFilter(entryPoint, new NullRequestCache());
 
@@ -367,7 +422,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		
 		return filter;
 	}*/
-
+/*
 	@Bean
 	@Override
 	public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -379,7 +434,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	public UserDetailsService userDetailsServiceBean() throws Exception {
 		return new MyUserDetailsService();
 	}
-	
+	*/
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder(10);
