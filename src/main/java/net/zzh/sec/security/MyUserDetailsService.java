@@ -6,11 +6,14 @@ import java.util.List;
 import java.util.Set;
 
 import net.zzh.common.persistence.service.IPersistenceService;
+import net.zzh.common.search.ClientOperation;
+import net.zzh.common.util.SearchField;
 import net.zzh.sec.model.Principal;
 import net.zzh.sec.model.Privilege;
 import net.zzh.sec.model.Role;
 import net.zzh.sec.persistence.service.IPrincipalService;
 
+import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -54,13 +57,13 @@ public final class MyUserDetailsService implements UserDetailsService {
 		System.out.println("loadUserByUsername - check");
 
 		Preconditions.checkNotNull(username);
-
-		List list = principalService.searchOne(constraints);
 		
-		if (list.isEmpty()) {
+		ImmutableTriple<String, ClientOperation, String> nameConstraint = new ImmutableTriple<String, ClientOperation, String>(SearchField.name.name(), ClientOperation.EQ, username);
+		Principal principal = principalService.searchOne(nameConstraint);
+		
+		if (principal == null) {
 			throw new UsernameNotFoundException("Username was not found: " + username);
 		}
-		final Principal principal = (Principal) list.get(0);
 		final Set<Role> rolesOfUser = principal.getRoles();
 		final Set<Privilege> privileges = Sets.newHashSet();
 		for (final Role roleOfUser : rolesOfUser) {
@@ -71,10 +74,10 @@ public final class MyUserDetailsService implements UserDetailsService {
 		final String[] roleStringsAsArray = rolesToString.toArray(new String[rolesToString.size()]);
 		final List<GrantedAuthority> auths = AuthorityUtils.createAuthorityList(roleStringsAsArray);
 
-		return new User(principal.getName(), principal.getPassword(), auths);
-		
-/*
 		System.out.println("loadUserByUsername - success");
+		return new User(principal.getName(), principal.getPassword(), auths);
+
+/*
         //return new User(username, "123145", auths);
         
         boolean enabled = true;
