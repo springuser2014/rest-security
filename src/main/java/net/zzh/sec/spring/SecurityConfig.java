@@ -5,19 +5,16 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import javax.servlet.Filter;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
 
 import net.zzh.common.web.WebConstants;
-import net.zzh.sec.security.AuthSuccessHandler;
 import net.zzh.sec.security.CookieAuthenticationFilter;
 import net.zzh.sec.security.CookieLogoutHandler;
 import net.zzh.sec.security.CookieService;
+import net.zzh.sec.security.MyThemeResolver;
 import net.zzh.sec.security.MyUserDetailsService;
 import net.zzh.sec.security.SecurityLoginFailureHandler;
 import net.zzh.sec.security.SecurityLoginSuccessHandler;
-import net.zzh.sec.web.servlet.MyThemeResolver;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -25,7 +22,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDecisionVoter;
@@ -34,21 +30,15 @@ import org.springframework.security.access.vote.AffirmativeBased;
 import org.springframework.security.access.vote.AuthenticatedVoter;
 import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.authentication.AnonymousAuthenticationProvider;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.FilterChainProxy;
-import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.access.intercept.DefaultFilterInvocationSecurityMetadataSource;
@@ -56,7 +46,6 @@ import org.springframework.security.web.access.intercept.FilterInvocationSecurit
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
@@ -73,10 +62,10 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ThemeResolver;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 
-@Configuration
-@ComponentScan("net.zzh.sec.security, net.zzh.sec.web.servlet")
+//@Configuration
+//@ComponentScan("net.zzh.sec.security, net.zzh.sec.web.servlet")
 //@ImportResource({ "classpath*:*secSecurityConfig.xml" })
-@EnableWebSecurity
+//@EnableWebSecurity
 //@EnableGlobalMethodSecurity(prePostEnabled=true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
@@ -172,7 +161,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 				.authenticationEntryPoint(loginAuthEntryPoint())
 				.and()*/
 			
-			.addFilterAfter(digestAuthenticationFilter(digestEntryPoint()), BasicAuthenticationFilter.class)
+			.addFilterAfter(digestAuthenticationFilter(), BasicAuthenticationFilter.class)
 			//.addFilter(getFilterChainProxy())
 			//.addFilter(getUserNamePasswordAuthenticationFilter())
 			
@@ -275,7 +264,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 */
 	// Filters
 	
-	public DigestAuthenticationFilter digestAuthenticationFilter(DigestAuthenticationEntryPoint digestAuthenticationEntryPoint) {
+	public DigestAuthenticationFilter digestAuthenticationFilter() {
 		DigestAuthenticationFilter digestAuthenticationFilter = new DigestAuthenticationFilter();
 		digestAuthenticationFilter.setAuthenticationEntryPoint(digestEntryPoint());
 		digestAuthenticationFilter.setUserDetailsService(getMyUserDetailsService());

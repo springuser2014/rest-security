@@ -1,7 +1,7 @@
 /**
  * 
  */
-package net.zzh.sec.web.servlet;
+package net.zzh.sec.security;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
