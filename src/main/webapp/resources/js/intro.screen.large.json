@@ -1,0 +1,27 @@
+[
+	{
+		"element": ".navbar-nav",
+		"intro": "工具栏",
+		"position": "bottom"
+	},
+	{
+		"element": "#menu",
+		"intro": "菜单栏",
+		"position": "right"
+	},
+	{
+		"element": "#sidebar-collapse",
+		"intro": "单击可以收起菜单",
+		"position": "right"
+	},
+	{
+		"element": "#nav-tabs",
+		"intro": "页面标签页",
+		"position": "bottom"
+	},
+	{
+		"element": "#tab-content",
+		"intro": "页面内容",
+		"position": "left"
+	}
+]

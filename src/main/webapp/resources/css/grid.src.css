@@ -6,9 +6,52 @@ body {
 	border: 0 none;
 	margin-bottom: 0;
 }
+
 .nav-header {
 	background-color: #F1F1F1;
 	border-bottom: 1px solid #E5E5E5;
+}
+
+.navbar .navbar-brand {
+	padding-left: 5px;
+}
+
+.navbar .navbar-toggle-plus {
+	border: 0 none;
+    margin: 5px 8px;
+	padding-left: 18px;
+	padding-right: 18px;
+}
+
+.navbar .navbar-toggle:hover,
+.navbar .navbar-toggle:focus {
+  background-color: transparent;
+}
+
+.navbar .navbar-toggle-plus .icon-bar {
+  	background-color: transparent;
+	border: 1px solid #4D90FE;
+	height: 7px;
+	margin-top: 2px;
+	width: 7px;
+}
+
+.navbar .navbar-toggle-plus .icon-bar.block-solid {
+	background-color: #4D90FE;
+}
+
+.navbar .navbar-toggle-plus .icon-bar + .icon-bar {
+	margin-left: 2px;
+}
+
+.navbar .navbar-toggle-menu {
+	border: 0 none;
+	padding: 9px 10px;
+}
+
+.navbar .navbar-toggle-menu .icon-bar {
+	background-color: #4D90FE;
+	/* width: 12px; */
 }
 
 .navbar-static-top {
@@ -21,21 +64,28 @@ body {
 	width: 180px;
 }
 
+.navbar-static-top {
+	background-color: #FFF;
+	left: -99px;
+	top: 39px;
+	width: 180px;
+}
+
 #apps-popover .arrow {
 	margin-left: 20px;
 }
 
 #profile-popover {
-	left: -105px;
+	left: -117px;
 	top: 39px;
-	width: 150px;
+	width: 170px;
 }
 
 #profile-popover .arrow {
 	margin-left: 41px;
 }
 
-.navbar-default .navbar-nav > li > a:hover {
+.navbar-default .navbar-plus > li > a:hover {
 	color: #4D90FE;
 }
 
@@ -247,7 +297,7 @@ body {
 
 .nav-fixedbar-plus-item {
 	position: relative;
-}
+}  
 
 /* content */
 .row {
@@ -316,7 +366,7 @@ body {
 	}
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 767px) {
 	.row-offcanvas {
 		position: relative;
 		-webkit-transition: all 0.25s ease-out;
@@ -326,7 +376,6 @@ body {
 
 	.row-offcanvas
 	.sidebar-offcanvas {
-		/* left: -50%; */ /* 6 columns */
 		display: none;
 	}
 
@@ -337,10 +386,18 @@ body {
 		box-shadow: 6px 3px 12px rgba(0, 0, 0, 0.15);
 		border-radius: 4px 4px 4px 4px;
 		border: 0 none;
-		/* left: 50%; */ /* 6 columns */
 		display: block;
 		position: fixed;
 		z-index: 998;
 	}
 
+	.navgoco li > a {
+		font-size: 18px;
+		line-height: 30px;
+		padding-top: 8px;
+		padding-bottom: 8px;
+	}
+	.navgoco a .caret {
+		margin-top: 14px;
+	}
 }

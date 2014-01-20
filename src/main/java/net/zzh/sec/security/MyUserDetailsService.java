@@ -24,6 +24,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.base.Function;
 import com.google.common.base.Functions;
@@ -36,24 +37,26 @@ import com.google.common.collect.Sets;
  */
 @Service
 @Component
-public final class MyUserDetailsService implements UserDetailsService {
+@Transactional
+public class MyUserDetailsService implements UserDetailsService {
 
     @Autowired
     private IPrincipalService principalService;
 
 	@Autowired
 	private IPersistenceService persistenceService;
-
+/*
     public MyUserDetailsService() {
         super();
     }
-
+*/
     // API - public
 
     /**
      * Loads the user from the datastore, by it's user name <br>
      */
-    public final UserDetails loadUserByUsername(final String username) {
+	@Override
+    public UserDetails loadUserByUsername(final String username) {
 		System.out.println("loadUserByUsername - check");
 
 		Preconditions.checkNotNull(username);
@@ -75,8 +78,27 @@ public final class MyUserDetailsService implements UserDetailsService {
 		final List<GrantedAuthority> auths = AuthorityUtils.createAuthorityList(roleStringsAsArray);
 
 		System.out.println("loadUserByUsername - success");
-		return new User(principal.getName(), principal.getPassword(), auths);
+		//return new User(principal.getName(), principal.getPassword(), auths);
+		boolean accountNonExpired = true;
+	    boolean credentialsNonExpired = true;
+	    boolean accountIsEnabled = true;
 
+	    System.out.println(principal.getName() + ", " +
+	    		principal.getPassword().toLowerCase() + ", " +
+	    		accountIsEnabled + ", " +
+	            accountNonExpired + ", " +
+	            credentialsNonExpired + ", " +
+	            (principal.getLocked() == true ? false : true) + ", " +
+	            auths);
+	    
+	    return new User(
+	    		principal.getName(),
+	    		principal.getPassword().toLowerCase(),
+	    		accountIsEnabled,
+	            accountNonExpired,
+	            credentialsNonExpired,
+	            principal.getLocked(),
+	            auths);
 /*
         //return new User(username, "123145", auths);
         
@@ -88,7 +110,7 @@ public final class MyUserDetailsService implements UserDetailsService {
 		User signedUser = new User(username, "123145"
 				.toLowerCase(), enabled, accountNonExpired,
 				credentialsNonExpired, accountNonLocked,
-				getAuthorities(1));
+				getAuthorities(rolesOfUser));
 
 		return signedUser;*/
     }
@@ -142,5 +164,18 @@ public final class MyUserDetailsService implements UserDetailsService {
 			authorities.add(new SimpleGrantedAuthority(role));
 		}
 		return authorities;
+	}
+	
+	public Collection<? extends GrantedAuthority> getAuthorities(Set<Role> roles) {
+		List<GrantedAuthority> authList = getGrantedAuthorities(getRolesAsList(roles));
+		return authList;
+	}
+	
+	public List<String> getRolesAsList(Set<Role> roles) {
+		List<String> rolesAsList = new ArrayList<String>();
+		for (Role role : roles) {
+			rolesAsList.add(role.getName());
+		}
+		return rolesAsList;
 	}
 }

@@ -21,10 +21,10 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ThemeResolver;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 
-@Configuration
-@ComponentScan("net.zzh.sec.security")
-@ImportResource({ "classpath*:*secSecurityConfig.xml" })
-@EnableWebSecurity
+//@Configuration
+//@ComponentScan("net.zzh.sec.security")
+//@ImportResource({ "classpath*:*secSecurityConfig.xml" })
+//@EnableWebSecurity
 //@EnableGlobalMethodSecurity(prePostEnabled=true)
 public class CopyOfSecurityConfig extends WebSecurityConfigurerAdapter{
 	

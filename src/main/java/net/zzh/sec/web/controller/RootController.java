@@ -63,7 +63,7 @@ public class RootController {
 
 	@RequestMapping(value = "/hello", method = RequestMethod.GET)  
 	public String login(ModelMap model) {
-		System.out.println("/signin");
+		System.out.println("/hello");
 		String message = "Welcome to Spring 4.0 !";
 		model.addAttribute("title", message); 
 		model.addAttribute("msg", message); 

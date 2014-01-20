@@ -1,0 +1,14 @@
+{
+	steps: [
+		{
+			"element": ".navbar-toggle-menu",
+			"intro": "菜单栏",
+			"position": "right"
+		},
+		{
+			"element": ".navbar-toggle-plus",
+			"intro": "工具栏",
+			"position": "left"
+		}
+	]
+}

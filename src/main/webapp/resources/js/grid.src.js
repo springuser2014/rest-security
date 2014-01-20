@@ -1,4 +1,6 @@
 $(function() {
+	var intro = introJs();
+
 	$(window).scroll(function(event) {
 		var top = $(document).scrollTop();
 		if(top <= 50)
@@ -7,7 +9,7 @@ $(function() {
 			.removeClass('navbar-fixed-top nav-fixedbar-shadow');
 
 			$('.nav-fixedbar .nav-plus')
-			.addClass('invisible');
+			.addClass('hidden');
 
 			$('.nav-fixedbar .navbar-tabs')
 			.addClass('nav-plus-invisible');
@@ -21,7 +23,7 @@ $(function() {
 			.addClass('navbar-fixed-top nav-fixedbar-shadow');
 
 			$('.nav-fixedbar .nav-plus')
-			.removeClass('invisible');
+			.removeClass('hidden');
 
 			$('.nav-fixedbar .navbar-tabs')
 			.removeClass('nav-plus-invisible');
@@ -43,15 +45,23 @@ $(function() {
 		return false;
 	});
 
-// popover
+	/**
+	 * plus li collapse
+	 */
+	$('.navbar-collapse-plus li').click(function(event) {
+		collapse($('.navbar-collapse-plus'));
+	});
+
+	// popover show and hidden
 	$('[rel=custom-popover]').click(function(event) {
 		var modal = $(this).attr('data-target');
-		$('.popover:not(#'+modal+'-popover)').hide();
+		$('.popover:not(#'+modal+'-popover)').hide().addClass('hidden');
 		$('#'+modal+'-popover').fadeIn(300, function(){
-			$('body').one('click', function(event) {
-				$('#'+modal+'-popover').fadeOut(300);
+			$('body, #'+modal+'-popover button, #'+modal+'-popover a').one('click', function(event) {
+				$('#'+modal+'-popover').fadeOut(300).addClass('hidden');
 			});
 		})
+		.removeClass('hidden')
 		.click(function(event) {
 			return false;
 		});
@@ -63,6 +73,16 @@ $(function() {
 	$('#add').click(function(event) {
 		var tab = + new Date();
 		addTab(tab, tab, false, tab);
+	});
+
+	//修改密码
+	$('#changepwd').click(function(){
+		loadContent('changepwd.jsp');
+	});
+
+	//登出
+	$('#signout').click(function(){
+		location.href="signoutdo";
 	});
 
 	// Initialize navgoco
@@ -84,18 +104,29 @@ $(function() {
 			e.preventDefault();
 			if($(this).attr('data-link')) {
 				var link = $(this).attr('data-link')
+				inlink = $(this).attr('data-inlink') == undefined ? true : $(this).attr('data-inlink'),
 				outlink = $(this).attr('data-outlink') == undefined ? false : $(this).attr('data-outlink'),
 				id = $(this).attr('data-index'),
 				title = $(this).text();
-				if (mobile) {
-					loadContent(outlink, link);
+
+	 			//@param outlink  Is other website link, value: true or false
+				if(outlink) {
+					window.open(link);
 				} else {
-					addTab(id, title, true, link);
+					if (mobile) {
+						loadContent(link);
+					} else {
+						addTab(id, title, inlink, link);
+					}
 				}
+
 				if(mobile) {
 					$('.row-offcanvas').toggleClass('active');
-
 				} else {
+					if($('.row-offcanvas').hasClass('active')) {
+						$('.row-offcanvas').toggleClass('active');
+					}
+
 					if($('.nav-fixedbar').position().top == 0) {
 						scrollToElement('#tab-content');
 					}
@@ -108,7 +139,8 @@ $(function() {
 	 * toggle menu display
 	 */
 	 $('[data-toggle=offcanvas]').click(function() {
-	 	$('.row-offcanvas').toggleClass('active');
+		collapse($('.navbar-collapse-plus'));
+	 	$($(this).attr('data-target')).toggleClass('active');
 	 	return false;
 	 });
 
@@ -144,14 +176,32 @@ $(function() {
 	 * Double click remove a Tab
 	 */
 	 $('.nav-fixedbar .nav-tabs > li > a').dblclick(function(event) {
-	 	var tabId = $(this).attr('href');
+	 	closeTab($(this));
+	});
 
-	 	$(this).parents('li').remove();
+	/**
+	 * step-by-step guide
+	 */
+	var introJSON = "js/intro.screen.large.json";
+	if(mobile) {
+		introJSON = "js/intro.screen.small.json";
+	}
+	$.getJSON(introJSON, function(json){
+		intro.setOptions({
+			nextLabel: '下一步 &rarr;',
+			prevLabel: '&larr; 上一步',
+			skipLabel: '跳过',
+			doneLabel: '完成',
+			steps: json
+		});
+		if(!guided) {
+			intro.start();
+		}
+	});
 
-	 	$(tabId).remove();
-	 	$('#nav-tabs a:last').tab('show');
-		// scroll tab
-		tabScroll();
+	// Begin guide
+	$('#nav-plus-guide').click(function(event) {
+		intro.start();
 	});
 
 	 onwindowresize();
@@ -174,33 +224,59 @@ $(function() {
 	 });
 
 	 /**
-	 * load content for mobile device
-	 */
-	function loadContent(outlink, url) {
-		if(outlink) {
-			window.open(url);
-		} else {
-			$.ajax({
-				dataType: "html",
-				type: "Get",
-				url: url,
-				data: {timestamp: +new Date()},
-				success: function (html, textStatus) {
-					// replace the `HTML` tags with `NOTHTML` tags
-					// and the `BODY` tags with `NOTBODY` tags
-					html = html.replace(/(<\/?)html( .+?)?>/gi,'$1NOTHTML$2>', html)
-					html = html.replace(/(<\/?)body( .+?)?>/gi,'$1NOTBODY$2>', html)
-					// select the `notbody` tag and log for testing
-					//console.log($(html).find('notbody').html());
+	  * collapse
+	  */
+	 function collapse(target) {
+	 	target
+	 	.removeClass('in')
+	 	.addClass('collapse');
+	 }
 
-					var content_wrap = $('<div>').append($(html).find('notbody').html());
-					$('#tab-content').empty().append(content_wrap);
-				},
-				error: function (XMLHttpRequest, textStatus, errorThrown) {
-					$('#tab-content').append(textStatus);
-				}
-			});
-		}
+	/**
+	 * load content for mobile device
+	 * @param link  Website url
+	 */
+	function loadContent(url) {
+		var frame = $('<iframe>')
+		.attr({
+			src: url,
+			frameborder: 0
+		})
+		.css({
+			width: '100%',
+			height: '2000px'
+		})
+		.load(function() {
+			//console.log(this.contentWindow.document.body.offsetHeight);
+			//this.style.height =
+			//this.contentWindow.document.body.offsetHeight * 1.5 + 'px';
+			//'2000px';
+		});
+		var content_wrap = $('<div>').append(frame);
+		$('#tab-content').empty().append(content_wrap);
+		/*
+		$.ajax({
+			dataType: "html",
+			type: "Get",
+			url: url,
+			data: {timestamp: +new Date()},
+			success: function (html, textStatus) {
+				// replace the `HTML` tags with `NOTHTML` tags
+				// and the `BODY` tags with `NOTBODY` tags
+				//html = html.replace(/(<\/?)html( .+?)?>/gi,'$1NOTHTML$2>', html)
+				//html = html.replace(/(<\/?)body( .+?)?>/gi,'$1NOTBODY$2>', html)
+				// select the `notbody` tag and log for testing
+				//console.log($(html).find('notbody').html());
+				//var content_wrap = $('<div>').append($(html).find('notbody').html());
+				console.log($(html).find('html').html());
+				var content_wrap = $('<div>').append($(html).find('html').html());
+				$('#tab-content').empty().append(content_wrap);
+			},
+			error: function (XMLHttpRequest, textStatus, errorThrown) {
+				$('#tab-content').append(textStatus);
+			}
+		});
+		*/
 	}
 
 	/**
@@ -241,15 +317,7 @@ $(function() {
 		})
 		.prepend(closeBtn)
 		.dblclick(function(event) {
-			var tabId = $(this).attr('href');
-
-			$(this).parents('li').remove();
-
-			$(tabId).remove();
-			// make the last tab active
-			$('#nav-tabs a:last').tab('show');
-			// scroll tab
-			tabScroll();
+			closeTab($(this));
 		});
 
 		$('<li>')
@@ -270,7 +338,8 @@ $(function() {
 			.load(function() {
 				//console.log(this.contentWindow.document.body.offsetHeight);
 				this.style.height =
-				this.contentWindow.document.body.offsetHeight + 'px';
+				//this.contentWindow.document.body.offsetHeight * 1.5 + 'px';
+				'2000px';
 			});
 		} else {
 			elm = urlOrContent;
@@ -289,6 +358,21 @@ $(function() {
 		// scroll tab
 		tabScroll();
 	};
+
+	/**
+	 * close tab
+	 */
+	function closeTab(link) {
+	 	var tabId = link.attr('href');
+
+	 	link.parents('li').remove();
+	 	$(tabId).remove();
+
+		// make the last tab active
+	 	$('#nav-tabs a:last').tab('show');
+		// scroll tab
+		tabScroll();
+	}
 
 	/**
 	 * scroll tab
@@ -322,10 +406,10 @@ $(function() {
 
 				$('.navbar-tabs .tabs-prev')
 				.addClass('active')
-				.removeClass('invisible');
+				.removeClass('hidden');
 
 				$('.navbar-tabs .tabs-next')
-				.removeClass('invisible');
+				.removeClass('hidden');
 
 			} else { // click scrollbar
 				// width difference between navTabsWidth and navTabsWrapWidth
@@ -370,7 +454,7 @@ $(function() {
 			.removeAttr('margin-left');
 
 			$('.navbar-tabs .tabs-prev, .navbar-tabs .tabs-next')
-			.addClass('invisible')
+			.addClass('hidden')
 			.removeClass('active');
 		}
 	};

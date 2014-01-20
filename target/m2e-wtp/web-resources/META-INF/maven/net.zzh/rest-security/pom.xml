@@ -4,7 +4,7 @@
 	<groupId>net.zzh</groupId>
 	<artifactId>rest-security</artifactId>
 	<packaging>war</packaging>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>rest-security Maven Webapp</name>
 	<url>http://maven.apache.org</url>
 	<dependencies>
@@ -47,57 +47,57 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aspects</artifactId>
-			<version>4.0.0.M2</version>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>
-			<version>4.0.0.M2</version>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>4.0.0.M2</version>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
-			<version>4.0.0.M2</version>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-expression</artifactId>
-			<version>4.0.0.M2</version>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
-			<version>4.0.0.M2</version>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jms</artifactId>
-			<version>4.0.0.M2</version>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-orm</artifactId>
-			<version>4.0.0.M2</version>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-oxm</artifactId>
-			<version>4.0.0.M2</version>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-tx</artifactId>
-			<version>4.0.0.M2</version>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
-			<version>4.0.0.M2</version>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.data</groupId>
@@ -106,13 +106,13 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-config</artifactId>
-			<version>3.2.0.M2</version>
+			<artifactId>spring-security-web</artifactId>
+			<version>${spring.security.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-web</artifactId>
-			<version>3.2.0.M2</version>
+			<artifactId>spring-security-config</artifactId>
+			<version>${spring.security.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven.plugins</groupId>
@@ -138,7 +138,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
-			<version>4.0.0.M2</version>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -185,11 +185,30 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
-		<repository>
+		
+		<!-- SpringSource Repository -->
+		<!-- <repository>
 			<id>repository.springsource.milestone</id>
 			<name>SpringSource Milestone Repository</name>
 			<url>http://repo.springsource.org/milestone</url>
+		</repository> -->
+		
+		<!-- <repository>
+			<id>repository.springsource.release</id>
+			<name>SpringSource GA Repository</name>
+			<url>http://repo.springsource.org/release</url>
+		</repository> -->
+
+		<repository>
+			<id>spring-snapshots</id>
+			<name>Spring Snapshots</name>
+			<url>http://repo.spring.io/snapshot</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
 		</repository>
+		
+		<!-- Google API -->
 		<repository>
 			<id>guava</id>
 			<name>Google guava</name>
@@ -225,5 +244,20 @@
 	</pluginRepositories>
 	<build>
 		<finalName>rest-security</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${jdk.version}</source>
+					<target>${jdk.version}</target>
+				</configuration>
+			</plugin>
+		</plugins>
 	</build>
+	<properties>
+		<jdk.version>1.7</jdk.version>
+		<spring.version>4.0.0.M2</spring.version>
+		<spring.security.version>3.2.1.CI-SNAPSHOT</spring.security.version>
+	</properties>
 </project>
