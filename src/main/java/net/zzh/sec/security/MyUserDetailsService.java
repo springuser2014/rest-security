@@ -33,30 +33,30 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Sets;
 
 /**
- * Database user authentication service.
+ * @author zhenhuazhao
+ *
  */
 @Service
 @Component
 @Transactional
 public class MyUserDetailsService implements UserDetailsService {
 
-    @Autowired
-    private IPrincipalService principalService;
+	@Autowired
+	private IPrincipalService principalService;
 
 	@Autowired
 	private IPersistenceService persistenceService;
-/*
-    public MyUserDetailsService() {
-        super();
-    }
-*/
-    // API - public
+	/**
+	 * 
+	 */
+	public MyUserDetailsService() {
+	}
 
-    /**
-     * Loads the user from the datastore, by it's user name <br>
-     */
+	/* (non-Javadoc)
+	 * @see org.springframework.security.core.userdetails.UserDetailsService#loadUserByUsername(java.lang.String)
+	 */
 	@Override
-    public UserDetails loadUserByUsername(final String username) {
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		System.out.println("loadUserByUsername - check");
 
 		Preconditions.checkNotNull(username);
@@ -80,102 +80,24 @@ public class MyUserDetailsService implements UserDetailsService {
 		System.out.println("loadUserByUsername - success");
 		//return new User(principal.getName(), principal.getPassword(), auths);
 		boolean accountNonExpired = true;
-	    boolean credentialsNonExpired = true;
-	    boolean accountIsEnabled = true;
-
-	    System.out.println(principal.getName() + ", " +
-	    		principal.getPassword().toLowerCase() + ", " +
-	    		accountIsEnabled + ", " +
-	            accountNonExpired + ", " +
-	            credentialsNonExpired + ", " +
-	            (principal.getLocked() == true ? false : true) + ", " +
-	            auths);
-	    
-	    return new User(
-	    		principal.getName(),
-	    		principal.getPassword().toLowerCase(),
-	    		accountIsEnabled,
-	            accountNonExpired,
-	            credentialsNonExpired,
-	            principal.getLocked(),
-	            auths);
-/*
-        //return new User(username, "123145", auths);
-        
-        boolean enabled = true;
-		boolean accountNonExpired = true;
 		boolean credentialsNonExpired = true;
-		boolean accountNonLocked = true;
+		boolean accountIsEnabled = true;
+
+		System.out.println(principal.getName() + ", " +
+				principal.getPassword().toLowerCase() + ", " +
+				accountIsEnabled + ", " +
+				accountNonExpired + ", " +
+				credentialsNonExpired + ", " +
+				(principal.getLocked() == true ? false : true) + ", " +
+				auths);
 		
-		User signedUser = new User(username, "123145"
-				.toLowerCase(), enabled, accountNonExpired,
-				credentialsNonExpired, accountNonLocked,
-				getAuthorities(rolesOfUser));
-
-		return signedUser;*/
-    }
-
-	/**
-	 * Retrieves a collection of {@link GrantedAuthority} based on a numerical
-	 * role
-	 * 
-	 * @param role
-	 *            the numerical role
-	 * @return a collection of {@link GrantedAuthority
-
-	 */
-	public Collection<? extends GrantedAuthority> getAuthorities(Integer role) {
-		List<GrantedAuthority> authList = getGrantedAuthorities(getRoles(role));
-		return authList;
-	}
-
-	/**
-	 * Converts a numerical role to an equivalent list of roles
-	 * 
-	 * @param role
-	 *            the numerical role
-	 * @return list of roles as as a list of {@link String}
-	 */
-	public List<String> getRoles(Integer role) {
-		List<String> roles = new ArrayList<String>();
-
-		if (role.intValue() == 1) {
-			roles.add("ROLE_USER");
-			roles.add("ROLE_ADMIN");
-
-		} else if (role.intValue() == 2) {
-			roles.add("ROLE_USER");
-		}
-
-		return roles;
-	}
-
-	/**
-	 * Wraps {@link String} roles to {@link SimpleGrantedAuthority} objects
-	 * 
-	 * @param roles
-	 *            {@link String} of roles
-	 * @return list of granted authorities
-	 */
-	public static List<GrantedAuthority> getGrantedAuthorities(
-			List<String> roles) {
-		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-		for (String role : roles) {
-			authorities.add(new SimpleGrantedAuthority(role));
-		}
-		return authorities;
-	}
-	
-	public Collection<? extends GrantedAuthority> getAuthorities(Set<Role> roles) {
-		List<GrantedAuthority> authList = getGrantedAuthorities(getRolesAsList(roles));
-		return authList;
-	}
-	
-	public List<String> getRolesAsList(Set<Role> roles) {
-		List<String> rolesAsList = new ArrayList<String>();
-		for (Role role : roles) {
-			rolesAsList.add(role.getName());
-		}
-		return rolesAsList;
+		return new User(
+				principal.getName(),
+				principal.getPassword().toLowerCase(),
+				accountIsEnabled,
+				accountNonExpired,
+				credentialsNonExpired,
+				(principal.getLocked() == true ? false : true),
+				auths);
 	}
 }

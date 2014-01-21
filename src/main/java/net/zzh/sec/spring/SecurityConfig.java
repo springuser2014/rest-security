@@ -1,8 +1,6 @@
 package net.zzh.sec.spring;
 
-import net.zzh.common.persistence.service.IPersistenceService;
 import net.zzh.common.web.WebConstants;
-import net.zzh.sec.security.CustomUserDetailsService;
 import net.zzh.sec.security.MyThemeResolver;
 import net.zzh.sec.security.MyUserDetailsService;
 
@@ -12,14 +10,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 import org.springframework.ui.context.ThemeSource;
 import org.springframework.ui.context.support.ResourceBundleThemeSource;
 import org.springframework.util.StringUtils;
@@ -33,48 +28,19 @@ import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 	@Autowired
-	private CustomUserDetailsService userDetailsService;
+	private MyUserDetailsService userDetailsService;
 
 	public SecurityConfig() {
 		super();
 	}
 
+	// API
+	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth
 			.userDetailsService(userDetailsService);
-/*
-			.inMemoryAuthentication()
-				.withUser("user") // #1
-					.password("password")
-					.roles("USER")
-					.and()
-				.withUser("admin") // #2
-					.password("adminpass")
-					.roles("ADMIN", "USER");*/
 	}
-	// API
-	/*
-	@Autowired
-	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth
-			.inMemoryAuthentication()
-			  .withUser("user")  // #1
-				.password("password")
-				.roles("USER")
-				.and()
-			  .withUser("admin") // #2
-				.password("password")
-				.roles("ADMIN","USER")
-				.and();
-	}
-*//*
-	@Bean
-	@Override
-	public AuthenticationManager authenticationManagerBean() throws Exception {
-		return super.authenticationManagerBean();
-	}
-	*/
 	/**
 	 * Ignore any request that starts with "/resources/".
 	 * This is similar to configuring http@security=none when using the XML namespace configuration. 
@@ -107,12 +73,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 						//"/pages/**"
 				).permitAll()
 				//The rest of the our application is protected.
-				//.antMatchers("/admin/**").hasRole("ADMIN")
 				.anyRequest().authenticated() // 所有其他的URL都需要用户进行验证
 				.and()
 			.formLogin()
-				//.loginPage(WebConstants.PATH_SIGNIN)
-				//.permitAll()
+				.loginPage(WebConstants.PATH_SIGNIN)
+				.permitAll()
+				.and()
+			//Configures the logout function
+			.logout()
+				.deleteCookies("JSESSIONID")
+				.logoutUrl(WebConstants.PATH_SIGNOUT)
+				.logoutSuccessUrl(WebConstants.PATH_SIGNIN)
 				.and()
 			.httpBasic()
 				.and()

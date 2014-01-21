@@ -50,7 +50,7 @@ $(function() {
 	 */
 	$('.navbar-collapse-plus li').click(function(event) {
 		collapse($('.navbar-collapse-plus'));
-	});
+	})
 
 	// popover show and hidden
 	$('[rel=custom-popover]').click(function(event) {
@@ -61,10 +61,7 @@ $(function() {
 				$('#'+modal+'-popover').fadeOut(300).addClass('hidden');
 			});
 		})
-		.removeClass('hidden')
-		.click(function(event) {
-			return false;
-		});
+		.removeClass('hidden');
 		return false;
 	});
 
@@ -81,8 +78,8 @@ $(function() {
 	});
 
 	//登出
-	$('#signout').click(function(){
-		location.href="signoutdo";
+	$('.signout').click(function(){
+		location.href="signout";
 	});
 
 	// Initialize navgoco
@@ -333,13 +330,14 @@ $(function() {
 				frameborder: 0
 			})
 			.css({
-				width: '100%'
+				width: '100%',
+				height: '2000px'
 			})
 			.load(function() {
 				//console.log(this.contentWindow.document.body.offsetHeight);
-				this.style.height =
+				//this.style.height =
 				//this.contentWindow.document.body.offsetHeight * 1.5 + 'px';
-				'2000px';
+				//'2000px';
 			});
 		} else {
 			elm = urlOrContent;
