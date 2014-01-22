@@ -34,7 +34,6 @@ import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
 @Configuration
 @ComponentScan({ "net.zzh.common.web", "net.zzh.sec.web", "net.zzh.ui.web" })
-//@ImportResource({ "classpath*:*secContextConfig.xml" })
 @EnableWebMvc // Add @EnableWebMVC, this is the same as <mvc:annotation-driven/>
 public class WebConfig extends WebMvcConfigurerAdapter {
 	@Autowired

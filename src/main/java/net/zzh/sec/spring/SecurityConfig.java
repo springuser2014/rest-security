@@ -5,6 +5,7 @@ import net.zzh.sec.security.MyThemeResolver;
 import net.zzh.sec.security.MyUserDetailsService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -28,6 +29,9 @@ import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 	@Autowired
+	private ApplicationContext context;
+	
+	@Autowired
 	private MyUserDetailsService userDetailsService;
 
 	public SecurityConfig() {
@@ -36,6 +40,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 	// API
 	
+	/**
+	 * authentication manager
+	 */
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth
@@ -65,15 +72,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		http
 			.authorizeRequests()
 				.antMatchers(
-						//WebConstants.PATH_SEP,
 						WebConstants.PATH_SIGNUP,
 						WebConstants.PATH_SIGNIN,
 						WebConstants.PATH_SIGNOUT,
-						WebConstants.PATH_ABOUT//,
-						//"/pages/**"
+						WebConstants.PATH_ABOUT
 				).permitAll()
 				//The rest of the our application is protected.
-				.anyRequest().authenticated() // 所有其他的URL都需要用户进行验证
+				.anyRequest().authenticated()
 				.and()
 			.formLogin()
 				.loginPage(WebConstants.PATH_SIGNIN)
@@ -87,7 +92,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 				.and()
 			.httpBasic()
 				.and()
-			.rememberMe();
+			.rememberMe()
+				.and()
+			.setSharedObject(ApplicationContext.class, context);
 	}
 	
 	@Bean
@@ -98,6 +105,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		return cookieLocaleResolver;
 	}
 
+	/**
+	 * theme source
+	 * @return
+	 */
 	@Bean
 	public ThemeSource themeSource() {
 		
@@ -106,6 +117,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		return themeSource;
 	}
 
+	/**
+	 * custom theme
+	 * @return
+	 */
 	@Bean
 	public ThemeResolver themeResolver() {
 		MyThemeResolver myThemeResolver = new MyThemeResolver();

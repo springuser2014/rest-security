@@ -46,6 +46,7 @@ public class MyUserDetailsService implements UserDetailsService {
 
 	@Autowired
 	private IPersistenceService persistenceService;
+	
 	/**
 	 * 
 	 */
@@ -78,11 +79,10 @@ public class MyUserDetailsService implements UserDetailsService {
 		final List<GrantedAuthority> auths = AuthorityUtils.createAuthorityList(roleStringsAsArray);
 
 		System.out.println("loadUserByUsername - success");
-		//return new User(principal.getName(), principal.getPassword(), auths);
 		boolean accountNonExpired = true;
 		boolean credentialsNonExpired = true;
 		boolean accountIsEnabled = true;
-
+		
 		System.out.println(principal.getName() + ", " +
 				principal.getPassword().toLowerCase() + ", " +
 				accountIsEnabled + ", " +
