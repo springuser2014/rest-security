@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="zh">
 	<head>
@@ -9,17 +10,11 @@
 	<meta name="author" content="">
 
 	<title>${title}</title>
+	<c:set value="${pageContext.request.contextPath}" var="path" scope="page"/>
 
 	<!-- Bootstrap core CSS -->
-	<link href="<spring:theme code='bootstrap-css'/>" rel="stylesheet">
+	<link href="${path}<spring:theme code='bootstrap-css'/>" rel="stylesheet">
 
-
-	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-	<!--[if lt IE 9]>
-	<script src="<spring:theme code='html5shiv-js'/>"></script>
-	<script src="<spring:theme code='respond-js'/>"></script>
-	<script src="<spring:theme code='es5-shim-js'/>"></script>
-	<![endif]-->
 	<style type="text/css">
 		body {
 		padding-top: 40px;
@@ -67,30 +62,38 @@
 	<body>
 
 	<div class="container"> 
-		<c:url value="/login" var="loginUrl"/>
+		<c:url value="/signin" var="loginUrl"/>
 		<form class="form-signin" action="${loginUrl}" method="post" >
-		<h2 class="form-signin-heading">Please sign in</h2>
+		<h2 class="form-signin-heading">${title}</h2>
 		<c:if test="${param.error != null}">
 	        <p>
-	            Invalid username and password.
+	            <spring:message code="login.error"/>
 	        </p>
 	    </c:if>
 	    <c:if test="${param.logout != null}">
 	        <p>
-	            You have been logged out.
+	            <spring:message code="login.logout"/>
 	        </p>
 	    </c:if>
-		<input id="u" name="username" type="text" class="form-control" placeholder="User name/Email address" autofocus>
-		<input id="p" name="password" type="password" class="form-control" placeholder="Password">
+		<input id="u" name="u" type="text" class="form-control" placeholder="<spring:message code="login.username"/>" autofocus>
+		<input id="p" name="p" type="password" class="form-control" placeholder="<spring:message code="login.password"/>">
 		<label class="checkbox">
-			<input type="checkbox" value="remember-me"> Remember me
+			<input type="checkbox" value="remember-me"> <spring:message code="login.rememberMe"/>
 		</label>
 	    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-		<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+		<button class="btn btn-lg btn-primary btn-block" type="submit"><spring:message code="login.signIn"/></button>
 		</form>
 	</div> <!-- /container -->
 
-	<script src="<spring:theme code='jquery-js'/>"></script>
+
+	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="${path}<spring:theme code='html5shiv-js'/>"></script>
+	<script src="${path}<spring:theme code='respond-js'/>"></script>
+	<script src="${path}<spring:theme code='es5-shim-js'/>"></script>
+	<![endif]-->
+	
+	<script src="${path}<spring:theme code='jquery-js'/>"></script>
 
 	<!-- Bootstrap core JavaScript
 	================================================== -->

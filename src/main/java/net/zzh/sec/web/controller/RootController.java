@@ -42,6 +42,9 @@ public class RootController {
 		
 		String message = "Welcome to Spring 4.0 !";
 		model.addAttribute("title", message);
+		model.addAttribute("description", message);
+		model.addAttribute("author", message);
+		model.addAttribute("user", "Username");
 		model.addAttribute("theme", message);
 		model.addAttribute("mobile", isMobile);
 		

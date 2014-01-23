@@ -82,6 +82,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 				.and()
 			.formLogin()
 				.loginPage(WebConstants.PATH_SIGNIN)
+				.loginProcessingUrl(WebConstants.PATH_SIGNIN)
+				.usernameParameter("u")
+				.passwordParameter("p")
 				.permitAll()
 				.and()
 			//Configures the logout function

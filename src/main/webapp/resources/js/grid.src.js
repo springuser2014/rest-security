@@ -78,7 +78,7 @@ $(function() {
 	});
 
 	//登出
-	$('.signout').click(function(){
+	$('[data-target=profile] visible-xs').click(function(){
 		location.href="signout";
 	});
 
@@ -318,6 +318,7 @@ $(function() {
 		});
 
 		$('<li>')
+		.attr('title', title)
 		.append(a)
 		.appendTo($('#nav-tabs'));
 
