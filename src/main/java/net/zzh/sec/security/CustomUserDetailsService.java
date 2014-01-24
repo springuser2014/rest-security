@@ -3,7 +3,6 @@
  */
 package net.zzh.sec.security;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -20,7 +19,6 @@ import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -49,6 +47,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 	@Autowired
 	private IPersistenceService persistenceService;
+	
 	/**
 	 * 
 	 */
@@ -81,11 +80,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 		final List<GrantedAuthority> auths = AuthorityUtils.createAuthorityList(roleStringsAsArray);
 
 		System.out.println("loadUserByUsername - success");
-		//return new User(principal.getName(), principal.getPassword(), auths);
 		boolean accountNonExpired = true;
 		boolean credentialsNonExpired = true;
 		boolean accountIsEnabled = true;
-
+		
 		System.out.println(principal.getName() + ", " +
 				principal.getPassword().toLowerCase() + ", " +
 				accountIsEnabled + ", " +

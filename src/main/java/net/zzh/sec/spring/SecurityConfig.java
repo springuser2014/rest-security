@@ -1,8 +1,12 @@
 package net.zzh.sec.spring;
 
+import java.util.Locale;
+
 import net.zzh.common.web.WebConstants;
-import net.zzh.sec.security.MyThemeResolver;
-import net.zzh.sec.security.MyUserDetailsService;
+import net.zzh.sec.security.CustomUserDetailsService;
+import net.zzh.sec.security.CustomThemeResolver;
+import net.zzh.sec.security.SecurityLoginFailureHandler;
+import net.zzh.sec.security.SecurityLoginSuccessHandler;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -16,6 +20,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.ui.context.ThemeSource;
 import org.springframework.ui.context.support.ResourceBundleThemeSource;
 import org.springframework.util.StringUtils;
@@ -26,14 +31,21 @@ import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 @Configuration
 @ComponentScan("net.zzh.sec.security")
 @EnableWebSecurity
+@EnableTransactionManagement(proxyTargetClass = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 	@Autowired
 	private ApplicationContext context;
 	
 	@Autowired
-	private MyUserDetailsService userDetailsService;
-
+	private CustomUserDetailsService userDetailsService;
+	
+	@Autowired
+	private SecurityLoginSuccessHandler securityLoginSuccessHandler;
+	
+	@Autowired
+	private SecurityLoginFailureHandler securityLoginFailureHandler;
+	
 	public SecurityConfig() {
 		super();
 	}
@@ -83,6 +95,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 			.formLogin()
 				.loginPage(WebConstants.PATH_SIGNIN)
 				.loginProcessingUrl(WebConstants.PATH_SIGNIN)
+				.successHandler(securityLoginSuccessHandler)
+				.failureHandler(securityLoginFailureHandler)
 				.usernameParameter("u")
 				.passwordParameter("p")
 				.permitAll()
@@ -97,24 +111,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 				.and()
 			.rememberMe()
 				.and()
+			.csrf().disable()
 			.setSharedObject(ApplicationContext.class, context);
 	}
 	
-	@Bean
-	public LocaleResolver localeResolver() {
-
-		CookieLocaleResolver cookieLocaleResolver = new CookieLocaleResolver();
-		cookieLocaleResolver.setDefaultLocale(StringUtils.parseLocaleString("zh_CN"));
-		return cookieLocaleResolver;
-	}
-
 	/**
 	 * theme source
 	 * @return
 	 */
 	@Bean
 	public ThemeSource themeSource() {
-		
 		ResourceBundleThemeSource themeSource = new ResourceBundleThemeSource();
 		themeSource.setBasenamePrefix(WebConstants.THEME_PREFIX);
 		return themeSource;
@@ -126,14 +132,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	 */
 	@Bean
 	public ThemeResolver themeResolver() {
-		MyThemeResolver myThemeResolver = new MyThemeResolver();
-		myThemeResolver.setDefaultThemeName(WebConstants.ORIGINAL_DEFAULT_THEME_NAME);
-		return myThemeResolver;
+		CustomThemeResolver customThemeResolver = new CustomThemeResolver();
+		customThemeResolver.setDefaultThemeName(WebConstants.ORIGINAL_DEFAULT_THEME_NAME);
+		return customThemeResolver;
 	}
-	
+
+	@Bean
+	public LocaleResolver localeResolver() {
+		CookieLocaleResolver cookieLocaleResolver = new CookieLocaleResolver();
+		cookieLocaleResolver.setDefaultLocale(Locale.SIMPLIFIED_CHINESE);
+		return cookieLocaleResolver;
+	}
+
+	//@Bean(name="messageSource")
 	@Bean
 	public MessageSource messageSource() {
-
 		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
 		messageSource.setBasenames("classpath:messages/messages", "classpath:messages/validation");
 		//messageSource.setBasename("i18n/messages");
@@ -145,4 +158,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		messageSource.setCacheSeconds(0);
 		return messageSource;
 	}
+/*
+	@Override
+	public Validator getValidator() {
+		LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
+		validator.setValidationMessageSource(messageSource());
+		return validator;
+	}
+	*/
 }

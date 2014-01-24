@@ -66,7 +66,7 @@
 		<form class="form-signin" action="${loginUrl}" method="post" >
 		<h2 class="form-signin-heading">${title}</h2>
 		<c:if test="${param.error != null}">
-	        <p>
+	        <p id="error">
 	            <spring:message code="login.error"/>
 	        </p>
 	    </c:if>
@@ -80,7 +80,7 @@
 		<label class="checkbox">
 			<input type="checkbox" value="remember-me"> <spring:message code="login.rememberMe"/>
 		</label>
-	    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+	    <%-- <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/> --%>
 		<button class="btn btn-lg btn-primary btn-block" type="submit"><spring:message code="login.signIn"/></button>
 		</form>
 	</div> <!-- /container -->
@@ -101,7 +101,7 @@
 	
 	<script type="text/javascript">
 		$(function() {
-			/* 
+			
 			$('button[type=submit]').click(function() {
 				var passPhrase = +new Date();;
 				$.ajax({
@@ -113,11 +113,13 @@
 					password: p,
 					timeout: 60000,     //ajax请求超时时间60秒
 					success: function(data){
-						if (data.access) {
-							window.location.href = data.redirect;
+						if (data.state) {
+							window.location.href = data.targetUrl;
 						}
 						else
 						{
+							console.log('error.');
+							$('#error').show();
 						}
 					},
 					error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -127,7 +129,7 @@
 				});
 				return false;
 			});
-			 */
+			
 		});
 	</script>
 	</body>

@@ -9,6 +9,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.zzh.common.web.WebConstants;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Service;
@@ -28,7 +30,7 @@ public class SecurityLoginSuccessHandler extends SimpleUrlAuthenticationSuccessH
 		System.out.println("SecurityLoginSuccessHandler");
 		if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
 			System.out.println(request.getHeader("X-Requested-With"));
-			response.getWriter().print("{success:true, targetUrl : \'" + this.getTargetUrlParameter() + "\'}");
+			response.getWriter().print("{\"state\": true, \"targetUrl\": \"" + request.getContextPath() + WebConstants.PATH_SEP + "\"}");
 			response.getWriter().flush();
 		} else {
 			System.out.println("none");

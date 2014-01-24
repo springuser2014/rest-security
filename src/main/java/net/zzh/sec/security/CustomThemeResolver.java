@@ -17,7 +17,7 @@ import org.springframework.web.servlet.theme.SessionThemeResolver;
  *
  */
 @Configuration
-public class MyThemeResolver extends AbstractThemeResolver {
+public class CustomThemeResolver extends AbstractThemeResolver {
 
 	private static String THEME_NAME = WebConstants.ORIGINAL_DEFAULT_THEME_NAME;
 	/* (non-Javadoc)
@@ -26,7 +26,7 @@ public class MyThemeResolver extends AbstractThemeResolver {
 	@Override
 	public String resolveThemeName(HttpServletRequest request) {
 		//System.out.println("myThemeResolver: " + MyThemeResolver.THEME_NAME);
-		return MyThemeResolver.THEME_NAME;
+		return CustomThemeResolver.THEME_NAME;
 	}
 
 	/* (non-Javadoc)
@@ -35,7 +35,7 @@ public class MyThemeResolver extends AbstractThemeResolver {
 	@Override
 	public void setThemeName(HttpServletRequest request, HttpServletResponse response, String themeName) {
 		if(themeName != null) {
-			MyThemeResolver.THEME_NAME = themeName;
+			CustomThemeResolver.THEME_NAME = themeName;
 		}
 	}
 

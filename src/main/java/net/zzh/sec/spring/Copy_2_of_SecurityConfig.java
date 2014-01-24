@@ -11,7 +11,7 @@ import net.zzh.common.web.WebConstants;
 import net.zzh.sec.security.CookieAuthenticationFilter;
 import net.zzh.sec.security.CookieLogoutHandler;
 import net.zzh.sec.security.CookieService;
-import net.zzh.sec.security.MyThemeResolver;
+import net.zzh.sec.security.CustomThemeResolver;
 import net.zzh.sec.security.MyUserDetailsService;
 import net.zzh.sec.security.SecurityLoginFailureHandler;
 import net.zzh.sec.security.SecurityLoginSuccessHandler;
@@ -471,9 +471,9 @@ public class Copy_2_of_SecurityConfig extends WebSecurityConfigurerAdapter{
 
 	@Bean
 	public ThemeResolver themeResolver() {
-		MyThemeResolver myThemeResolver = new MyThemeResolver();
-		myThemeResolver.setDefaultThemeName(WebConstants.ORIGINAL_DEFAULT_THEME_NAME);
-		return myThemeResolver;
+		CustomThemeResolver customThemeResolver = new CustomThemeResolver();
+		customThemeResolver.setDefaultThemeName(WebConstants.ORIGINAL_DEFAULT_THEME_NAME);
+		return customThemeResolver;
 	}
 	
 	@Bean

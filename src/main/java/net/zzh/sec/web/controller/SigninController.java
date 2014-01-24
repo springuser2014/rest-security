@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import net.zzh.common.web.WebConstants;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +27,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping(value = WebConstants.PATH_SIGNIN)
 public class SigninController {
 
+	@Autowired
+	private MessageSource messageSource;
 	/**
 	 * 
 	 */
@@ -35,6 +39,8 @@ public class SigninController {
 	@RequestMapping(method = RequestMethod.GET)
 	public String signin(@RequestParam(required=false) String login_error, ModelMap model, HttpServletRequest request) {
 		System.out.println(WebConstants.PATH_SIGNIN);
+		
+		System.out.println(messageSource.getMessage("login.error", new Object [] {}, null));
 		
 		String message = "This is a sign in page.";
 		model.addAttribute("title", message);
