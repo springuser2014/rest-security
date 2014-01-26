@@ -27,13 +27,11 @@ public class SecurityLoginSuccessHandler extends SimpleUrlAuthenticationSuccessH
 	}
 
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication auth) throws IOException, ServletException {
-		System.out.println("SecurityLoginSuccessHandler");
+		//System.out.println("SecurityLoginSuccessHandler");
 		if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
-			System.out.println(request.getHeader("X-Requested-With"));
 			response.getWriter().print("{\"state\": true, \"targetUrl\": \"" + request.getContextPath() + WebConstants.PATH_SEP + "\"}");
 			response.getWriter().flush();
 		} else {
-			System.out.println("none");
 			super.onAuthenticationSuccess(request, response, auth);
 		}
 	}

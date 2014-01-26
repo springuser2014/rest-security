@@ -38,7 +38,7 @@ import com.google.common.collect.Sets;
  *
  */
 @Service
-@Component
+//@Component
 @Transactional
 public class CustomUserDetailsService implements UserDetailsService {
 

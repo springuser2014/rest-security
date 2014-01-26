@@ -40,12 +40,10 @@ public class SigninController {
 	public String signin(@RequestParam(required=false) String login_error, ModelMap model, HttpServletRequest request) {
 		System.out.println(WebConstants.PATH_SIGNIN);
 		
-		System.out.println(messageSource.getMessage("login.error", new Object [] {}, null));
-		
 		String message = "This is a sign in page.";
-		model.addAttribute("title", message);
+		model.addAttribute("title", messageSource.getMessage("message.header", new Object [] {}, null));
 		model.addAttribute("theme", message);
-		model.addAttribute("msg", message);
+		model.addAttribute("msg", messageSource.getMessage("message.welcomeback", new Object [] {"Username"}, null));
 		
 		return "signin";
 	}

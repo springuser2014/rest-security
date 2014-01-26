@@ -65,16 +65,8 @@
 		<c:url value="/signin" var="loginUrl"/>
 		<form class="form-signin" action="${loginUrl}" method="post" >
 		<h2 class="form-signin-heading">${title}</h2>
-		<c:if test="${param.error != null}">
-	        <p id="error">
-	            <spring:message code="login.error"/>
-	        </p>
-	    </c:if>
-	    <c:if test="${param.logout != null}">
-	        <p>
-	            <spring:message code="login.logout"/>
-	        </p>
-	    </c:if>
+		<code>text code - ${msg}</code>
+		<p id="error"></p>
 		<input id="u" name="u" type="text" class="form-control" placeholder="<spring:message code="login.username"/>" autofocus>
 		<input id="p" name="p" type="password" class="form-control" placeholder="<spring:message code="login.password"/>">
 		<label class="checkbox">
@@ -103,7 +95,16 @@
 		$(function() {
 			
 			$('button[type=submit]').click(function() {
-				var passPhrase = +new Date();;
+				if($.trim($("#u").val()) == '') {
+					$('#error').html('Username must not null.');
+					return false;
+				}
+				if($.trim($("#p").val()) == '') {
+					$('#error').html('Password must not null.');
+					return false;
+				}
+				
+				var passPhrase = +new Date();
 				$.ajax({
 					dataType: "json",
 					type: "POST",
@@ -111,19 +112,19 @@
 					data: {u: $("#u").val(), p: $.trim($("#p").val()), t: $(".t").val(), k: passPhrase},
 					username: u,
 					password: p,
-					timeout: 60000,     //ajax请求超时时间60秒
+					timeout: 60000,
 					success: function(data){
 						if (data.state) {
 							window.location.href = data.targetUrl;
 						}
 						else
 						{
-							console.log('error.');
-							$('#error').show();
+							$('#error').html(data.message);
 						}
 					},
 					error: function (XMLHttpRequest, textStatus, errorThrown) {
 						if(textStatus == "timeout") {
+							$('#error').html('Network connect timeout.');
 						}
 					}
 				});

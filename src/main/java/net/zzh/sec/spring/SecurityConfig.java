@@ -144,7 +144,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		return cookieLocaleResolver;
 	}
 
-	//@Bean(name="messageSource")
 	@Bean
 	public MessageSource messageSource() {
 		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
