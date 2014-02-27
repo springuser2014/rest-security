@@ -14,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -38,7 +41,7 @@ public class SecurityLoginFailureHandler extends SimpleUrlAuthenticationFailureH
 		
 		if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
 			String message = ctx.getMessage("login.error", new Object[]{}, locale);
-			
+
 			response.setContentType("text/x-json; charset=utf-8");
 			response.setHeader("Cache-Control", "no-cache, must-revalidate");
 			response.getWriter().print("{\"state\": false, \"message\": \""+message+"\"}");
