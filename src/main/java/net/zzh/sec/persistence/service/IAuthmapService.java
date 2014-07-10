@@ -4,12 +4,12 @@
 package net.zzh.sec.persistence.service;
 
 import net.zzh.common.persistence.service.IService;
-import net.zzh.sec.model.Proc;
+import net.zzh.sec.model.Authmap;
 
 /**
  * @author zhenhuazhao
  *
  */
-public interface IProcService extends IService<Proc> {
-	
+public interface IAuthmapService extends IService<Authmap> {
+
 }

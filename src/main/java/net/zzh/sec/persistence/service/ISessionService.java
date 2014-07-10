@@ -4,12 +4,12 @@
 package net.zzh.sec.persistence.service;
 
 import net.zzh.common.persistence.service.IService;
-import net.zzh.sec.model.Role;
+import net.zzh.sec.model.Session;
 
 /**
  * @author zhenhuazhao
  *
  */
-public interface IRoleService extends IService<Role> {
+public interface ISessionService extends IService<Session> {
 
 }

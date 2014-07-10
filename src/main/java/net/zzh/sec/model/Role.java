@@ -1,117 +1,129 @@
 package net.zzh.sec.model;
 
+import java.io.Serializable;
+import javax.persistence.*;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import net.zzh.common.persistence.model.INameableEntity;
-
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-
+/**
+ * The persistent class for the role database table.
+ * 
+ */
 @Entity
-@XmlRootElement
-@XStreamAlias("role")
-public class Role implements INameableEntity {
+@Table(name="role")
+@NamedQuery(name="Role.findAll", query="SELECT r FROM Role r")
+public class Role implements net.zzh.common.persistence.model.INameableEntity {
+	private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "ROLE_ID")
-    @XStreamAsAttribute
-    private Long id;
-    @Column(unique = true, nullable = false)
-    private String name;
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(unique=true, nullable=false)
+	private int rid;
 
-    // @formatter:off
-    @ManyToMany( /* cascade = { CascadeType.REMOVE }, */fetch = FetchType.EAGER)
-    @JoinTable(joinColumns = { @JoinColumn(name = "ROLE_ID", referencedColumnName = "ROLE_ID") }, inverseJoinColumns = { @JoinColumn(name = "PRIV_ID", referencedColumnName = "PRIV_ID") })
-    @XStreamImplicit
-    private Set<Privilege> privileges;
+	@Column(nullable=false, length=64)
+	private String name;
 
-    // @formatter:on
+	@Column(nullable=false)
+	private int weight;
 
-    public Role() {
-        super();
-    }
+	//bi-directional many-to-many association to User
+	@ManyToMany
+	@JoinTable(
+		name="users_roles"
+		, joinColumns={
+			@JoinColumn(name="rid", nullable=false)
+			}
+		, inverseJoinColumns={
+			@JoinColumn(name="uid", nullable=false)
+			}
+		)
+	private Set<User> users;
 
-    public Role(final String nameToSet) {
-        super();
-        name = nameToSet;
-    }
+	//bi-directional many-to-one association to RolePermission
+	@OneToMany(mappedBy="role")
+	private Set<RolePermission> rolePermissions;
 
-    public Role(final String nameToSet, final Set<Privilege> privilegesToSet) {
-        super();
-        name = nameToSet;
-        privileges = privilegesToSet;
-    }
+	//bi-directional many-to-one association to UsersRole
+	@OneToMany(mappedBy="role")
+	private Set<UsersRole> usersRoles;
 
-    // API
+	public Role() {
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public int getRid() {
+		return this.rid;
+	}
 
-    public void setId(final Long idToSet) {
-        id = idToSet;
-    }
+	public void setRid(int rid) {
+		this.rid = rid;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return this.name;
+	}
 
-    public void setName(final String nameToSet) {
-        name = nameToSet;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public Set<Privilege> getPrivileges() {
-        return privileges;
-    }
+	public int getWeight() {
+		return this.weight;
+	}
 
-    public void setPrivileges(final Set<Privilege> privilegesToSet) {
-        privileges = privilegesToSet;
-    }
+	public void setWeight(int weight) {
+		this.weight = weight;
+	}
 
-    //
+	public Set<User> getUsers() {
+		return this.users;
+	}
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        return result;
-    }
+	public void setUsers(Set<User> users) {
+		this.users = users;
+	}
 
-    @Override
-    public boolean equals(final Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        final Role other = (Role) obj;
-        if (name == null) {
-            if (other.name != null)
-                return false;
-        } else if (!name.equals(other.name))
-            return false;
-        return true;
-    }
+	public Set<RolePermission> getRolePermissions() {
+		return this.rolePermissions;
+	}
 
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this).append("id", id).append("name", name).toString();
-    }
+	public void setRolePermissions(Set<RolePermission> rolePermissions) {
+		this.rolePermissions = rolePermissions;
+	}
+
+	public RolePermission addRolePermission(RolePermission rolePermission) {
+		getRolePermissions().add(rolePermission);
+		rolePermission.setRole(this);
+
+		return rolePermission;
+	}
+
+	public RolePermission removeRolePermission(RolePermission rolePermission) {
+		getRolePermissions().remove(rolePermission);
+		rolePermission.setRole(null);
+
+		return rolePermission;
+	}
+
+	public Set<UsersRole> getUsersRoles() {
+		return this.usersRoles;
+	}
+
+	public void setUsersRoles(Set<UsersRole> usersRoles) {
+		this.usersRoles = usersRoles;
+	}
+
+	public UsersRole addUsersRole(UsersRole usersRole) {
+		getUsersRoles().add(usersRole);
+		usersRole.setRole(this);
+
+		return usersRole;
+	}
+
+	public UsersRole removeUsersRole(UsersRole usersRole) {
+		getUsersRoles().remove(usersRole);
+		usersRole.setRole(null);
+
+		return usersRole;
+	}
 
 }

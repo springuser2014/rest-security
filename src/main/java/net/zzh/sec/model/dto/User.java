@@ -6,8 +6,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import net.zzh.common.persistence.model.INameableEntity;
-import net.zzh.sec.model.Principal;
 import net.zzh.sec.model.Role;
+import net.zzh.sec.model.User;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
@@ -42,12 +42,12 @@ public class User implements INameableEntity {
         roles = rolesToSet;
     }
 
-    public User(final Principal principal) {
+    public User(final User user) {
         super();
 
-        name = principal.getName();
-        roles = principal.getRoles();
-        id = principal.getId();
+        name = user.getName();
+        roles = user.getRoles();
+        id = user.getId();
     }
 
     // API
