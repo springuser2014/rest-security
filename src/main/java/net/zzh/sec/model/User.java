@@ -2,7 +2,8 @@ package net.zzh.sec.model;
 
 import java.io.Serializable;
 import javax.persistence.*;
-import java.util.Set;
+import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -20,11 +21,13 @@ public class User implements net.zzh.common.persistence.model.INameableEntity {
 	@Column(unique=true, nullable=false)
 	private int uid;
 
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(nullable=false)
-	private int access;
+	private Date access;
 
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(nullable=false)
-	private int created;
+	private Date created;
 
 	private Object data;
 
@@ -34,8 +37,9 @@ public class User implements net.zzh.common.persistence.model.INameableEntity {
 	@Column(nullable=false, length=12)
 	private String language;
 
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(nullable=false)
-	private int login;
+	private Date login;
 
 	@Column(length=254)
 	private String mail;
@@ -66,7 +70,7 @@ public class User implements net.zzh.common.persistence.model.INameableEntity {
 
 	//bi-directional many-to-many association to Role
 	@ManyToMany(mappedBy="users")
-	private Set<Role> roles;
+	private List<Role> roles;
 
 	public User() {
 	}
@@ -79,19 +83,19 @@ public class User implements net.zzh.common.persistence.model.INameableEntity {
 		this.uid = uid;
 	}
 
-	public int getAccess() {
+	public Date getAccess() {
 		return this.access;
 	}
 
-	public void setAccess(int access) {
+	public void setAccess(Date access) {
 		this.access = access;
 	}
 
-	public int getCreated() {
+	public Date getCreated() {
 		return this.created;
 	}
 
-	public void setCreated(int created) {
+	public void setCreated(Date created) {
 		this.created = created;
 	}
 
@@ -119,11 +123,11 @@ public class User implements net.zzh.common.persistence.model.INameableEntity {
 		this.language = language;
 	}
 
-	public int getLogin() {
+	public Date getLogin() {
 		return this.login;
 	}
 
-	public void setLogin(int login) {
+	public void setLogin(Date login) {
 		this.login = login;
 	}
 
@@ -199,11 +203,11 @@ public class User implements net.zzh.common.persistence.model.INameableEntity {
 		this.timezone = timezone;
 	}
 
-	public Set<Role> getRoles() {
+	public List<Role> getRoles() {
 		return this.roles;
 	}
 
-	public void setRoles(Set<Role> roles) {
+	public void setRoles(List<Role> roles) {
 		this.roles = roles;
 	}
 

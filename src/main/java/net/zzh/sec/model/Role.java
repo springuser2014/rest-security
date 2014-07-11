@@ -2,7 +2,7 @@ package net.zzh.sec.model;
 
 import java.io.Serializable;
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 
 /**
@@ -37,15 +37,15 @@ public class Role implements net.zzh.common.persistence.model.INameableEntity {
 			@JoinColumn(name="uid", nullable=false)
 			}
 		)
-	private Set<User> users;
+	private List<User> users;
 
 	//bi-directional many-to-one association to RolePermission
 	@OneToMany(mappedBy="role")
-	private Set<RolePermission> rolePermissions;
+	private List<RolePermission> rolePermissions;
 
 	//bi-directional many-to-one association to UsersRole
 	@OneToMany(mappedBy="role")
-	private Set<UsersRole> usersRoles;
+	private List<UsersRole> usersRoles;
 
 	public Role() {
 	}
@@ -74,19 +74,19 @@ public class Role implements net.zzh.common.persistence.model.INameableEntity {
 		this.weight = weight;
 	}
 
-	public Set<User> getUsers() {
+	public List<User> getUsers() {
 		return this.users;
 	}
 
-	public void setUsers(Set<User> users) {
+	public void setUsers(List<User> users) {
 		this.users = users;
 	}
 
-	public Set<RolePermission> getRolePermissions() {
+	public List<RolePermission> getRolePermissions() {
 		return this.rolePermissions;
 	}
 
-	public void setRolePermissions(Set<RolePermission> rolePermissions) {
+	public void setRolePermissions(List<RolePermission> rolePermissions) {
 		this.rolePermissions = rolePermissions;
 	}
 
@@ -104,11 +104,11 @@ public class Role implements net.zzh.common.persistence.model.INameableEntity {
 		return rolePermission;
 	}
 
-	public Set<UsersRole> getUsersRoles() {
+	public List<UsersRole> getUsersRoles() {
 		return this.usersRoles;
 	}
 
-	public void setUsersRoles(Set<UsersRole> usersRoles) {
+	public void setUsersRoles(List<UsersRole> usersRoles) {
 		this.usersRoles = usersRoles;
 	}
 

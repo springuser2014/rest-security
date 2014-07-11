@@ -2,7 +2,8 @@ package net.zzh.sec.model;
 
 import java.io.Serializable;
 import javax.persistence.*;
-import java.util.Set;
+import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -32,8 +33,9 @@ public class FileManaged implements net.zzh.common.persistence.model.INameableEn
 	@Column(nullable=false)
 	private byte status;
 
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(nullable=false)
-	private int timestamp;
+	private Date timestamp;
 
 	@Column(nullable=false)
 	private int uid;
@@ -43,7 +45,7 @@ public class FileManaged implements net.zzh.common.persistence.model.INameableEn
 
 	//bi-directional many-to-one association to FileUsage
 	@OneToMany(mappedBy="fileManaged")
-	private Set<FileUsage> fileUsages;
+	private List<FileUsage> fileUsages;
 
 	public FileManaged() {
 	}
@@ -88,11 +90,11 @@ public class FileManaged implements net.zzh.common.persistence.model.INameableEn
 		this.status = status;
 	}
 
-	public int getTimestamp() {
+	public Date getTimestamp() {
 		return this.timestamp;
 	}
 
-	public void setTimestamp(int timestamp) {
+	public void setTimestamp(Date timestamp) {
 		this.timestamp = timestamp;
 	}
 
@@ -112,11 +114,11 @@ public class FileManaged implements net.zzh.common.persistence.model.INameableEn
 		this.uri = uri;
 	}
 
-	public Set<FileUsage> getFileUsages() {
+	public List<FileUsage> getFileUsages() {
 		return this.fileUsages;
 	}
 
-	public void setFileUsages(Set<FileUsage> fileUsages) {
+	public void setFileUsages(List<FileUsage> fileUsages) {
 		this.fileUsages = fileUsages;
 	}
 

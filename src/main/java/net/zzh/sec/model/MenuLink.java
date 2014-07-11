@@ -2,7 +2,7 @@ package net.zzh.sec.model;
 
 import java.io.Serializable;
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 
 /**
@@ -93,11 +93,11 @@ public class MenuLink implements net.zzh.common.persistence.model.INameableEntit
 
 	//bi-directional many-to-one association to MenuCustom
 	@OneToMany(mappedBy="menuLink")
-	private Set<MenuCustom> menuCustoms;
+	private List<MenuCustom> menuCustoms;
 
 	//bi-directional many-to-one association to MenuRouter
 	@OneToMany(mappedBy="menuLink")
-	private Set<MenuRouter> menuRouters;
+	private List<MenuRouter> menuRouters;
 
 	public MenuLink() {
 	}
@@ -302,11 +302,11 @@ public class MenuLink implements net.zzh.common.persistence.model.INameableEntit
 		this.weight = weight;
 	}
 
-	public Set<MenuCustom> getMenuCustoms() {
+	public List<MenuCustom> getMenuCustoms() {
 		return this.menuCustoms;
 	}
 
-	public void setMenuCustoms(Set<MenuCustom> menuCustoms) {
+	public void setMenuCustoms(List<MenuCustom> menuCustoms) {
 		this.menuCustoms = menuCustoms;
 	}
 
@@ -324,11 +324,11 @@ public class MenuLink implements net.zzh.common.persistence.model.INameableEntit
 		return menuCustom;
 	}
 
-	public Set<MenuRouter> getMenuRouters() {
+	public List<MenuRouter> getMenuRouters() {
 		return this.menuRouters;
 	}
 
-	public void setMenuRouters(Set<MenuRouter> menuRouters) {
+	public void setMenuRouters(List<MenuRouter> menuRouters) {
 		this.menuRouters = menuRouters;
 	}
 

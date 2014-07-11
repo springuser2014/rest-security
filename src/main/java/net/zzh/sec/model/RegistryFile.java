@@ -2,7 +2,7 @@ package net.zzh.sec.model;
 
 import java.io.Serializable;
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 
 /**
@@ -25,7 +25,7 @@ public class RegistryFile implements net.zzh.common.persistence.model.INameableE
 
 	//bi-directional many-to-one association to Registry
 	@OneToMany(mappedBy="registryFile")
-	private Set<Registry> registries;
+	private List<Registry> registries;
 
 	public RegistryFile() {
 	}
@@ -46,11 +46,11 @@ public class RegistryFile implements net.zzh.common.persistence.model.INameableE
 		this.hash = hash;
 	}
 
-	public Set<Registry> getRegistries() {
+	public List<Registry> getRegistries() {
 		return this.registries;
 	}
 
-	public void setRegistries(Set<Registry> registries) {
+	public void setRegistries(List<Registry> registries) {
 		this.registries = registries;
 	}
 

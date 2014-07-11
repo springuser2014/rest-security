@@ -1,5 +1,6 @@
 package net.zzh.sec.persistence.setup;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -12,6 +13,7 @@ import net.zzh.common.util.SearchField;
 import net.zzh.common.web.WebConstants;
 import net.zzh.sec.model.RolePermission;
 import net.zzh.sec.model.Role;
+import net.zzh.sec.model.RolePermissionPK;
 import net.zzh.sec.model.User;
 import net.zzh.sec.persistence.service.IRolePermissionService;
 import net.zzh.sec.persistence.service.IRoleService;
@@ -153,13 +155,20 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 
 	/**
 	 * 如果不存在,创建权限
-	 * @param name
+	 * @param name Permission name
+	 * @param rid Role id
 	 */
-	final void createRolePermissionIfNotExisting(final String name) {
-		final RolePermission entityByName = RolePermissionervice.findByName(name);
+	final void createRolePermissionIfNotExisting(final String name, final int rid) {
+		ImmutableTriple<String, ClientOperation, String> nameConstraint = new ImmutableTriple<String, ClientOperation, String>(SearchField.name.name(), ClientOperation.EQ, name);
+		ImmutableTriple<String, ClientOperation, String> ridConstraint = new ImmutableTriple<String, ClientOperation, String>(SearchField.name.name(), ClientOperation.EQ, String.valueOf(rid));
+		final RolePermission entityByName = rolePermissionervice.searchOne(nameConstraint, ridConstraint);
 		if (entityByName == null) {
-			final RolePermission entity = new RolePermission(name);
-			RolePermissionervice.create(entity);
+			final RolePermission entity = new RolePermission();
+			RolePermissionPK id = new RolePermissionPK();
+			id.setPermission(name);
+			id.setRid(rid);
+			entity.setId(id);
+			rolePermissionervice.create(entity);
 		}
 	}
 
@@ -184,6 +193,22 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 
 		createRoleIfNotExisting(Roles.ROLE_ADMIN, Sets.<RolePermission> newHashSet(canUserRead, canUserWrite, canRoleRead, canRoleWrite, canRolePermissionRead, canRolePermissionWrite));
 		*/
+		final RolePermission canRolePermissionRead = rolePermissionervice.findByName(RolePermission.CAN_RolePermission_READ);
+		final RolePermission canRolePermissionWrite = rolePermissionervice.findByName(RolePermission.CAN_RolePermission_WRITE);
+		final RolePermission canRoleRead = rolePermissionervice.findByName(RolePermission.CAN_ROLE_READ);
+		final RolePermission canRoleWrite = rolePermissionervice.findByName(RolePermission.CAN_ROLE_WRITE);
+		final RolePermission canUserRead = rolePermissionervice.findByName(RolePermission.CAN_USER_READ);
+		final RolePermission canUserWrite = rolePermissionervice.findByName(RolePermission.CAN_USER_WRITE);
+
+		Preconditions.checkNotNull(canRolePermissionRead);
+		Preconditions.checkNotNull(canRolePermissionWrite);
+		Preconditions.checkNotNull(canRoleRead);
+		Preconditions.checkNotNull(canRoleWrite);
+		Preconditions.checkNotNull(canUserRead);
+		Preconditions.checkNotNull(canUserWrite);
+
+		createRoleIfNotExisting(Roles.ROLE_ADMIN, Sets.<RolePermission> newHashSet(canUserRead, canUserWrite, canRoleRead, canRoleWrite, canRolePermissionRead, canRolePermissionWrite));
+		
 	}
 
 	/**
@@ -191,13 +216,15 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 	 * @param name
 	 * @param RolePermission
 	 */
-	final void createRoleIfNotExisting(final String name, final Set<RolePermission> RolePermission) {
-		/*final Role entityByName = roleService.findByName(name);
+	final void createRoleIfNotExisting(final String name, final List<RolePermission> RolePermission) {
+		ImmutableTriple<String, ClientOperation, String> nameConstraint = new ImmutableTriple<String, ClientOperation, String>(SearchField.name.name(), ClientOperation.EQ, name);
+		final Role entityByName = roleService.searchOne(nameConstraint);
 		if (entityByName == null) {
-			final Role entity = new Role(name);
-			entity.setRolePermission(RolePermission);
+			final Role entity = new Role();
+			entity.setName(name);
+			entity.setRolePermissions(RolePermission);
 			roleService.create(entity);
-		}*/
+		}
 	}
 
 	/**
@@ -207,7 +234,8 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 	final void createUsers() {
 		ImmutableTriple<String, ClientOperation, String> nameConstraint = new ImmutableTriple<String, ClientOperation, String>(SearchField.name.name(), ClientOperation.EQ, Roles.ROLE_ADMIN);
 		final Role roleAdmin = roleService.searchOne(nameConstraint);
-		createUserIfNotExisting(SecurityConstants.ADMIN_EMAIL, SecurityConstants.ADMIN_PASS, Sets.<Role> newHashSet(roleAdmin));
+		//createUserIfNotExisting(SecurityConstants.ADMIN_EMAIL, SecurityConstants.ADMIN_PASS, Sets.<Role> newHashSet(roleAdmin));
+		createUserIfNotExisting(SecurityConstants.ADMIN_EMAIL, SecurityConstants.ADMIN_PASS, new ArrayList<Role>(){{ add(roleAdmin); }});
 	}
 
 	/**
@@ -216,7 +244,7 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 	 * @param pass
 	 * @param roles
 	 */
-	final void createUserIfNotExisting(final String loginName, final String pass, final Set<Role> roles) {
+	final void createUserIfNotExisting(final String loginName, final String pass, final List<Role> roles) {
 		ImmutableTriple<String, ClientOperation, String> nameConstraint = new ImmutableTriple<String, ClientOperation, String>(SearchField.name.name(), ClientOperation.EQ, loginName);
 		final User entityByName = userService.searchOne(nameConstraint);
 		if (entityByName == null) {
@@ -224,8 +252,9 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 			entity.setName(loginName);
 			entity.setPass(pass);
 			entity.setRoles(roles);
+			entity.setCreated(new Date());
 			entity.setTheme(WebConstants.ORIGINAL_DEFAULT_THEME_NAME);
-			entity.setCreated((int) System.currentTimeMillis());
+			entity.setStatus(Byte.parseByte("1"));
 			userService.create(entity);
 		}
 	}
