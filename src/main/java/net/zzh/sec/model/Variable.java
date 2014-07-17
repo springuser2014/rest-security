@@ -19,8 +19,9 @@ public class Variable implements net.zzh.common.persistence.model.INameableEntit
 	@Column(unique=true, nullable=false, length=128)
 	private String name;
 
+	@Lob
 	@Column(nullable=false)
-	private Object value;
+	private byte[] value;
 
 	public Variable() {
 	}
@@ -33,11 +34,11 @@ public class Variable implements net.zzh.common.persistence.model.INameableEntit
 		this.name = name;
 	}
 
-	public Object getValue() {
+	public byte[] getValue() {
 		return this.value;
 	}
 
-	public void setValue(Object value) {
+	public void setValue(byte[] value) {
 		this.value = value;
 	}
 

@@ -116,11 +116,11 @@ public abstract class AbstractController<T extends IEntity> {
 
     protected final void createInternal(final T resource, final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
         RestPreconditions.checkRequestElementNotNull(resource);
-        RestPreconditions.checkRequestState(resource.getId() == null);
+        //RestPreconditions.checkRequestState(resource.getId() == null);
         final T existingResource = getService().create(resource);
 
         // - note: mind the autoboxing and potential NPE when the resource has null id at this point (likely when working with DTOs)
-        eventPublisher.publishEvent(new ResourceCreatedEvent<T>(clazz, uriBuilder, response, existingResource.getId().toString()));
+        //eventPublisher.publishEvent(new ResourceCreatedEvent<T>(clazz, uriBuilder, response, existingResource.getId().toString()));
     }
 
     // update
@@ -130,9 +130,9 @@ public abstract class AbstractController<T extends IEntity> {
      */
     protected final void updateInternal(final long id, final T resource) {
         RestPreconditions.checkRequestElementNotNull(resource);
-        RestPreconditions.checkRequestElementNotNull(resource.getId());
-        RestPreconditions.checkRequestState(resource.getId() == id);
-        RestPreconditions.checkNotNull(getService().findOne(resource.getId()));
+        //RestPreconditions.checkRequestElementNotNull(resource.getId());
+        //RestPreconditions.checkRequestState(resource.getId() == id);
+        //RestPreconditions.checkNotNull(getService().findOne(resource.getId()));
 
         getService().update(resource);
     }

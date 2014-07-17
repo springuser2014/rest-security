@@ -25,8 +25,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@Controller
-@RequestMapping(value = UriMappingConstants.USERS)
+//@Controller
+//@RequestMapping(value = UriMappingConstants.USERS)
 public class UserController extends AbstractController<User> implements ISortingController<User> {
 
     @Autowired

@@ -3,8 +3,8 @@ package net.zzh.sec.spring;
 import java.util.Locale;
 
 import net.zzh.common.web.WebConstants;
-import net.zzh.sec.security.CustomUserDetailsService;
 import net.zzh.sec.security.CustomThemeResolver;
+import net.zzh.sec.security.MyUserDetailsService;
 import net.zzh.sec.security.SecurityLoginFailureHandler;
 import net.zzh.sec.security.SecurityLoginSuccessHandler;
 
@@ -23,7 +23,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.ui.context.ThemeSource;
 import org.springframework.ui.context.support.ResourceBundleThemeSource;
-import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ThemeResolver;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
@@ -38,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	private ApplicationContext context;
 	
 	@Autowired
-	private CustomUserDetailsService userDetailsService;
+	private MyUserDetailsService userDetailsService;
 	
 	@Autowired
 	private SecurityLoginSuccessHandler securityLoginSuccessHandler;

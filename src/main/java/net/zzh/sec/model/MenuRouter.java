@@ -17,8 +17,9 @@ public class MenuRouter implements net.zzh.common.persistence.model.INameableEnt
 	@EmbeddedId
 	private MenuRouterPK id;
 
+	@Lob
 	@Column(name="access_arguments")
-	private Object accessArguments;
+	private byte[] accessArguments;
 
 	@Column(name="access_callback", nullable=false, length=255)
 	private String accessCallback;
@@ -29,23 +30,27 @@ public class MenuRouter implements net.zzh.common.persistence.model.INameableEnt
 	@Column(name="delivery_callback", nullable=false, length=255)
 	private String deliveryCallback;
 
+	@Lob
 	@Column(nullable=false)
-	private Object description;
+	private String description;
 
 	@Column(nullable=false)
 	private int fit;
 
+	@Lob
 	@Column(name="include_file")
-	private Object includeFile;
+	private String includeFile;
 
+	@Lob
 	@Column(name="load_functions", nullable=false)
-	private Object loadFunctions;
+	private byte[] loadFunctions;
 
 	@Column(name="number_parts", nullable=false)
 	private short numberParts;
 
+	@Lob
 	@Column(name="page_arguments")
-	private Object pageArguments;
+	private byte[] pageArguments;
 
 	@Column(name="page_callback", nullable=false, length=255)
 	private String pageCallback;
@@ -74,8 +79,9 @@ public class MenuRouter implements net.zzh.common.persistence.model.INameableEnt
 	@Column(name="title_callback", nullable=false, length=255)
 	private String titleCallback;
 
+	@Lob
 	@Column(name="to_arg_functions", nullable=false)
-	private Object toArgFunctions;
+	private byte[] toArgFunctions;
 
 	@Column(nullable=false)
 	private int type;
@@ -99,11 +105,11 @@ public class MenuRouter implements net.zzh.common.persistence.model.INameableEnt
 		this.id = id;
 	}
 
-	public Object getAccessArguments() {
+	public byte[] getAccessArguments() {
 		return this.accessArguments;
 	}
 
-	public void setAccessArguments(Object accessArguments) {
+	public void setAccessArguments(byte[] accessArguments) {
 		this.accessArguments = accessArguments;
 	}
 
@@ -131,11 +137,11 @@ public class MenuRouter implements net.zzh.common.persistence.model.INameableEnt
 		this.deliveryCallback = deliveryCallback;
 	}
 
-	public Object getDescription() {
+	public String getDescription() {
 		return this.description;
 	}
 
-	public void setDescription(Object description) {
+	public void setDescription(String description) {
 		this.description = description;
 	}
 
@@ -147,19 +153,19 @@ public class MenuRouter implements net.zzh.common.persistence.model.INameableEnt
 		this.fit = fit;
 	}
 
-	public Object getIncludeFile() {
+	public String getIncludeFile() {
 		return this.includeFile;
 	}
 
-	public void setIncludeFile(Object includeFile) {
+	public void setIncludeFile(String includeFile) {
 		this.includeFile = includeFile;
 	}
 
-	public Object getLoadFunctions() {
+	public byte[] getLoadFunctions() {
 		return this.loadFunctions;
 	}
 
-	public void setLoadFunctions(Object loadFunctions) {
+	public void setLoadFunctions(byte[] loadFunctions) {
 		this.loadFunctions = loadFunctions;
 	}
 
@@ -171,11 +177,11 @@ public class MenuRouter implements net.zzh.common.persistence.model.INameableEnt
 		this.numberParts = numberParts;
 	}
 
-	public Object getPageArguments() {
+	public byte[] getPageArguments() {
 		return this.pageArguments;
 	}
 
-	public void setPageArguments(Object pageArguments) {
+	public void setPageArguments(byte[] pageArguments) {
 		this.pageArguments = pageArguments;
 	}
 
@@ -251,11 +257,11 @@ public class MenuRouter implements net.zzh.common.persistence.model.INameableEnt
 		this.titleCallback = titleCallback;
 	}
 
-	public Object getToArgFunctions() {
+	public byte[] getToArgFunctions() {
 		return this.toArgFunctions;
 	}
 
-	public void setToArgFunctions(Object toArgFunctions) {
+	public void setToArgFunctions(byte[] toArgFunctions) {
 		this.toArgFunctions = toArgFunctions;
 	}
 

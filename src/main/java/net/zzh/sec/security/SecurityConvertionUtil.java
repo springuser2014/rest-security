@@ -3,7 +3,7 @@ package net.zzh.sec.security;
 import java.util.Collection;
 import java.util.Set;
 
-import net.zzh.sec.model.Privilege;
+import net.zzh.sec.model.RolePermission;
 import net.zzh.sec.model.Role;
 
 import com.google.common.base.Function;
@@ -19,22 +19,22 @@ public final class SecurityConvertionUtil {
 
     // API
 
-    public static Set<Privilege> convertRolesToPrivileges(final Iterable<Role> roles) {
-        final Set<Privilege> privileges = Sets.<Privilege> newHashSet();
+    public static Set<RolePermission> convertRolesToRolePermissions(final Iterable<Role> roles) {
+        final Set<RolePermission> RolePermissions = Sets.<RolePermission> newHashSet();
         for (final Role roleOfUser : roles) {
-            privileges.addAll(roleOfUser.getPrivileges());
+            RolePermissions.addAll(roleOfUser.getRolePermissions());
         }
-        return privileges;
+        return RolePermissions;
     }
 
-    public static Collection<String> convertPrivilegesToPrivilegeNames(final Collection<Privilege> privileges) {
+    public static Collection<String> convertRolePermissionsToRolePermissionNames(final Collection<RolePermission> RolePermissions) {
         final Function<Object, String> toStringFunction = Functions.toStringFunction();
-        return Collections2.transform(privileges, toStringFunction);
+        return Collections2.transform(RolePermissions, toStringFunction);
     }
 
-    public static Collection<String> convertRolesToPrivilegeNames(final Iterable<Role> roles) {
-        final Set<Privilege> privileges = convertRolesToPrivileges(roles);
-        return convertPrivilegesToPrivilegeNames(privileges);
+    public static Collection<String> convertRolesToRolePermissionNames(final Iterable<Role> roles) {
+        final Set<RolePermission> RolePermissions = convertRolesToRolePermissions(roles);
+        return convertRolePermissionsToRolePermissionNames(RolePermissions);
     }
 
 }

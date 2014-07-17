@@ -22,7 +22,8 @@ public class CachePage implements net.zzh.common.persistence.model.INameableEnti
 	@Column(nullable=false)
 	private int created;
 
-	private Object data;
+	@Lob
+	private byte[] data;
 
 	@Column(nullable=false)
 	private int expire;
@@ -49,11 +50,11 @@ public class CachePage implements net.zzh.common.persistence.model.INameableEnti
 		this.created = created;
 	}
 
-	public Object getData() {
+	public byte[] getData() {
 		return this.data;
 	}
 
-	public void setData(Object data) {
+	public void setData(byte[] data) {
 		this.data = data;
 	}
 

@@ -3,8 +3,6 @@ package net.zzh.sec.persistence.setup;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
-
 import net.zzh.common.event.BeforeSetupEvent;
 import net.zzh.common.persistence.service.IPersistenceService;
 import net.zzh.common.search.ClientOperation;
@@ -19,8 +17,10 @@ import net.zzh.sec.persistence.service.IRolePermissionService;
 import net.zzh.sec.persistence.service.IRoleService;
 import net.zzh.sec.persistence.service.IUserService;
 import net.zzh.sec.util.SecurityConstants;
-import net.zzh.sec.util.SecurityConstants.Permissions;
+import net.zzh.sec.util.SecurityConstants.Modules;
 import net.zzh.sec.util.SecurityConstants.Roles;
+import net.zzh.sec.util.SecurityConstants.SystemPermissions;
+import net.zzh.sec.util.SecurityConstants.UserPermissions;
 
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.slf4j.Logger;
@@ -30,11 +30,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Sets;
 
 /**
  * 系统初始化，检查数据库是否存在管理员
@@ -82,9 +78,9 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 			/*
 			 * RolePermissionervice.deleteAll(); roleService.deleteAll(); UserService.deleteAll();
 			 */
-			createRolePermission();
 			createRoles();
 			createUsers();
+			createRolePermission();
 			
 			//System.out.println(logger.isDebugEnabled());
 			//procService.delete(0);
@@ -143,14 +139,23 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 	 * 创建权限
 	 */
 	private void createRolePermission() {
-		createRolePermissionIfNotExisting(Permissions.CAN_PERMISSION_READ);
-		createRolePermissionIfNotExisting(Permissions.CAN_PERMISSION_WRITE);
+		ImmutableTriple<String, ClientOperation, String> roleNameConstraint = new ImmutableTriple<String, ClientOperation, String>(SearchField.name.name(), ClientOperation.EQ, Roles.ADMINISTRATOR);
+		final Role role = roleService.searchOne(roleNameConstraint);
+		Integer rid = role.getRid();
+		
+		createRolePermissionIfNotExisting(UserPermissions.ADMINISTER_PERMISSIONS, rid, Modules.USER);
+		createRolePermissionIfNotExisting(UserPermissions.ADMINISTER_USERS, rid, Modules.USER);
+		createRolePermissionIfNotExisting(UserPermissions.ACCESS_USER_PROFILES, rid, Modules.USER);
+		createRolePermissionIfNotExisting(UserPermissions.CHANGE_OWN_USERNAME, rid, Modules.USER);
 
-		createRolePermissionIfNotExisting(Permissions.CAN_ROLE_READ);
-		createRolePermissionIfNotExisting(Permissions.CAN_ROLE_WRITE);
-
-		createRolePermissionIfNotExisting(Permissions.CAN_USER_READ);
-		createRolePermissionIfNotExisting(Permissions.CAN_USER_WRITE);
+		createRolePermissionIfNotExisting(SystemPermissions.ACCESS_ADMINISTRATION_PAGES, rid, Modules.SYSTEM);
+		createRolePermissionIfNotExisting(SystemPermissions.BLOCK_IP_ADDRESSES, rid, Modules.SYSTEM);
+		createRolePermissionIfNotExisting(SystemPermissions.ADMINISTER_MODULES, rid, Modules.SYSTEM);
+		createRolePermissionIfNotExisting(SystemPermissions.ADMINISTER_SITE_CONFIGURATION, rid, Modules.SYSTEM);
+		createRolePermissionIfNotExisting(SystemPermissions.ADMINISTER_THEMES, rid, Modules.SYSTEM);
+		createRolePermissionIfNotExisting(SystemPermissions.VIEW_THE_ADMINISTRATION_THEME, rid, Modules.SYSTEM);
+		createRolePermissionIfNotExisting(SystemPermissions.ACCESS_SITE_REPORTS, rid, Modules.SYSTEM);
+		createRolePermissionIfNotExisting(SystemPermissions.ACCESS_SITE_IN_MAINTENANCE_MODE, rid, Modules.SYSTEM);
 	}
 
 	/**
@@ -158,16 +163,17 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 	 * @param name Permission name
 	 * @param rid Role id
 	 */
-	final void createRolePermissionIfNotExisting(final String name, final int rid) {
-		ImmutableTriple<String, ClientOperation, String> nameConstraint = new ImmutableTriple<String, ClientOperation, String>(SearchField.name.name(), ClientOperation.EQ, name);
+	final void createRolePermissionIfNotExisting(final String name, final Integer rid, final String module) {
+		ImmutableTriple<String, ClientOperation, String> permissionNameConstraint = new ImmutableTriple<String, ClientOperation, String>(SearchField.name.name(), ClientOperation.EQ, name);
 		ImmutableTriple<String, ClientOperation, String> ridConstraint = new ImmutableTriple<String, ClientOperation, String>(SearchField.name.name(), ClientOperation.EQ, String.valueOf(rid));
-		final RolePermission entityByName = rolePermissionervice.searchOne(nameConstraint, ridConstraint);
+		final RolePermission entityByName = rolePermissionervice.searchOne(permissionNameConstraint, ridConstraint);
 		if (entityByName == null) {
 			final RolePermission entity = new RolePermission();
 			RolePermissionPK id = new RolePermissionPK();
 			id.setPermission(name);
 			id.setRid(rid);
 			entity.setId(id);
+			entity.setModule(module);
 			rolePermissionervice.create(entity);
 		}
 	}
@@ -191,23 +197,9 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 		Preconditions.checkNotNull(canUserRead);
 		Preconditions.checkNotNull(canUserWrite);
 
-		createRoleIfNotExisting(Roles.ROLE_ADMIN, Sets.<RolePermission> newHashSet(canUserRead, canUserWrite, canRoleRead, canRoleWrite, canRolePermissionRead, canRolePermissionWrite));
+		createRoleIfNotExisting(Roles.ADMINISTRATOR, Sets.<RolePermission> newHashSet(canUserRead, canUserWrite, canRoleRead, canRoleWrite, canRolePermissionRead, canRolePermissionWrite));
 		*/
-		final RolePermission canRolePermissionRead = rolePermissionervice.findByName(RolePermission.CAN_RolePermission_READ);
-		final RolePermission canRolePermissionWrite = rolePermissionervice.findByName(RolePermission.CAN_RolePermission_WRITE);
-		final RolePermission canRoleRead = rolePermissionervice.findByName(RolePermission.CAN_ROLE_READ);
-		final RolePermission canRoleWrite = rolePermissionervice.findByName(RolePermission.CAN_ROLE_WRITE);
-		final RolePermission canUserRead = rolePermissionervice.findByName(RolePermission.CAN_USER_READ);
-		final RolePermission canUserWrite = rolePermissionervice.findByName(RolePermission.CAN_USER_WRITE);
-
-		Preconditions.checkNotNull(canRolePermissionRead);
-		Preconditions.checkNotNull(canRolePermissionWrite);
-		Preconditions.checkNotNull(canRoleRead);
-		Preconditions.checkNotNull(canRoleWrite);
-		Preconditions.checkNotNull(canUserRead);
-		Preconditions.checkNotNull(canUserWrite);
-
-		createRoleIfNotExisting(Roles.ROLE_ADMIN, Sets.<RolePermission> newHashSet(canUserRead, canUserWrite, canRoleRead, canRoleWrite, canRolePermissionRead, canRolePermissionWrite));
+		createRoleIfNotExisting(Roles.ADMINISTRATOR, new ArrayList<RolePermission>(){{  }});
 		
 	}
 
@@ -222,7 +214,7 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 		if (entityByName == null) {
 			final Role entity = new Role();
 			entity.setName(name);
-			entity.setRolePermissions(RolePermission);
+			//entity.setRolePermissions(RolePermission);
 			roleService.create(entity);
 		}
 	}
@@ -232,9 +224,8 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 	 * 创建管理员
 	 */
 	final void createUsers() {
-		ImmutableTriple<String, ClientOperation, String> nameConstraint = new ImmutableTriple<String, ClientOperation, String>(SearchField.name.name(), ClientOperation.EQ, Roles.ROLE_ADMIN);
+		ImmutableTriple<String, ClientOperation, String> nameConstraint = new ImmutableTriple<String, ClientOperation, String>(SearchField.name.name(), ClientOperation.EQ, Roles.ADMINISTRATOR);
 		final Role roleAdmin = roleService.searchOne(nameConstraint);
-		//createUserIfNotExisting(SecurityConstants.ADMIN_EMAIL, SecurityConstants.ADMIN_PASS, Sets.<Role> newHashSet(roleAdmin));
 		createUserIfNotExisting(SecurityConstants.ADMIN_EMAIL, SecurityConstants.ADMIN_PASS, new ArrayList<Role>(){{ add(roleAdmin); }});
 	}
 

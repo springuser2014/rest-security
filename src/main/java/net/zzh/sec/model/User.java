@@ -29,7 +29,8 @@ public class User implements net.zzh.common.persistence.model.INameableEntity {
 	@Column(nullable=false)
 	private Date created;
 
-	private Object data;
+	@Lob
+	private byte[] data;
 
 	@Column(length=254)
 	private String init;
@@ -99,11 +100,11 @@ public class User implements net.zzh.common.persistence.model.INameableEntity {
 		this.created = created;
 	}
 
-	public Object getData() {
+	public byte[] getData() {
 		return this.data;
 	}
 
-	public void setData(Object data) {
+	public void setData(byte[] data) {
 		this.data = data;
 	}
 

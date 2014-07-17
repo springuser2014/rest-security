@@ -22,7 +22,8 @@ public class CacheImage implements net.zzh.common.persistence.model.INameableEnt
 	@Column(nullable=false)
 	private int created;
 
-	private Object data;
+	@Lob
+	private byte[] data;
 
 	@Column(nullable=false)
 	private int expire;
@@ -49,11 +50,11 @@ public class CacheImage implements net.zzh.common.persistence.model.INameableEnt
 		this.created = created;
 	}
 
-	public Object getData() {
+	public byte[] getData() {
 		return this.data;
 	}
 
-	public void setData(Object data) {
+	public void setData(byte[] data) {
 		this.data = data;
 	}
 

@@ -17,7 +17,8 @@ public class MenuCustom implements net.zzh.common.persistence.model.INameableEnt
 	@EmbeddedId
 	private MenuCustomPK id;
 
-	private Object description;
+	@Lob
+	private String description;
 
 	@Column(nullable=false, length=255)
 	private String title;
@@ -38,11 +39,11 @@ public class MenuCustom implements net.zzh.common.persistence.model.INameableEnt
 		this.id = id;
 	}
 
-	public Object getDescription() {
+	public String getDescription() {
 		return this.description;
 	}
 
-	public void setDescription(Object description) {
+	public void setDescription(String description) {
 		this.description = description;
 	}
 

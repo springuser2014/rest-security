@@ -50,7 +50,8 @@ public class MenuLink implements net.zzh.common.persistence.model.INameableEntit
 	@Column(nullable=false, length=255)
 	private String module;
 
-	private Object options;
+	@Lob
+	private byte[] options;
 
 	@Column(nullable=false)
 	private int p1;
@@ -190,11 +191,11 @@ public class MenuLink implements net.zzh.common.persistence.model.INameableEntit
 		this.module = module;
 	}
 
-	public Object getOptions() {
+	public byte[] getOptions() {
 		return this.options;
 	}
 
-	public void setOptions(Object options) {
+	public void setOptions(byte[] options) {
 		this.options = options;
 	}
 

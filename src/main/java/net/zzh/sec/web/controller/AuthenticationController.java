@@ -23,7 +23,7 @@ import com.google.common.collect.Sets;
 /**
  * - note: this controller will start working with the User model and, if necessary, will move to a Authentication resource (which is the way it should work)
  */
-@Controller
+//@Controller
 public class AuthenticationController {
 
     public AuthenticationController() {

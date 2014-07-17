@@ -22,7 +22,8 @@ public class System implements net.zzh.common.persistence.model.INameableEntity 
 	@Column(nullable=false)
 	private int bootstrap;
 
-	private Object info;
+	@Lob
+	private byte[] info;
 
 	@Column(nullable=false, length=255)
 	private String name;
@@ -61,11 +62,11 @@ public class System implements net.zzh.common.persistence.model.INameableEntity 
 		this.bootstrap = bootstrap;
 	}
 
-	public Object getInfo() {
+	public byte[] getInfo() {
 		return this.info;
 	}
 
-	public void setInfo(Object info) {
+	public void setInfo(byte[] info) {
 		this.info = info;
 	}
 

@@ -23,13 +23,16 @@ public class Watchdog implements net.zzh.common.persistence.model.INameableEntit
 	@Column(length=255)
 	private String link;
 
+	@Lob
 	@Column(nullable=false)
-	private Object location;
+	private String location;
 
+	@Lob
 	@Column(nullable=false)
-	private Object message;
+	private String message;
 
-	private Object referer;
+	@Lob
+	private String referer;
 
 	@Column(nullable=false)
 	private byte severity;
@@ -40,8 +43,9 @@ public class Watchdog implements net.zzh.common.persistence.model.INameableEntit
 	@Column(nullable=false, length=64)
 	private String type;
 
+	@Lob
 	@Column(nullable=false)
-	private Object variables;
+	private byte[] variables;
 
 	public Watchdog() {
 	}
@@ -70,27 +74,27 @@ public class Watchdog implements net.zzh.common.persistence.model.INameableEntit
 		this.link = link;
 	}
 
-	public Object getLocation() {
+	public String getLocation() {
 		return this.location;
 	}
 
-	public void setLocation(Object location) {
+	public void setLocation(String location) {
 		this.location = location;
 	}
 
-	public Object getMessage() {
+	public String getMessage() {
 		return this.message;
 	}
 
-	public void setMessage(Object message) {
+	public void setMessage(String message) {
 		this.message = message;
 	}
 
-	public Object getReferer() {
+	public String getReferer() {
 		return this.referer;
 	}
 
-	public void setReferer(Object referer) {
+	public void setReferer(String referer) {
 		this.referer = referer;
 	}
 
@@ -118,11 +122,11 @@ public class Watchdog implements net.zzh.common.persistence.model.INameableEntit
 		this.type = type;
 	}
 
-	public Object getVariables() {
+	public byte[] getVariables() {
 		return this.variables;
 	}
 
-	public void setVariables(Object variables) {
+	public void setVariables(byte[] variables) {
 		this.variables = variables;
 	}
 

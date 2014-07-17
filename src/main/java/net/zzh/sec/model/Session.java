@@ -23,7 +23,8 @@ public class Session implements net.zzh.common.persistence.model.INameableEntity
 	@Column(nullable=false, length=128)
 	private String hostname;
 
-	private Object session;
+	@Lob
+	private byte[] session;
 
 	@Column(nullable=false)
 	private int timestamp;
@@ -58,11 +59,11 @@ public class Session implements net.zzh.common.persistence.model.INameableEntity
 		this.hostname = hostname;
 	}
 
-	public Object getSession() {
+	public byte[] getSession() {
 		return this.session;
 	}
 
-	public void setSession(Object session) {
+	public void setSession(byte[] session) {
 		this.session = session;
 	}
 
