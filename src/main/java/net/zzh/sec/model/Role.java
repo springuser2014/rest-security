@@ -26,26 +26,13 @@ public class Role implements net.zzh.common.persistence.model.INameableEntity {
 	@Column(nullable=false)
 	private int weight;
 
-	//bi-directional many-to-many association to User
-	@ManyToMany
-	@JoinTable(
-		name="users_roles"
-		, joinColumns={
-			@JoinColumn(name="rid", nullable=false)
-			}
-		, inverseJoinColumns={
-			@JoinColumn(name="uid", nullable=false)
-			}
-		)
-	private List<User> users;
-
 	//bi-directional many-to-one association to RolePermission
 	@OneToMany(mappedBy="role")
 	private List<RolePermission> rolePermissions;
 
-	//bi-directional many-to-one association to UsersRole
-	@OneToMany(mappedBy="role")
-	private List<UsersRole> usersRoles;
+	//bi-directional many-to-many association to User
+	@ManyToMany(mappedBy="roles")
+	private List<User> users;
 
 	public Role() {
 	}
@@ -74,14 +61,6 @@ public class Role implements net.zzh.common.persistence.model.INameableEntity {
 		this.weight = weight;
 	}
 
-	public List<User> getUsers() {
-		return this.users;
-	}
-
-	public void setUsers(List<User> users) {
-		this.users = users;
-	}
-
 	public List<RolePermission> getRolePermissions() {
 		return this.rolePermissions;
 	}
@@ -104,26 +83,12 @@ public class Role implements net.zzh.common.persistence.model.INameableEntity {
 		return rolePermission;
 	}
 
-	public List<UsersRole> getUsersRoles() {
-		return this.usersRoles;
+	public List<User> getUsers() {
+		return this.users;
 	}
 
-	public void setUsersRoles(List<UsersRole> usersRoles) {
-		this.usersRoles = usersRoles;
-	}
-
-	public UsersRole addUsersRole(UsersRole usersRole) {
-		getUsersRoles().add(usersRole);
-		usersRole.setRole(this);
-
-		return usersRole;
-	}
-
-	public UsersRole removeUsersRole(UsersRole usersRole) {
-		getUsersRoles().remove(usersRole);
-		usersRole.setRole(null);
-
-		return usersRole;
+	public void setUsers(List<User> users) {
+		this.users = users;
 	}
 
 }

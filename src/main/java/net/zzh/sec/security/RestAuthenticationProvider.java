@@ -1,12 +1,13 @@
 package net.zzh.sec.security;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import net.zzh.common.security.SpringSecurityPrincipal;
 import net.zzh.sec.client.template.auth.AuthenticationRestTemplate;
 import net.zzh.sec.model.Role;
-import net.zzh.sec.model.dto.User;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Profile;
@@ -86,16 +87,16 @@ public class RestAuthenticationProvider extends AbstractUserDetailsAuthenticatio
 
         UserDetails loadedUser = null;
         try {
-            final ResponseEntity<User> authenticationResponse = authenticationApi.authenticate(name, password);
+            final ResponseEntity<net.zzh.sec.model.dto.Profile> authenticationResponse = authenticationApi.authenticate(name, password);
             if (authenticationResponse.getStatusCode().value() == 401) {
                 // temporary - the idea here is to generate the not authorized exception - not by hand, but by returning wrong credentials which in turn will be refused later
                 return new org.springframework.security.core.userdetails.User("wrongUsername", "wrongPass", Lists.<GrantedAuthority> newArrayList());
             }
 
-            final User principalFromRest = authenticationResponse.getBody();
+            final net.zzh.sec.model.dto.Profile profileFromRest = authenticationResponse.getBody();
 
-            final Set<String> privilegesFromRest = Sets.newHashSet();
-            final Set<Role> roles = principalFromRest.getRoles();
+            final List<String> privilegesFromRest = new ArrayList<String>();
+            final List<Role> roles = profileFromRest.getRoles();
             for (final Role role : roles) {
                 privilegesFromRest.addAll(Collections2.transform(role.getRolePermissions(), Functions.toStringFunction()));
             }

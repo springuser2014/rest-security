@@ -17,10 +17,10 @@ public class UsersRole implements net.zzh.common.persistence.model.INameableEnti
 	@EmbeddedId
 	private UsersRolePK id;
 
-	//bi-directional many-to-one association to Role
+	//bi-directional many-to-one association to User
 	@ManyToOne
-	@JoinColumn(name="rid", nullable=false, insertable=false, updatable=false)
-	private Role role;
+	@JoinColumn(name="uid", nullable=false, insertable=false, updatable=false)
+	private User user;
 
 	public UsersRole() {
 	}
@@ -33,12 +33,12 @@ public class UsersRole implements net.zzh.common.persistence.model.INameableEnti
 		this.id = id;
 	}
 
-	public Role getRole() {
-		return this.role;
+	public User getUser() {
+		return this.user;
 	}
 
-	public void setRole(Role role) {
-		this.role = role;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 }

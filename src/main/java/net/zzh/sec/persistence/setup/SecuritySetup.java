@@ -1,28 +1,16 @@
 package net.zzh.sec.persistence.setup;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.Set;
+
 import net.zzh.common.event.BeforeSetupEvent;
 import net.zzh.common.persistence.service.IPersistenceService;
-import net.zzh.common.search.ClientOperation;
 import net.zzh.common.spring.CommonSpringProfileUtil;
-import net.zzh.common.util.SearchField;
-import net.zzh.common.web.WebConstants;
-import net.zzh.sec.model.RolePermission;
+import net.zzh.sec.model.Privilege;
 import net.zzh.sec.model.Role;
-import net.zzh.sec.model.RolePermissionPK;
-import net.zzh.sec.model.User;
-import net.zzh.sec.persistence.service.IRolePermissionService;
 import net.zzh.sec.persistence.service.IRoleService;
 import net.zzh.sec.persistence.service.IUserService;
-import net.zzh.sec.util.SecurityConstants;
-import net.zzh.sec.util.SecurityConstants.Modules;
-import net.zzh.sec.util.SecurityConstants.Roles;
-import net.zzh.sec.util.SecurityConstants.SystemPermissions;
-import net.zzh.sec.util.SecurityConstants.UserPermissions;
+import net.zzh.sec.util.SecurityConstants.Privileges;
 
-import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,14 +33,11 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 	private boolean setupDone;
 
 	@Autowired
-	private IUserService userService;
+	private IUserService principalService;
 
 	@Autowired
 	private IRoleService roleService;
 
-	@Autowired
-	private IRolePermissionService rolePermissionervice;
-	
 	@Autowired
 	private ApplicationContext eventPublisher;
 
@@ -76,19 +61,19 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 			eventPublisher.publishEvent(new BeforeSetupEvent(this));
 
 			/*
-			 * RolePermissionervice.deleteAll(); roleService.deleteAll(); UserService.deleteAll();
+			 * privilegeService.deleteAll(); roleService.deleteAll(); principalService.deleteAll();
 			 */
+			createPrivileges();
 			createRoles();
-			createUsers();
-			createRolePermission();
+			createPrincipals();
 			
 			//System.out.println(logger.isDebugEnabled());
 			//procService.delete(0);
 			
 			
-			//List list = RolePermissionervice.searchAll("SELECT priv_id,description,name FROM rest.RolePermission");
+			//List list = privilegeService.searchAll("SELECT priv_id,description,name FROM rest.privilege");
 			//System.out.println(list.size());
-			//Page page = persistenceService.findPaginated(1, 10, "select name,(select ROLE_ID from Role_RolePermission where a.PRIV_ID = PRIV_ID) from RolePermission a");
+			//Page page = persistenceService.findPaginated(1, 10, "select name,(select ROLE_ID from Role_Privilege where a.PRIV_ID = PRIV_ID) from Privilege a");
 			//Page page = persistenceService.findPaginated(1, 10, "select a.username,(select b.s0204 from S02 b where b.s0200 in (select c.s0301 from S03 c where c.s0302 = a.id)) from Jiveuser a");
 
 			/*
@@ -112,12 +97,12 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 			//Page page = persistenceService.findNativeQueryPaginated(1, 10, "SELECT proc_id, proc_name FROM proc");
 			
 			// Find
-			//List list = persistenceService.findByNativeSQL("select User_id, name, password, locked from User");
-			//List list = RolePermissionervice.findAll();
-			//RolePermission RolePermission = RolePermissionervice.findOne(1);
-			//RolePermission = RolePermissionervice.findByName("ROLE_RolePermission_READ");
-			//Page page = persistenceService.findPaginated(1, 10, "select id, name from RolePermission a");
-			//System.out.println(RolePermission.getName());
+			//List list = persistenceService.findByNativeSQL("select principal_id, name, password, locked from principal");
+			//List list = privilegeService.findAll();
+			//Privilege Privilege = privilegeService.findOne(1);
+			//Privilege = privilegeService.findByName("ROLE_PRIVILEGE_READ");
+			//Page page = persistenceService.findPaginated(1, 10, "select id, name from Privilege a");
+			//System.out.println(Privilege.getName());
 			
 			// JPA
 			//Page page = persistenceService.findPaginated(1, 10, "select a, (select c.id from Jiveuser c where c.id = a.s02.id) from S03 a");
@@ -135,47 +120,30 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 	}
 
 	/**
-	 * RolePermission
+	 * Privilege
 	 * 创建权限
 	 */
-	private void createRolePermission() {
-		ImmutableTriple<String, ClientOperation, String> roleNameConstraint = new ImmutableTriple<String, ClientOperation, String>(SearchField.name.name(), ClientOperation.EQ, Roles.ADMINISTRATOR);
-		final Role role = roleService.searchOne(roleNameConstraint);
-		Integer rid = role.getRid();
-		
-		createRolePermissionIfNotExisting(UserPermissions.ADMINISTER_PERMISSIONS, rid, Modules.USER);
-		createRolePermissionIfNotExisting(UserPermissions.ADMINISTER_USERS, rid, Modules.USER);
-		createRolePermissionIfNotExisting(UserPermissions.ACCESS_USER_PROFILES, rid, Modules.USER);
-		createRolePermissionIfNotExisting(UserPermissions.CHANGE_OWN_USERNAME, rid, Modules.USER);
+	private void createPrivileges() {
+		createPrivilegeIfNotExisting(Privileges.CAN_PRIVILEGE_READ);
+		createPrivilegeIfNotExisting(Privileges.CAN_PRIVILEGE_WRITE);
 
-		createRolePermissionIfNotExisting(SystemPermissions.ACCESS_ADMINISTRATION_PAGES, rid, Modules.SYSTEM);
-		createRolePermissionIfNotExisting(SystemPermissions.BLOCK_IP_ADDRESSES, rid, Modules.SYSTEM);
-		createRolePermissionIfNotExisting(SystemPermissions.ADMINISTER_MODULES, rid, Modules.SYSTEM);
-		createRolePermissionIfNotExisting(SystemPermissions.ADMINISTER_SITE_CONFIGURATION, rid, Modules.SYSTEM);
-		createRolePermissionIfNotExisting(SystemPermissions.ADMINISTER_THEMES, rid, Modules.SYSTEM);
-		createRolePermissionIfNotExisting(SystemPermissions.VIEW_THE_ADMINISTRATION_THEME, rid, Modules.SYSTEM);
-		createRolePermissionIfNotExisting(SystemPermissions.ACCESS_SITE_REPORTS, rid, Modules.SYSTEM);
-		createRolePermissionIfNotExisting(SystemPermissions.ACCESS_SITE_IN_MAINTENANCE_MODE, rid, Modules.SYSTEM);
+		createPrivilegeIfNotExisting(Privileges.CAN_ROLE_READ);
+		createPrivilegeIfNotExisting(Privileges.CAN_ROLE_WRITE);
+
+		createPrivilegeIfNotExisting(Privileges.CAN_USER_READ);
+		createPrivilegeIfNotExisting(Privileges.CAN_USER_WRITE);
 	}
 
 	/**
 	 * 如果不存在,创建权限
-	 * @param name Permission name
-	 * @param rid Role id
+	 * @param name
 	 */
-	final void createRolePermissionIfNotExisting(final String name, final Integer rid, final String module) {
-		ImmutableTriple<String, ClientOperation, String> permissionNameConstraint = new ImmutableTriple<String, ClientOperation, String>(SearchField.name.name(), ClientOperation.EQ, name);
-		ImmutableTriple<String, ClientOperation, String> ridConstraint = new ImmutableTriple<String, ClientOperation, String>(SearchField.name.name(), ClientOperation.EQ, String.valueOf(rid));
-		final RolePermission entityByName = rolePermissionervice.searchOne(permissionNameConstraint, ridConstraint);
+	final void createPrivilegeIfNotExisting(final String name) {
+		/*final Privilege entityByName = privilegeService.findByName(name);
 		if (entityByName == null) {
-			final RolePermission entity = new RolePermission();
-			RolePermissionPK id = new RolePermissionPK();
-			id.setPermission(name);
-			id.setRid(rid);
-			entity.setId(id);
-			entity.setModule(module);
-			rolePermissionervice.create(entity);
-		}
+			final Privilege entity = new Privilege(name);
+			privilegeService.create(entity);
+		}*/
 	}
 
 	/**
@@ -183,50 +151,48 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 	 * 创建角色
 	 */
 	private void createRoles() {
-/*		final RolePermission canRolePermissionRead = RolePermissionervice.findByName(RolePermission.CAN_RolePermission_READ);
-		final RolePermission canRolePermissionWrite = RolePermissionervice.findByName(RolePermission.CAN_RolePermission_WRITE);
-		final RolePermission canRoleRead = RolePermissionervice.findByName(RolePermission.CAN_ROLE_READ);
-		final RolePermission canRoleWrite = RolePermissionervice.findByName(RolePermission.CAN_ROLE_WRITE);
-		final RolePermission canUserRead = RolePermissionervice.findByName(RolePermission.CAN_USER_READ);
-		final RolePermission canUserWrite = RolePermissionervice.findByName(RolePermission.CAN_USER_WRITE);
+/*		final Privilege canPrivilegeRead = privilegeService.findByName(Privileges.CAN_PRIVILEGE_READ);
+		final Privilege canPrivilegeWrite = privilegeService.findByName(Privileges.CAN_PRIVILEGE_WRITE);
+		final Privilege canRoleRead = privilegeService.findByName(Privileges.CAN_ROLE_READ);
+		final Privilege canRoleWrite = privilegeService.findByName(Privileges.CAN_ROLE_WRITE);
+		final Privilege canUserRead = privilegeService.findByName(Privileges.CAN_USER_READ);
+		final Privilege canUserWrite = privilegeService.findByName(Privileges.CAN_USER_WRITE);
 
-		Preconditions.checkNotNull(canRolePermissionRead);
-		Preconditions.checkNotNull(canRolePermissionWrite);
+		Preconditions.checkNotNull(canPrivilegeRead);
+		Preconditions.checkNotNull(canPrivilegeWrite);
 		Preconditions.checkNotNull(canRoleRead);
 		Preconditions.checkNotNull(canRoleWrite);
 		Preconditions.checkNotNull(canUserRead);
 		Preconditions.checkNotNull(canUserWrite);
 
-		createRoleIfNotExisting(Roles.ADMINISTRATOR, Sets.<RolePermission> newHashSet(canUserRead, canUserWrite, canRoleRead, canRoleWrite, canRolePermissionRead, canRolePermissionWrite));
+		createRoleIfNotExisting(Roles.ROLE_ADMIN, Sets.<Privilege> newHashSet(canUserRead, canUserWrite, canRoleRead, canRoleWrite, canPrivilegeRead, canPrivilegeWrite));
 		*/
-		createRoleIfNotExisting(Roles.ADMINISTRATOR, new ArrayList<RolePermission>(){{  }});
-		
 	}
 
 	/**
 	 * 如果不存在,创建角色
 	 * @param name
-	 * @param RolePermission
+	 * @param privileges
 	 */
-	final void createRoleIfNotExisting(final String name, final List<RolePermission> RolePermission) {
-		ImmutableTriple<String, ClientOperation, String> nameConstraint = new ImmutableTriple<String, ClientOperation, String>(SearchField.name.name(), ClientOperation.EQ, name);
-		final Role entityByName = roleService.searchOne(nameConstraint);
+	final void createRoleIfNotExisting(final String name, final Set<Privilege> privileges) {
+		/*final Role entityByName = roleService.findByName(name);
 		if (entityByName == null) {
-			final Role entity = new Role();
-			entity.setName(name);
-			//entity.setRolePermissions(RolePermission);
+			final Role entity = new Role(name);
+			entity.setPrivileges(privileges);
 			roleService.create(entity);
-		}
+		}*/
 	}
 
 	/**
-	 * User/User
+	 * Principal/User
 	 * 创建管理员
 	 */
-	final void createUsers() {
-		ImmutableTriple<String, ClientOperation, String> nameConstraint = new ImmutableTriple<String, ClientOperation, String>(SearchField.name.name(), ClientOperation.EQ, Roles.ADMINISTRATOR);
-		final Role roleAdmin = roleService.searchOne(nameConstraint);
-		createUserIfNotExisting(SecurityConstants.ADMIN_EMAIL, SecurityConstants.ADMIN_PASS, new ArrayList<Role>(){{ add(roleAdmin); }});
+	final void createPrincipals() {
+		/*final Role roleAdmin = roleService.findByName(Roles.ROLE_ADMIN);
+
+		// createPrincipalIfNotExisting(SecurityConstants.ADMIN_USERNAME, SecurityConstants.ADMIN_PASS, Sets.<Role> newHashSet(roleAdmin));
+		createPrincipalIfNotExisting(SecurityConstants.ADMIN_EMAIL, SecurityConstants.ADMIN_PASS, Sets.<Role> newHashSet(roleAdmin));
+		*/
 	}
 
 	/**
@@ -235,19 +201,12 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 	 * @param pass
 	 * @param roles
 	 */
-	final void createUserIfNotExisting(final String loginName, final String pass, final List<Role> roles) {
-		ImmutableTriple<String, ClientOperation, String> nameConstraint = new ImmutableTriple<String, ClientOperation, String>(SearchField.name.name(), ClientOperation.EQ, loginName);
-		final User entityByName = userService.searchOne(nameConstraint);
+	final void createPrincipalIfNotExisting(final String loginName, final String pass, final Set<Role> roles) {
+		/*final Principal entityByName = principalService.findByName(loginName);
 		if (entityByName == null) {
-			final User entity = new User();
-			entity.setName(loginName);
-			entity.setPass(pass);
-			entity.setRoles(roles);
-			entity.setCreated(new Date());
-			entity.setTheme(WebConstants.ORIGINAL_DEFAULT_THEME_NAME);
-			entity.setStatus(Byte.parseByte("1"));
-			userService.create(entity);
-		}
+			final Principal entity = new Principal(loginName, pass, roles);
+			principalService.create(entity);
+		}*/
 	}
 
 }

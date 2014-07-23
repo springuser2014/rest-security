@@ -70,8 +70,21 @@ public class User implements net.zzh.common.persistence.model.INameableEntity {
 	private String timezone;
 
 	//bi-directional many-to-many association to Role
-	@ManyToMany(mappedBy="users")
+	@ManyToMany
+	@JoinTable(
+		name="users_roles"
+		, joinColumns={
+			@JoinColumn(name="uid", nullable=false)
+			}
+		, inverseJoinColumns={
+			@JoinColumn(name="rid", nullable=false)
+			}
+		)
 	private List<Role> roles;
+
+	//bi-directional many-to-one association to UsersRole
+	@OneToMany(mappedBy="user")
+	private List<UsersRole> usersRoles;
 
 	public User() {
 	}
@@ -210,6 +223,28 @@ public class User implements net.zzh.common.persistence.model.INameableEntity {
 
 	public void setRoles(List<Role> roles) {
 		this.roles = roles;
+	}
+
+	public List<UsersRole> getUsersRoles() {
+		return this.usersRoles;
+	}
+
+	public void setUsersRoles(List<UsersRole> usersRoles) {
+		this.usersRoles = usersRoles;
+	}
+
+	public UsersRole addUsersRole(UsersRole usersRole) {
+		getUsersRoles().add(usersRole);
+		usersRole.setUser(this);
+
+		return usersRole;
+	}
+
+	public UsersRole removeUsersRole(UsersRole usersRole) {
+		getUsersRoles().remove(usersRole);
+		usersRole.setUser(null);
+
+		return usersRole;
 	}
 
 }

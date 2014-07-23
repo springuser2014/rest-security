@@ -6,6 +6,7 @@ package net.zzh.ui.web.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.zzh.sec.model.Principal;
 import net.zzh.ui.web.common.CommonResponseJSONBean;
 
 import org.springframework.stereotype.Controller;

@@ -3,9 +3,9 @@ package net.zzh.sec.persistence.service.impl;
 import org.apache.commons.lang3.tuple.Triple;
 import net.zzh.common.persistence.service.AbstractService;
 import net.zzh.common.search.ClientOperation;
-import net.zzh.sec.model.Privilege;
-import net.zzh.sec.persistence.dao.IPrivilegeJpaDAO;
-import net.zzh.sec.persistence.service.IPrivilegeService;
+import net.zzh.sec.model.RolePermission;
+import net.zzh.sec.persistence.dao.IRolePermissionJpaDAO;
+import net.zzh.sec.persistence.service.IRolePermissionService;
 import net.zzh.sec.util.SearchUtilSec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -15,13 +15,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class PrivilegeServiceImpl extends AbstractService<Privilege> implements IPrivilegeService {
+public class RolePermissionServiceImpl extends AbstractService<RolePermission> implements IRolePermissionService {
 
     @Autowired
-    IPrivilegeJpaDAO dao;
+    IRolePermissionJpaDAO dao;
 
-    public PrivilegeServiceImpl() {
-        super(Privilege.class);
+    public RolePermissionServiceImpl() {
+        super(RolePermission.class);
     }
 
     // API
@@ -35,17 +35,17 @@ public class PrivilegeServiceImpl extends AbstractService<Privilege> implements 
     // Spring
 
     @Override
-    protected final IPrivilegeJpaDAO getDao() {
+    protected final IRolePermissionJpaDAO getDao() {
         return dao;
     }
 
     @Override
-    public Specification<Privilege> resolveConstraint(final Triple<String, ClientOperation, String> constraint) {
-        return SearchUtilSec.resolveConstraint(constraint, Privilege.class);
+    public Specification<RolePermission> resolveConstraint(final Triple<String, ClientOperation, String> constraint) {
+        return SearchUtilSec.resolveConstraint(constraint, RolePermission.class);
     }
 
     @Override
-    protected JpaSpecificationExecutor<Privilege> getSpecificationExecutor() {
+    protected JpaSpecificationExecutor<RolePermission> getSpecificationExecutor() {
         return dao;
     }
 

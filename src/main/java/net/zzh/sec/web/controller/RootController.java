@@ -20,7 +20,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 
-//@Controller
+@Controller
 public class RootController {
 	
 	public RootController() {

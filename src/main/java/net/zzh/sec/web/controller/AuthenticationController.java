@@ -5,7 +5,7 @@ import java.util.Collection;
 import net.zzh.common.security.SpringSecurityUtil;
 import net.zzh.sec.model.Privilege;
 import net.zzh.sec.model.Role;
-import net.zzh.sec.model.dto.User;
+import net.zzh.sec.model.dto.Profile;
 import net.zzh.sec.web.common.UriMappingConstants;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -23,7 +23,7 @@ import com.google.common.collect.Sets;
 /**
  * - note: this controller will start working with the User model and, if necessary, will move to a Authentication resource (which is the way it should work)
  */
-//@Controller
+@Controller
 public class AuthenticationController {
 
     public AuthenticationController() {
@@ -35,7 +35,7 @@ public class AuthenticationController {
     @RequestMapping(method = RequestMethod.GET, value = UriMappingConstants.AUTHENTICATION)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public User createAuthentication() {
+    public Profile createAuthentication() {
     	System.out.println(UriMappingConstants.AUTHENTICATION);
         final Authentication authenticationInSpring = SpringSecurityUtil.getCurrentAuthentication();
 
@@ -47,7 +47,7 @@ public class AuthenticationController {
         final Collection<Privilege> privileges = Collections2.transform(authenticationInSpring.getAuthorities(), springAuthorityToPrivilegeFunction);
         final Role defaultRole = new Role("defaultRole", Sets.<Privilege> newHashSet(privileges));
 
-        final User authenticationResource = new User(authenticationInSpring.getName(), (String) authenticationInSpring.getCredentials(), Sets.<Role> newHashSet(defaultRole));
+        final Profile authenticationResource = new Profile(authenticationInSpring.getName(), (String) authenticationInSpring.getCredentials(), Sets.<Role> newHashSet(defaultRole));
         return authenticationResource;
     }
 

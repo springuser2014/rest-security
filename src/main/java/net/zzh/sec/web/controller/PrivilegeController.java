@@ -10,7 +10,7 @@ import net.zzh.common.web.controller.AbstractController;
 import net.zzh.common.web.controller.ISortingController;
 import net.zzh.sec.model.RolePermission;
 import net.zzh.sec.persistence.service.IRolePermissionService;
-import net.zzh.sec.util.SecurityConstants.RolePermissions;
+import net.zzh.sec.util.SecurityConstants.Privileges;
 import net.zzh.sec.web.common.UriMappingConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,14 +25,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.util.UriComponentsBuilder;
 
-//@Controller
-//@RequestMapping(value = UriMappingConstants.PRIVILEGES)
-public class RolePermissionController extends AbstractController<RolePermission> implements ISortingController<RolePermission> {
+@Controller
+@RequestMapping(value = UriMappingConstants.PRIVILEGES)
+public class PrivilegeController extends AbstractController<RolePermission> implements ISortingController<RolePermission> {
 
     @Autowired
     private IRolePermissionService service;
 
-    public RolePermissionController() {
+    public PrivilegeController() {
         super(RolePermission.class);
     }
 
@@ -42,14 +42,14 @@ public class RolePermissionController extends AbstractController<RolePermission>
 
     @RequestMapping(params = { QueryConstants.Q_PARAM }, method = RequestMethod.GET)
     @ResponseBody
-    @Secured(RolePermissions.CAN_PRIVILEGE_READ)
+    @Secured(Privileges.CAN_PRIVILEGE_READ)
     public List<RolePermission> searchAll(@RequestParam(QueryConstants.Q_PARAM) final String queryString) {
         return searchAllInternal(queryString);
     }
 
     @RequestMapping(params = { QueryConstants.Q_PARAM, QueryConstants.PAGE, QueryConstants.SIZE }, method = RequestMethod.GET)
     @ResponseBody
-    @Secured(RolePermissions.CAN_PRIVILEGE_READ)
+    @Secured(Privileges.CAN_PRIVILEGE_READ)
     public List<RolePermission> searchAllPaginated(@RequestParam(QueryConstants.Q_PARAM) final String queryString, @RequestParam(value = QueryConstants.PAGE) final int page, @RequestParam(value = QueryConstants.SIZE) final int size) {
         return searchAllInternalPaginated(queryString, page, size);
     }
@@ -58,7 +58,7 @@ public class RolePermissionController extends AbstractController<RolePermission>
 
     @RequestMapping(params = { QueryConstants.PAGE, QueryConstants.SIZE, QueryConstants.SORT_BY }, method = RequestMethod.GET)
     @ResponseBody
-    @Secured(RolePermissions.CAN_PRIVILEGE_READ)
+    @Secured(Privileges.CAN_PRIVILEGE_READ)
     public List<RolePermission> findAllPaginatedAndSorted(@RequestParam(value = QueryConstants.PAGE) final int page, @RequestParam(value = QueryConstants.SIZE) final int size, @RequestParam(value = QueryConstants.SORT_BY) final String sortBy,
             @RequestParam(value = QueryConstants.SORT_ORDER) final String sortOrder, final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
         return findPaginatedAndSortedInternal(page, size, sortBy, sortOrder, uriBuilder, response);
@@ -66,21 +66,21 @@ public class RolePermissionController extends AbstractController<RolePermission>
 
     @RequestMapping(params = { QueryConstants.PAGE, QueryConstants.SIZE }, method = RequestMethod.GET)
     @ResponseBody
-    @Secured(RolePermissions.CAN_PRIVILEGE_READ)
+    @Secured(Privileges.CAN_PRIVILEGE_READ)
     public List<RolePermission> findAllPaginated(@RequestParam(value = QueryConstants.PAGE) final int page, @RequestParam(value = QueryConstants.SIZE) final int size, final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
         return findPaginatedAndSortedInternal(page, size, null, null, uriBuilder, response);
     }
 
     @RequestMapping(params = { QueryConstants.SORT_BY }, method = RequestMethod.GET)
     @ResponseBody
-    @Secured(RolePermissions.CAN_PRIVILEGE_READ)
+    @Secured(Privileges.CAN_PRIVILEGE_READ)
     public List<RolePermission> findAllSorted(@RequestParam(value = QueryConstants.SORT_BY) final String sortBy, @RequestParam(value = QueryConstants.SORT_ORDER) final String sortOrder) {
         return findAllSortedInternal(sortBy, sortOrder);
     }
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    @Secured(RolePermissions.CAN_PRIVILEGE_READ)
+    @Secured(Privileges.CAN_PRIVILEGE_READ)
     public List<RolePermission> findAll(final HttpServletRequest request, final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
         return findAllInternal(request, uriBuilder, response);
     }
@@ -89,7 +89,7 @@ public class RolePermissionController extends AbstractController<RolePermission>
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseBody
-    @Secured(RolePermissions.CAN_PRIVILEGE_READ)
+    @Secured(Privileges.CAN_PRIVILEGE_READ)
     public RolePermission findOne(@PathVariable("id") final Long id, final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
         return findOneInternal(id, uriBuilder, response);
     }
@@ -98,7 +98,7 @@ public class RolePermissionController extends AbstractController<RolePermission>
 
     @RequestMapping(method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    @Secured(RolePermissions.CAN_PRIVILEGE_WRITE)
+    @Secured(Privileges.CAN_PRIVILEGE_WRITE)
     public void create(@RequestBody final RolePermission resource, final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
         createInternal(resource, uriBuilder, response);
     }
@@ -107,7 +107,7 @@ public class RolePermissionController extends AbstractController<RolePermission>
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
-    @Secured(RolePermissions.CAN_PRIVILEGE_WRITE)
+    @Secured(Privileges.CAN_PRIVILEGE_WRITE)
     public void update(@PathVariable("id") final Long id, @RequestBody final RolePermission resource) {
         updateInternal(id, resource);
     }
@@ -116,7 +116,7 @@ public class RolePermissionController extends AbstractController<RolePermission>
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Secured(RolePermissions.CAN_PRIVILEGE_WRITE)
+    @Secured(Privileges.CAN_PRIVILEGE_WRITE)
     public void delete(@PathVariable("id") final Long id) {
         deleteByIdInternal(id);
     }
