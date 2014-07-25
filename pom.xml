@@ -262,7 +262,7 @@
 	</build>
 	<properties>
 		<jdk.version>1.7</jdk.version>
-		<spring.version>4.0.0.M2</spring.version>
-		<spring.security.version>3.2.1.CI-SNAPSHOT</spring.security.version>
+		<spring.version>4.0.4.RELEASE</spring.version>
+		<spring.security.version>4.0.0.CI-SNAPSHOT</spring.security.version>
 	</properties>
 </project>
