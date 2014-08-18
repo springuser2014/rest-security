@@ -5,7 +5,6 @@ import java.util.List;
 import org.apache.commons.lang3.tuple.Triple;
 import net.zzh.common.search.ClientOperation;
 import net.zzh.common.web.RestPreconditions;
-import net.zzh.sec.model.Principal;
 import net.zzh.sec.model.dto.UserToProfileFunction;
 import net.zzh.sec.model.dto.Profile;
 import net.zzh.sec.persistence.service.IUserService;
@@ -21,8 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.Lists;
 
-@Service
-@Transactional
+//@Service
+//@Transactional
 public class UserServiceImpl implements IUsersService {
 
     @Autowired

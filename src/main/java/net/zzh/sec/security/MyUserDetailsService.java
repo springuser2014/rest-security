@@ -36,9 +36,9 @@ import com.google.common.collect.Sets;
  * @author zhenhuazhao
  *
  */
-@Service
-@Component
-@Transactional
+//@Service
+//@Component
+//@Transactional
 public class MyUserDetailsService implements UserDetailsService {
 
 	@Autowired

@@ -41,7 +41,7 @@ public class PersistenceServiceImpl implements IPersistenceService {
 	
 	@Override
 	public Page findPaginated(final int page, final int size, final String sql) {
-		int totalPages = 0,
+		/*int totalPages = 0,
 			count = em.createQuery(sql).getResultList().size();
 
 		if(count/size<0){
@@ -49,7 +49,7 @@ public class PersistenceServiceImpl implements IPersistenceService {
 		}else{
 			totalPages = ((double)count/(double)size)>(count/size) ? count/size+1 : count/size;
 		}
-		int start = (page>totalPages ? totalPages : page-1) * size;
+		int start = (page>totalPages ? totalPages : page-1) * size;*/
 		Query query = em.createQuery(sql);
 		
 		List resultList = query.getResultList();
@@ -62,7 +62,7 @@ public class PersistenceServiceImpl implements IPersistenceService {
 	
 	@Override
 	public Page findNativeQueryPaginated(final int page, final int size, final String sql) {
-		int totalPages = 0,
+		/*int totalPages = 0,
 			count = em.createNativeQuery(sql).getResultList().size();
 
 		if(count/size<0){
@@ -70,7 +70,7 @@ public class PersistenceServiceImpl implements IPersistenceService {
 		}else{
 			totalPages = ((double)count/(double)size)>(count/size) ? count/size+1 : count/size;
 		}
-		int start = (page>totalPages ? totalPages : page-1) * size;
+		int start = (page>totalPages ? totalPages : page-1) * size;*/
 		Query query = em.createNativeQuery(sql);
 		
 		List resultList = query.getResultList();

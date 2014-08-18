@@ -2,11 +2,13 @@ package net.zzh.sec.persistence.setup;
 
 import java.util.Set;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import net.zzh.common.event.BeforeSetupEvent;
 import net.zzh.common.persistence.service.IPersistenceService;
 import net.zzh.common.spring.CommonSpringProfileUtil;
-import net.zzh.sec.model.Privilege;
 import net.zzh.sec.model.Role;
+import net.zzh.sec.model.RolePermission;
 import net.zzh.sec.persistence.service.IRoleService;
 import net.zzh.sec.persistence.service.IUserService;
 import net.zzh.sec.util.SecurityConstants.Privileges;
@@ -44,6 +46,10 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 	@Autowired
 	private IPersistenceService persistenceService;
 	
+	@Autowired(required=false)
+	@PersistenceContext
+	private EntityManager em;
+	
 	public SecuritySetup() {
 		super();
 	}
@@ -70,7 +76,6 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 			//System.out.println(logger.isDebugEnabled());
 			//procService.delete(0);
 			
-			
 			//List list = privilegeService.searchAll("SELECT priv_id,description,name FROM rest.privilege");
 			//System.out.println(list.size());
 			//Page page = persistenceService.findPaginated(1, 10, "select name,(select ROLE_ID from Role_Privilege where a.PRIV_ID = PRIV_ID) from Privilege a");
@@ -79,6 +84,16 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 			/*
 			 *  success
 			 */
+
+//			CriteriaBuilder builder = em.getCriteriaBuilder();
+//			CriteriaQuery<Test> query = builder.createQuery(Test.class);
+//			Root<Test> root = query.from(Test.class);
+//
+//			Predicate hasBirthday = builder.equal(root.get(Test_.idtest), 1);
+//			//Predicate isLongTermTest = builder.lessThan(root.get(Test_.createdAt), today.minusYears(2); 
+//			query.where(builder.and(hasBirthday));
+//			List list = em.createQuery(query.select(root)).getResultList();
+//			System.out.println(list.size());
 			
 			// Create
 			//Test test = new Test();
@@ -174,7 +189,7 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 	 * @param name
 	 * @param privileges
 	 */
-	final void createRoleIfNotExisting(final String name, final Set<Privilege> privileges) {
+	final void createRoleIfNotExisting(final String name, final Set<RolePermission> privileges) {
 		/*final Role entityByName = roleService.findByName(name);
 		if (entityByName == null) {
 			final Role entity = new Role(name);

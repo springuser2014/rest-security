@@ -3,7 +3,6 @@ package net.zzh.sec.web.controller;
 import java.util.Collection;
 
 import net.zzh.common.security.SpringSecurityUtil;
-import net.zzh.sec.model.Privilege;
 import net.zzh.sec.model.Role;
 import net.zzh.sec.model.dto.Profile;
 import net.zzh.sec.web.common.UriMappingConstants;
@@ -32,23 +31,23 @@ public class AuthenticationController {
 
     // API
 
-    @RequestMapping(method = RequestMethod.GET, value = UriMappingConstants.AUTHENTICATION)
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public Profile createAuthentication() {
-    	System.out.println(UriMappingConstants.AUTHENTICATION);
-        final Authentication authenticationInSpring = SpringSecurityUtil.getCurrentAuthentication();
-
-        final Function<GrantedAuthority, Privilege> springAuthorityToPrivilegeFunction = new Function<GrantedAuthority, Privilege>() {
-            public final Privilege apply(final GrantedAuthority springAuthority) {
-                return new Privilege(springAuthority.getAuthority());
-            }
-        };
-        final Collection<Privilege> privileges = Collections2.transform(authenticationInSpring.getAuthorities(), springAuthorityToPrivilegeFunction);
-        final Role defaultRole = new Role("defaultRole", Sets.<Privilege> newHashSet(privileges));
-
-        final Profile authenticationResource = new Profile(authenticationInSpring.getName(), (String) authenticationInSpring.getCredentials(), Sets.<Role> newHashSet(defaultRole));
-        return authenticationResource;
-    }
+//    @RequestMapping(method = RequestMethod.GET, value = UriMappingConstants.AUTHENTICATION)
+//    @ResponseStatus(HttpStatus.OK)
+//    @ResponseBody
+//    public Profile createAuthentication() {
+//    	System.out.println(UriMappingConstants.AUTHENTICATION);
+//        final Authentication authenticationInSpring = SpringSecurityUtil.getCurrentAuthentication();
+//
+//        final Function<GrantedAuthority, Privilege> springAuthorityToPrivilegeFunction = new Function<GrantedAuthority, Privilege>() {
+//            public final Privilege apply(final GrantedAuthority springAuthority) {
+//                return new Privilege(springAuthority.getAuthority());
+//            }
+//        };
+//        final Collection<Privilege> privileges = Collections2.transform(authenticationInSpring.getAuthorities(), springAuthorityToPrivilegeFunction);
+//        final Role defaultRole = new Role("defaultRole", Sets.<Privilege> newHashSet(privileges));
+//
+//        final Profile authenticationResource = new Profile(authenticationInSpring.getName(), (String) authenticationInSpring.getCredentials(), Sets.<Role> newHashSet(defaultRole));
+//        return authenticationResource;
+//    }
 
 }

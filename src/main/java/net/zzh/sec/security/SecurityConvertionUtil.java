@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import net.zzh.sec.model.Privilege;
 import net.zzh.sec.model.Role;
 import net.zzh.sec.model.RolePermission;
 

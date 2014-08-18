@@ -6,8 +6,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.zzh.common.web.WebConstants;
-import net.zzh.sec.model.Principal;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -58,11 +56,11 @@ public class RootController {
 	 * @param response
 	 * @return xml
 	 */
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+/*	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseBody
     public Principal findOne(@PathVariable("id") final Long id, final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
         return new Principal();
-    }
+    }*/
 
 	@RequestMapping(value = "/hello", method = RequestMethod.GET)  
 	public String login(ModelMap model) {
