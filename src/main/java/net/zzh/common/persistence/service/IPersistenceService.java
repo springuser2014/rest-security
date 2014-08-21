@@ -2,9 +2,14 @@ package net.zzh.common.persistence.service;
 
 import java.util.List;
 
+import javax.persistence.criteria.CriteriaBuilder;
+
 import org.springframework.data.domain.Page;
 
 public interface IPersistenceService{
+	
+	public CriteriaBuilder getCriteriaBuilder();
+	
 	/**
 	 * 查询全表
 	 * @param sql

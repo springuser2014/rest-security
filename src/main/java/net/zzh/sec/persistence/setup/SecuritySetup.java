@@ -1,14 +1,22 @@
 package net.zzh.sec.persistence.setup;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import net.zzh.common.event.BeforeSetupEvent;
 import net.zzh.common.persistence.service.IPersistenceService;
 import net.zzh.common.spring.CommonSpringProfileUtil;
 import net.zzh.sec.model.Role;
 import net.zzh.sec.model.RolePermission;
+import net.zzh.sec.model.Test;
+import net.zzh.sec.model.Test_;
 import net.zzh.sec.persistence.service.IRoleService;
 import net.zzh.sec.persistence.service.IUserService;
 import net.zzh.sec.util.SecurityConstants.Privileges;
@@ -85,15 +93,15 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 			 *  success
 			 */
 
-//			CriteriaBuilder builder = em.getCriteriaBuilder();
-//			CriteriaQuery<Test> query = builder.createQuery(Test.class);
-//			Root<Test> root = query.from(Test.class);
-//
-//			Predicate hasBirthday = builder.equal(root.get(Test_.idtest), 1);
-//			//Predicate isLongTermTest = builder.lessThan(root.get(Test_.createdAt), today.minusYears(2); 
-//			query.where(builder.and(hasBirthday));
-//			List list = em.createQuery(query.select(root)).getResultList();
-//			System.out.println(list.size());
+			CriteriaBuilder builder = em.getCriteriaBuilder();
+			CriteriaQuery<Test> query = builder.createQuery(Test.class);
+			Root<Test> root = query.from(Test.class);
+
+			Predicate hasBirthday = builder.equal(root.get(Test_.idtest), 1);
+			//Predicate isLongTermTest = builder.lessThan(root.get(Test_.createdAt), today.minusYears(2); 
+			query.where(builder.and(hasBirthday));
+			List list = em.createQuery(query.select(root)).getResultList();
+			System.out.println(list.size());
 			
 			// Create
 			//Test test = new Test();

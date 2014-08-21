@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
 
 import net.zzh.common.persistence.service.IPersistenceService;
 
@@ -31,6 +32,11 @@ public class PersistenceServiceImpl implements IPersistenceService {
 	@Autowired(required=false)
 	@PersistenceContext
 	private EntityManager em;
+	
+	@Override
+	public CriteriaBuilder getCriteriaBuilder() {
+		return em.getCriteriaBuilder();
+	}
 	
 	@Override
 	public List findByNativeSQL(final String sql) {
@@ -103,4 +109,5 @@ public class PersistenceServiceImpl implements IPersistenceService {
 			return "";
 		}
 	}
+
 }
