@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
+
 import net.zzh.common.persistence.ServicePreconditions;
 import net.zzh.common.persistence.event.AfterEntitiesDeletedEvent;
 import net.zzh.common.persistence.event.AfterEntityCreateEvent;
@@ -17,6 +18,7 @@ import net.zzh.common.search.ClientOperation;
 import net.zzh.common.util.SearchCommonUtil;
 import net.zzh.common.web.exception.BadRequestException;
 import net.zzh.common.web.exception.ConflictException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -127,6 +130,13 @@ public abstract class AbstractRawService<T extends IEntity> implements IRawServi
         return getSpecificationExecutor().findAll(specifications, new PageRequest(page, size, null));
     }
 
+    // exist
+
+    @Transactional(readOnly = true)
+    public boolean exists(final long id) {
+        return getDao().exists(id);
+    };
+    
     // find - one
 
     @Transactional(readOnly = true)
@@ -217,7 +227,8 @@ public abstract class AbstractRawService<T extends IEntity> implements IRawServi
     }
 
     // template method
-
+    protected abstract CrudRepository<T, Long> getCrudDao();
+    
     protected abstract PagingAndSortingRepository<T, Long> getDao();
 
     protected abstract JpaSpecificationExecutor<T> getSpecificationExecutor();

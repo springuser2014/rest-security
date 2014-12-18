@@ -17,4 +17,6 @@ public interface WebConstants {
     
     String THEME_PREFIX = "theme-";
     String ORIGINAL_DEFAULT_THEME_NAME = "default";
+    
+    String DEFAULT_LANGUAGE = "zh_CN";
 }

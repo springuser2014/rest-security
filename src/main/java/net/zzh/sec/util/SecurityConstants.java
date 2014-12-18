@@ -14,30 +14,46 @@ public final class SecurityConstants {
     public static final String PASS = ADMIN_PASS;
     public static final String EMAIL = ADMIN_EMAIL;
 
+    // modules
+    
+    public static final class Modules {
+    	public static final String SYSTEM = "SYSTEM";
+    	public static final String USER = "USER";
+    }
+    
     // privileges
 
     public static final class Privileges {
 
-        // User
-        public static final String CAN_USER_READ = "ROLE_USER_READ";
-        public static final String CAN_USER_WRITE = "ROLE_USER_WRITE";
-
-        // Role
-        public static final String CAN_ROLE_READ = "ROLE_ROLE_READ";
-        public static final String CAN_ROLE_WRITE = "ROLE_ROLE_WRITE";
-
-        // Privilege
-        public static final String CAN_PRIVILEGE_READ = "ROLE_PRIVILEGE_READ";
-        public static final String CAN_PRIVILEGE_WRITE = "ROLE_PRIVILEGE_WRITE";
+        // User module
+        public static final String ACCESS_USER_PROFILES = "access user profiles";
+        public static final String CHANGE_OWN_USERNAME = "change own username";
+        public static final String ADMINISTER_PERMISSIONS = "administer permissions";
+        public static final String ADMINISTER_USERS = "administer users";
+        
+        // System module
+        public static final String ACCESS_ADMINISTRATION_PAGES = "access administration pages";
+        public static final String ACCESS_SITE_IN_MAINTENANCE_MODE = "access site in maintenance mode";
+        public static final String ACCESS_SITE_REPORTS = "access site reports";
+        public static final String ADMINISTER_MODULES = "administer modules";
+        public static final String ADMINISTER_SITE_CONFIGURATION = "administer site configuration";
+        public static final String ADMINISTER_THEMES = "administer themes";
+        public static final String BLOCK_IP_ADDRESSES = "block IP addresses";
 
     }
 
     public static final class Roles {
 
-        /** A placeholder role for administrator. */
-        public static final String ROLE_ADMIN = "ROLE_ADMIN";
-        /** A placeholder role for enduser. */
-        public static final String ROLE_ENDUSER = "ROLE_ENDUSER";
+        /*
+         * 管理员
+         * A placeholder role for administrator.
+         */
+        public static final String ADMINISTRATOR = "administrator";
+        /*
+         * 认证用户
+         * A placeholder role for enduser.
+         */
+        public static final String AUTHENTICATED_USER = "authenticated user";
 
     }
 

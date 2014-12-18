@@ -1,5 +1,7 @@
 package net.zzh.sec.persistence.setup;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -12,15 +14,25 @@ import javax.persistence.criteria.Root;
 
 import net.zzh.common.event.BeforeSetupEvent;
 import net.zzh.common.persistence.service.IPersistenceService;
+import net.zzh.common.search.ClientOperation;
 import net.zzh.common.spring.CommonSpringProfileUtil;
+import net.zzh.common.util.SearchField;
+import net.zzh.common.web.WebConstants;
 import net.zzh.sec.model.Role;
 import net.zzh.sec.model.RolePermission;
+import net.zzh.sec.model.RolePermissionPK;
 import net.zzh.sec.model.Test;
 import net.zzh.sec.model.Test_;
+import net.zzh.sec.model.User;
+import net.zzh.sec.persistence.service.IRolePermissionService;
 import net.zzh.sec.persistence.service.IRoleService;
 import net.zzh.sec.persistence.service.IUserService;
+import net.zzh.sec.util.SecurityConstants;
+import net.zzh.sec.util.SecurityConstants.Modules;
 import net.zzh.sec.util.SecurityConstants.Privileges;
+import net.zzh.sec.util.SecurityConstants.Roles;
 
+import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +40,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+
+import com.google.common.collect.Sets;
 
 /**
  * 系统初始化，检查数据库是否存在管理员
@@ -43,11 +58,15 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 	private boolean setupDone;
 
 	@Autowired
-	private IUserService principalService;
+	//private IUserService principalService;
+	private IUserService userService;
 
 	@Autowired
 	private IRoleService roleService;
-
+	
+	@Autowired
+	private IRolePermissionService rolePermissionService;
+	
 	@Autowired
 	private ApplicationContext eventPublisher;
 
@@ -77,9 +96,9 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 			/*
 			 * privilegeService.deleteAll(); roleService.deleteAll(); principalService.deleteAll();
 			 */
-			createPrivileges();
 			createRoles();
 			createPrincipals();
+			createPrivileges();
 			
 			//System.out.println(logger.isDebugEnabled());
 			//procService.delete(0);
@@ -147,6 +166,7 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 	 * 创建权限
 	 */
 	private void createPrivileges() {
+		/*
 		createPrivilegeIfNotExisting(Privileges.CAN_PRIVILEGE_READ);
 		createPrivilegeIfNotExisting(Privileges.CAN_PRIVILEGE_WRITE);
 
@@ -155,18 +175,53 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 
 		createPrivilegeIfNotExisting(Privileges.CAN_USER_READ);
 		createPrivilegeIfNotExisting(Privileges.CAN_USER_WRITE);
+		*/
+
+		ImmutableTriple<String, ClientOperation, String> nameConstraint
+				= new ImmutableTriple<String, ClientOperation, String>(SearchField.name.name(), ClientOperation.EQ, Roles.ADMINISTRATOR);
+		Role roleAdmin = roleService.searchOne(nameConstraint);
+
+		// User module
+		createPrivilegeIfNotExisting(roleAdmin.getRid(), Privileges.ACCESS_USER_PROFILES, Modules.USER);
+		createPrivilegeIfNotExisting(roleAdmin.getRid(), Privileges.ADMINISTER_PERMISSIONS, Modules.USER);
+		createPrivilegeIfNotExisting(roleAdmin.getRid(), Privileges.ADMINISTER_USERS, Modules.USER);
+		createPrivilegeIfNotExisting(roleAdmin.getRid(), Privileges.CHANGE_OWN_USERNAME, Modules.USER);
+		
+		// System module
+		createPrivilegeIfNotExisting(roleAdmin.getRid(), Privileges.ACCESS_ADMINISTRATION_PAGES, Modules.SYSTEM);
+		createPrivilegeIfNotExisting(roleAdmin.getRid(), Privileges.ACCESS_SITE_IN_MAINTENANCE_MODE, Modules.SYSTEM);
+		createPrivilegeIfNotExisting(roleAdmin.getRid(), Privileges.ACCESS_SITE_REPORTS, Modules.SYSTEM);
+		createPrivilegeIfNotExisting(roleAdmin.getRid(), Privileges.ADMINISTER_MODULES, Modules.SYSTEM);
+		createPrivilegeIfNotExisting(roleAdmin.getRid(), Privileges.ADMINISTER_SITE_CONFIGURATION, Modules.SYSTEM);
+		createPrivilegeIfNotExisting(roleAdmin.getRid(), Privileges.ADMINISTER_THEMES, Modules.SYSTEM);
+		createPrivilegeIfNotExisting(roleAdmin.getRid(), Privileges.BLOCK_IP_ADDRESSES, Modules.SYSTEM);
 	}
 
 	/**
 	 * 如果不存在,创建权限
 	 * @param name
 	 */
-	final void createPrivilegeIfNotExisting(final String name) {
+	final void createPrivilegeIfNotExisting(final int roleID, final String name, final String module) {
 		/*final Privilege entityByName = privilegeService.findByName(name);
 		if (entityByName == null) {
 			final Privilege entity = new Privilege(name);
 			privilegeService.create(entity);
 		}*/
+		ImmutableTriple<String, ClientOperation, String> nameConstraint
+				= new ImmutableTriple<String, ClientOperation, String>(SearchField.name.name(), ClientOperation.EQ, name);
+		ImmutableTriple<String, ClientOperation, String> moduleConstraint
+				= new ImmutableTriple<String, ClientOperation, String>(SearchField.module.name(), ClientOperation.EQ, module);
+		
+		RolePermission rolePermissionAdmin = rolePermissionService.searchOne(nameConstraint, moduleConstraint);
+		if(rolePermissionAdmin == null) {
+			RolePermission rolePermission = new RolePermission();
+			RolePermissionPK pk = new RolePermissionPK();
+			pk.setRid(roleID);
+			pk.setPermission(name);
+			rolePermission.setId(pk);
+			rolePermission.setModule(module);
+			rolePermissionService.create(rolePermission);
+		}
 	}
 
 	/**
@@ -190,20 +245,31 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 
 		createRoleIfNotExisting(Roles.ROLE_ADMIN, Sets.<Privilege> newHashSet(canUserRead, canUserWrite, canRoleRead, canRoleWrite, canPrivilegeRead, canPrivilegeWrite));
 		*/
+		createRoleIfNotExisting(Roles.ADMINISTRATOR);
+		createRoleIfNotExisting(Roles.AUTHENTICATED_USER);
+		
 	}
 
 	/**
 	 * 如果不存在,创建角色
 	 * @param name
-	 * @param privileges
 	 */
-	final void createRoleIfNotExisting(final String name, final Set<RolePermission> privileges) {
+	final void createRoleIfNotExisting(final String name) {
 		/*final Role entityByName = roleService.findByName(name);
 		if (entityByName == null) {
 			final Role entity = new Role(name);
 			entity.setPrivileges(privileges);
 			roleService.create(entity);
 		}*/
+		ImmutableTriple<String, ClientOperation, String> nameConstraint
+				= new ImmutableTriple<String, ClientOperation, String>(SearchField.name.name(), ClientOperation.EQ, name);
+		Role roleAdmin = roleService.searchOne(nameConstraint);
+		if(roleAdmin == null) {
+			final Role role = new Role();
+			role.setName(name);
+			role.setWeight(0);
+			roleService.create(role);
+		}
 	}
 
 	/**
@@ -216,6 +282,10 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 		// createPrincipalIfNotExisting(SecurityConstants.ADMIN_USERNAME, SecurityConstants.ADMIN_PASS, Sets.<Role> newHashSet(roleAdmin));
 		createPrincipalIfNotExisting(SecurityConstants.ADMIN_EMAIL, SecurityConstants.ADMIN_PASS, Sets.<Role> newHashSet(roleAdmin));
 		*/
+		ImmutableTriple<String, ClientOperation, String> nameConstraint
+				= new ImmutableTriple<String, ClientOperation, String>(SearchField.name.name(), ClientOperation.EQ, Roles.ADMINISTRATOR);
+		Role roleAdmin = roleService.searchOne(nameConstraint);
+		createPrincipalIfNotExisting(SecurityConstants.ADMIN_EMAIL, SecurityConstants.ADMIN_PASS, Sets.<Role> newHashSet(roleAdmin));
 	}
 
 	/**
@@ -230,6 +300,27 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 			final Principal entity = new Principal(loginName, pass, roles);
 			principalService.create(entity);
 		}*/
+
+		ImmutableTriple<String, ClientOperation, String> nameConstraint
+				= new ImmutableTriple<String, ClientOperation, String>(SearchField.name.name(), ClientOperation.EQ, loginName);
+		User userAdmin = userService.searchOne(nameConstraint);
+		if (userAdmin == null) {
+			final User user = new User();
+			user.setName(loginName);
+			user.setPass(pass);
+			List<Role> roleList = new ArrayList<Role>();
+			roleList.addAll(roles);
+			user.setRoles(roleList);
+			user.setTheme(WebConstants.ORIGINAL_DEFAULT_THEME_NAME);
+			user.setSignature("User’s signature.");
+			Date created = new Date();
+			user.setCreated(created);
+			user.setAccess(created);
+			user.setLogin(created);
+			user.setStatus(Byte.parseByte("1"));
+			user.setLanguage(WebConstants.DEFAULT_LANGUAGE);
+			userService.create(user);
+		}
 	}
 
 }

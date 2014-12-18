@@ -10,6 +10,10 @@ import org.springframework.data.domain.Page;
 
 public interface IRawService<T extends IEntity> extends IOperations<T> {
 
+
+    // exist
+    boolean exists(final long id);
+	
     // search
 
     List<T> searchAll(final String queryString);
