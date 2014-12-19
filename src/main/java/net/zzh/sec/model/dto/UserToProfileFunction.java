@@ -4,10 +4,10 @@ import net.zzh.sec.model.User;
 
 import com.google.common.base.Function;
 
-public final class UserToProfileFunction implements Function<User, Profile> {
+public final class UserToProfileFunction implements Function<User, UserProfile> {
 
-    public final Profile apply(final User user) {
-        return new Profile(user);
+    public final UserProfile apply(final User user) {
+        return new UserProfile(user);
     }
 
 }

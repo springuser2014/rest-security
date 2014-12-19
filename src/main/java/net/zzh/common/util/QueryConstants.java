@@ -10,7 +10,7 @@ public final class QueryConstants {
     public static final String EMAIL_NEG = SearchField.email.toString() + QueryConstants.NEGATION;
     public static final String TENANT_NEG = SearchField.tenant.toString() + QueryConstants.NEGATION;
     public static final String LOCKED_NEG = SearchField.locked.toString() + QueryConstants.NEGATION;
-    public static final String DESCRIPTION_NEG = SearchField.description.toString() + QueryConstants.NEGATION;
+    public static final String MODULE_NEG = SearchField.module.toString() + QueryConstants.NEGATION;
 
     public static final String QUESTIONMARK = "?";
 

@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.zzh.common.util.QueryConstants;
 import net.zzh.common.web.controller.AbstractController;
 import net.zzh.common.web.controller.ISortingController;
-import net.zzh.sec.model.dto.Profile;
+import net.zzh.sec.model.dto.UserProfile;
 import net.zzh.sec.persistence.service.dto.IUsersService;
 import net.zzh.sec.util.SecurityConstants.Privileges;
 import net.zzh.sec.web.common.UriMappingConstants;
@@ -27,13 +27,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 //@Controller
 //@RequestMapping(value = UriMappingConstants.USERS)
-public class UserController extends AbstractController<Profile> implements ISortingController<Profile> {
+public class UserController extends AbstractController<UserProfile> implements ISortingController<UserProfile> {
 
     @Autowired
     private IUsersService service;
 
     public UserController() {
-        super(Profile.class);
+        super(UserProfile.class);
     }
 
     // API
@@ -42,15 +42,15 @@ public class UserController extends AbstractController<Profile> implements ISort
 
     @RequestMapping(params = { QueryConstants.Q_PARAM }, method = RequestMethod.GET)
     @ResponseBody
-    @Secured(Privileges.CAN_USER_READ)
-    public List<Profile> searchAll(@RequestParam(QueryConstants.Q_PARAM) final String queryString) {
+    @Secured(Privileges.ACCESS_USER_PROFILES)
+    public List<UserProfile> searchAll(@RequestParam(QueryConstants.Q_PARAM) final String queryString) {
         return searchAllInternal(queryString);
     }
 
     @RequestMapping(params = { QueryConstants.Q_PARAM, QueryConstants.PAGE, QueryConstants.SIZE }, method = RequestMethod.GET)
     @ResponseBody
-    @Secured(Privileges.CAN_USER_READ)
-    public List<Profile> searchAllPaginated(@RequestParam(QueryConstants.Q_PARAM) final String queryString, @RequestParam(value = QueryConstants.PAGE) final int page, @RequestParam(value = QueryConstants.SIZE) final int size) {
+    @Secured(Privileges.ACCESS_USER_PROFILES)
+    public List<UserProfile> searchAllPaginated(@RequestParam(QueryConstants.Q_PARAM) final String queryString, @RequestParam(value = QueryConstants.PAGE) final int page, @RequestParam(value = QueryConstants.SIZE) final int size) {
         return searchAllInternalPaginated(queryString, page, size);
     }
 
@@ -58,30 +58,30 @@ public class UserController extends AbstractController<Profile> implements ISort
 
     @RequestMapping(params = { QueryConstants.PAGE, QueryConstants.SIZE, QueryConstants.SORT_BY }, method = RequestMethod.GET)
     @ResponseBody
-    @Secured(Privileges.CAN_USER_READ)
-    public List<Profile> findAllPaginatedAndSorted(@RequestParam(value = QueryConstants.PAGE) final int page, @RequestParam(value = QueryConstants.SIZE) final int size, @RequestParam(value = QueryConstants.SORT_BY) final String sortBy,
+    @Secured(Privileges.ACCESS_USER_PROFILES)
+    public List<UserProfile> findAllPaginatedAndSorted(@RequestParam(value = QueryConstants.PAGE) final int page, @RequestParam(value = QueryConstants.SIZE) final int size, @RequestParam(value = QueryConstants.SORT_BY) final String sortBy,
             @RequestParam(value = QueryConstants.SORT_ORDER) final String sortOrder, final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
         return findPaginatedAndSortedInternal(page, size, sortBy, sortOrder, uriBuilder, response);
     }
 
     @RequestMapping(params = { QueryConstants.PAGE, QueryConstants.SIZE }, method = RequestMethod.GET)
     @ResponseBody
-    @Secured(Privileges.CAN_USER_READ)
-    public List<Profile> findAllPaginated(@RequestParam(value = QueryConstants.PAGE) final int page, @RequestParam(value = QueryConstants.SIZE) final int size, final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
+    @Secured(Privileges.ACCESS_USER_PROFILES)
+    public List<UserProfile> findAllPaginated(@RequestParam(value = QueryConstants.PAGE) final int page, @RequestParam(value = QueryConstants.SIZE) final int size, final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
         return findPaginatedAndSortedInternal(page, size, null, null, uriBuilder, response);
     }
 
     @RequestMapping(params = { QueryConstants.SORT_BY }, method = RequestMethod.GET)
     @ResponseBody
-    @Secured(Privileges.CAN_USER_READ)
-    public List<Profile> findAllSorted(@RequestParam(value = QueryConstants.SORT_BY) final String sortBy, @RequestParam(value = QueryConstants.SORT_ORDER) final String sortOrder) {
+    @Secured(Privileges.ACCESS_USER_PROFILES)
+    public List<UserProfile> findAllSorted(@RequestParam(value = QueryConstants.SORT_BY) final String sortBy, @RequestParam(value = QueryConstants.SORT_ORDER) final String sortOrder) {
         return findAllSortedInternal(sortBy, sortOrder);
     }
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    @Secured(Privileges.CAN_USER_READ)
-    public List<Profile> findAll(final HttpServletRequest request, final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
+    @Secured(Privileges.ACCESS_USER_PROFILES)
+    public List<UserProfile> findAll(final HttpServletRequest request, final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
         return findAllInternal(request, uriBuilder, response);
     }
 
@@ -89,8 +89,8 @@ public class UserController extends AbstractController<Profile> implements ISort
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseBody
-    @Secured(Privileges.CAN_USER_READ)
-    public Profile findOne(@PathVariable("id") final Long id, final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
+    @Secured(Privileges.ACCESS_USER_PROFILES)
+    public UserProfile findOne(@PathVariable("id") final Long id, final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
         return findOneInternal(id, uriBuilder, response);
     }
 
@@ -98,7 +98,7 @@ public class UserController extends AbstractController<Profile> implements ISort
 
     @RequestMapping(method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody final Profile resource, final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
+    public void create(@RequestBody final UserProfile resource, final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
         createInternal(resource, uriBuilder, response);
     }
 
@@ -106,8 +106,8 @@ public class UserController extends AbstractController<Profile> implements ISort
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
-    @Secured(Privileges.CAN_USER_WRITE)
-    public void update(@PathVariable("id") final Long id, @RequestBody final Profile resource) {
+    @Secured(Privileges.ADMINISTER_USERS)
+    public void update(@PathVariable("id") final Long id, @RequestBody final UserProfile resource) {
         updateInternal(id, resource);
     }
 
@@ -115,7 +115,7 @@ public class UserController extends AbstractController<Profile> implements ISort
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Secured(Privileges.CAN_USER_WRITE)
+    @Secured(Privileges.ADMINISTER_USERS)
     public void delete(@PathVariable("id") final Long id) {
         deleteByIdInternal(id);
     }

@@ -6,7 +6,7 @@ import org.apache.commons.lang3.tuple.Triple;
 import net.zzh.common.search.ClientOperation;
 import net.zzh.common.web.RestPreconditions;
 import net.zzh.sec.model.dto.UserToProfileFunction;
-import net.zzh.sec.model.dto.Profile;
+import net.zzh.sec.model.dto.UserProfile;
 import net.zzh.sec.persistence.service.IUserService;
 import net.zzh.sec.persistence.service.dto.IUsersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,102 +36,102 @@ public class UserServiceImpl implements IUsersService {
     // search
 
     @Transactional(readOnly = true)
-    public List<Profile> searchAll(final Triple<String, ClientOperation, String>... constraints) {
+    public List<UserProfile> searchAll(final Triple<String, ClientOperation, String>... constraints) {
         final List<Principal> principalsResultedFromSearch = principalService.searchAll(constraints);
-        final List<Profile> usersResultedFromSearch = Lists.transform(principalsResultedFromSearch, new UserToProfileFunction());
+        final List<UserProfile> usersResultedFromSearch = Lists.transform(principalsResultedFromSearch, new UserToProfileFunction());
 
         return usersResultedFromSearch;
     }
 
     @Transactional(readOnly = true)
-    public Profile searchOne(final Triple<String, ClientOperation, String>... constraints) {
+    public UserProfile searchOne(final Triple<String, ClientOperation, String>... constraints) {
         final Principal principalResultedFromSearch = principalService.searchOne(constraints);
-        final Profile userResultedFromSearch = new UserToProfileFunction().apply(principalResultedFromSearch);
+        final UserProfile userResultedFromSearch = new UserToProfileFunction().apply(principalResultedFromSearch);
 
         return userResultedFromSearch;
     }
 
     @Transactional(readOnly = true)
-    public Page<Profile> searchPaginated(final int page, final int size, final Triple<String, ClientOperation, String>... constraints) {
+    public Page<UserProfile> searchPaginated(final int page, final int size, final Triple<String, ClientOperation, String>... constraints) {
         final Page<Principal> principalsPaginated = principalService.searchPaginated(page, size, constraints);
 
-        final List<Profile> usersPaginated = Lists.transform(principalsPaginated.getContent(), new UserToProfileFunction());
+        final List<UserProfile> usersPaginated = Lists.transform(principalsPaginated.getContent(), new UserToProfileFunction());
 
-        return new PageImpl<Profile>(usersPaginated, new PageRequest(page, size, null), principalsPaginated.getTotalElements());
+        return new PageImpl<UserProfile>(usersPaginated, new PageRequest(page, size, null), principalsPaginated.getTotalElements());
     }
 
     @Transactional(readOnly = true)
-    public List<Profile> searchAll(final String queryString) {
+    public List<UserProfile> searchAll(final String queryString) {
         final List<Principal> principals = principalService.searchAll(queryString);
-        final List<Profile> users = Lists.transform(principals, new UserToProfileFunction());
+        final List<UserProfile> users = Lists.transform(principals, new UserToProfileFunction());
         return users;
     }
 
     @Transactional(readOnly = true)
-    public List<Profile> searchPaginated(final String queryString, final int page, final int size) {
+    public List<UserProfile> searchPaginated(final String queryString, final int page, final int size) {
         final List<Principal> principals = principalService.searchPaginated(queryString, page, size);
-        final List<Profile> users = Lists.transform(principals, new UserToProfileFunction());
+        final List<UserProfile> users = Lists.transform(principals, new UserToProfileFunction());
         return users;
     }
 
     // find - one
 
     @Transactional(readOnly = true)
-    public Profile findByName(final String name) {
+    public UserProfile findByName(final String name) {
         final Principal principal = principalService.findByName(name);
-        return new Profile(principal);
+        return new UserProfile(principal);
     }
 
     @Transactional(readOnly = true)
-    public Profile findOne(final long id) {
+    public UserProfile findOne(final long id) {
         final Principal principal = principalService.findOne(id);
         if (principal == null) {
             return null;
         }
-        return new Profile(principal);
+        return new UserProfile(principal);
     }
 
     // find - many
 
     @Transactional(readOnly = true)
-    public List<Profile> findAll() {
+    public List<UserProfile> findAll() {
         final List<Principal> allPrincipalEntities = principalService.findAll();
-        final List<Profile> allUsers = Lists.transform(allPrincipalEntities, new UserToProfileFunction());
+        final List<UserProfile> allUsers = Lists.transform(allPrincipalEntities, new UserToProfileFunction());
 
         return Lists.newArrayList(allUsers);
     }
 
     @Transactional(readOnly = true)
-    public List<Profile> findAllSorted(final String sortBy, final String sortOrder) {
+    public List<UserProfile> findAllSorted(final String sortBy, final String sortOrder) {
         final List<Principal> allPrincipalEntitiesSortedAndOrdered = principalService.findAllSorted(sortBy, sortOrder);
-        final List<Profile> allUsers = Lists.transform(allPrincipalEntitiesSortedAndOrdered, new UserToProfileFunction());
+        final List<UserProfile> allUsers = Lists.transform(allPrincipalEntitiesSortedAndOrdered, new UserToProfileFunction());
 
         return allUsers;
     }
 
     @Transactional(readOnly = true)
-    public List<Profile> findAllPaginated(final int page, final int size) {
+    public List<UserProfile> findAllPaginated(final int page, final int size) {
         final List<Principal> principalsPaginated = principalService.findAllPaginated(page, size);
         return Lists.transform(principalsPaginated, new UserToProfileFunction());
     }
 
     @Transactional(readOnly = true)
-    public Page<Profile> findAllPaginatedAndSortedRaw(final int page, final int size, final String sortBy, final String sortOrder) {
+    public Page<UserProfile> findAllPaginatedAndSortedRaw(final int page, final int size, final String sortBy, final String sortOrder) {
         final Page<Principal> principalsPaginatedAndSorted = principalService.findAllPaginatedAndSortedRaw(page, size, sortBy, sortOrder);
 
-        final List<Profile> usersPaginatedAndSorted = Lists.transform(principalsPaginatedAndSorted.getContent(), new UserToProfileFunction());
+        final List<UserProfile> usersPaginatedAndSorted = Lists.transform(principalsPaginatedAndSorted.getContent(), new UserToProfileFunction());
 
-        return new PageImpl<Profile>(usersPaginatedAndSorted, new PageRequest(page, size, constructSort(sortBy, sortOrder)), principalsPaginatedAndSorted.getTotalElements());
+        return new PageImpl<UserProfile>(usersPaginatedAndSorted, new PageRequest(page, size, constructSort(sortBy, sortOrder)), principalsPaginatedAndSorted.getTotalElements());
     }
 
     @Transactional(readOnly = true)
-    public List<Profile> findAllPaginatedAndSorted(final int page, final int size, final String sortBy, final String sortOrder) {
+    public List<UserProfile> findAllPaginatedAndSorted(final int page, final int size, final String sortBy, final String sortOrder) {
         return findAllPaginatedAndSortedRaw(page, size, sortBy, sortOrder).getContent();
     }
 
     // create
 
-    public Profile create(final Profile entity) {
+    public UserProfile create(final UserProfile entity) {
         final Principal newPrincipalEntity = new Principal(entity.getName(), entity.getPassword(), entity.getRoles());
         principalService.create(newPrincipalEntity);
         entity.setId(newPrincipalEntity.getId());
@@ -140,7 +140,7 @@ public class UserServiceImpl implements IUsersService {
 
     // update
 
-    public void update(final Profile entity) {
+    public void update(final UserProfile entity) {
         final Principal principalToUpdate = RestPreconditions.checkNotNull(principalService.findOne(entity.getId()));
 
         principalToUpdate.setName(entity.getName());
@@ -167,9 +167,9 @@ public class UserServiceImpl implements IUsersService {
 
     // other
 
-    public Profile getCurrentUser() {
+    public UserProfile getCurrentUser() {
         final Principal principal = principalService.getCurrentPrincipal();
-        return new Profile(principal);
+        return new UserProfile(principal);
     }
 
     // util

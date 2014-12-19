@@ -56,7 +56,7 @@ public final class SearchCommonUtil {
 
                 SearchField.locked.toString(), QueryConstants.LOCKED_NEG,
 
-                SearchField.description.toString(), QueryConstants.DESCRIPTION_NEG))) { // @formatter:on
+                SearchField.module.toString(), QueryConstants.MODULE_NEG))) { // @formatter:on
             return false;
         }
         return true;

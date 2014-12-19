@@ -227,8 +227,6 @@ public abstract class AbstractRawService<T extends IEntity> implements IRawServi
     }
 
     // template method
-    protected abstract CrudRepository<T, Long> getCrudDao();
-    
     protected abstract PagingAndSortingRepository<T, Long> getDao();
 
     protected abstract JpaSpecificationExecutor<T> getSpecificationExecutor();

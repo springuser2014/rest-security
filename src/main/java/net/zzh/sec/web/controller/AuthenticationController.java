@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import net.zzh.common.security.SpringSecurityUtil;
 import net.zzh.sec.model.Role;
-import net.zzh.sec.model.dto.Profile;
+import net.zzh.sec.model.dto.UserProfile;
 import net.zzh.sec.web.common.UriMappingConstants;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;

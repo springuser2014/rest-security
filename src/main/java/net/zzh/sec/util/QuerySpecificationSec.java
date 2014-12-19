@@ -170,9 +170,9 @@ public final class QuerySpecificationSec {
         return new Specification<Role>() {
             public final Predicate toPredicate(final Root<Role> root, final CriteriaQuery<?> query, final CriteriaBuilder builder) {
                 if (negated) {
-                    return builder.notEqual(root.get(Role_.id), id);
+                    return builder.notEqual(root.get(Role_.rid), id);
                 }
-                return builder.equal(root.get(Role_.id), id);
+                return builder.equal(root.get(Role_.rid), id);
             }
         };
     }

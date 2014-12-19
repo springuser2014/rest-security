@@ -285,7 +285,7 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 		ImmutableTriple<String, ClientOperation, String> nameConstraint
 				= new ImmutableTriple<String, ClientOperation, String>(SearchField.name.name(), ClientOperation.EQ, Roles.ADMINISTRATOR);
 		Role roleAdmin = roleService.searchOne(nameConstraint);
-		createPrincipalIfNotExisting(SecurityConstants.ADMIN_EMAIL, SecurityConstants.ADMIN_PASS, Sets.<Role> newHashSet(roleAdmin));
+		createPrincipalIfNotExisting(SecurityConstants.ADMIN_USERNAME, SecurityConstants.ADMIN_PASS, Sets.<Role> newHashSet(roleAdmin));
 	}
 
 	/**

@@ -1,10 +1,10 @@
 package net.zzh.sec.persistence.service.dto;
 
 import net.zzh.common.persistence.service.IService;
-import net.zzh.sec.model.dto.Profile;
+import net.zzh.sec.model.dto.UserProfile;
 
-public interface IUsersService extends IService<Profile> {
+public interface IUsersService extends IService<UserProfile> {
 
-    Profile getCurrentUser();
+    UserProfile getCurrentUser();
 
 }

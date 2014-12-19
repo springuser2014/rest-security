@@ -17,7 +17,7 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 @XmlRootElement
 @XStreamAlias("user")
-public class Profile implements INameableEntity {
+public class UserProfile implements INameableEntity {
 
     @XStreamAsAttribute
     private Long id;
@@ -32,11 +32,11 @@ public class Profile implements INameableEntity {
     // @XStreamConverter( value = HibernateCollectionConverter.class )
     private List<Role> roles;
 
-    public Profile() {
+    public UserProfile() {
         super();
     }
 
-    public Profile(final String nameToSet, final String passwordToSet, final List<Role> rolesToSet) {
+    public UserProfile(final String nameToSet, final String passwordToSet, final List<Role> rolesToSet) {
         super();
 
         name = nameToSet;
@@ -44,7 +44,7 @@ public class Profile implements INameableEntity {
         roles = rolesToSet;
     }
 
-    public Profile(final User user) {
+    public UserProfile(final User user) {
         super();
 
         name = user.getName();
@@ -104,7 +104,7 @@ public class Profile implements INameableEntity {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        final Profile other = (Profile) obj;
+        final UserProfile other = (UserProfile) obj;
         if (name == null) {
             if (other.name != null)
                 return false;

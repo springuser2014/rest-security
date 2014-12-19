@@ -5,6 +5,6 @@ import net.zzh.sec.model.User;
 
 public interface IUserService extends IService<User> {
 
-    //Principal getCurrentPrincipal();
+    //User getCurrentUser();
 
 }

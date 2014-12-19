@@ -33,7 +33,7 @@ public final class SecBusinessPaths {
     }
 
     public final String getUserUri() {
-        return getRootUri() + uriMapper.getUriBase(net.zzh.sec.model.dto.Profile.class);
+        return getRootUri() + uriMapper.getUriBase(net.zzh.sec.model.dto.UserProfile.class);
     }
 
     public final String getRoleUri() {

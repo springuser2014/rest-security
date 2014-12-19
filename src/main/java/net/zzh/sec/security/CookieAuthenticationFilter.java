@@ -22,11 +22,11 @@ import org.springframework.web.filter.GenericFilterBean;
  */
 public class CookieAuthenticationFilter extends GenericFilterBean {
 
-	private final MyUserDetailsService userDetailService;
+	private final CustomUserDetailsService userDetailService;
 	
 	private final CookieService cookieService;
 
-	public CookieAuthenticationFilter(MyUserDetailsService userDetailService, CookieService cookieService) {
+	public CookieAuthenticationFilter(CustomUserDetailsService userDetailService, CookieService cookieService) {
 		this.userDetailService = userDetailService;
 		this.cookieService = cookieService;
 	}

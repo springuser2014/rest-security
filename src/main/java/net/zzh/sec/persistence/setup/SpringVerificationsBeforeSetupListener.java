@@ -3,8 +3,8 @@ package net.zzh.sec.persistence.setup;
 import net.zzh.common.event.BeforeSetupEvent;
 import net.zzh.sec.web.controller.AuthenticationController;
 import net.zzh.sec.web.controller.PrivilegeController;
-import net.zzh.sec.web.controller.RoleController;
 import net.zzh.sec.web.controller.UserController;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
@@ -29,7 +29,7 @@ public final class SpringVerificationsBeforeSetupListener implements Application
 
     public final void onApplicationEvent(final BeforeSetupEvent event) {
         Preconditions.checkNotNull(context.getBean(PrivilegeController.class));
-        Preconditions.checkNotNull(context.getBean(RoleController.class));
+        //Preconditions.checkNotNull(context.getBean(RoleController.class));
         Preconditions.checkNotNull(context.getBean(UserController.class));
         Preconditions.checkNotNull(context.getBean(AuthenticationController.class));
     }
