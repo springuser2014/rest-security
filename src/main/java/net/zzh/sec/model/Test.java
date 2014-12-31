@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Entity
 @Table(name="test")
 @NamedQuery(name="Test.findAll", query="SELECT t FROM Test t")
-public class Test implements net.zzh.common.persistence.model.INameableEntity {
+public class Test implements net.zzh.common.persistence.model.INameableEntity, Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id

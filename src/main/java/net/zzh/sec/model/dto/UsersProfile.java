@@ -9,7 +9,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import net.zzh.common.persistence.model.INameableEntity;
 import net.zzh.sec.model.Role;
-import net.zzh.sec.model.User;
+import net.zzh.sec.model.Users;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
@@ -17,7 +17,7 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 @XmlRootElement
 @XStreamAlias("user")
-public class UserProfile implements INameableEntity {
+public class UsersProfile implements INameableEntity {
 
     @XStreamAsAttribute
     private Long id;
@@ -32,11 +32,11 @@ public class UserProfile implements INameableEntity {
     // @XStreamConverter( value = HibernateCollectionConverter.class )
     private List<Role> roles;
 
-    public UserProfile() {
+    public UsersProfile() {
         super();
     }
 
-    public UserProfile(final String nameToSet, final String passwordToSet, final List<Role> rolesToSet) {
+    public UsersProfile(final String nameToSet, final String passwordToSet, final List<Role> rolesToSet) {
         super();
 
         name = nameToSet;
@@ -44,7 +44,7 @@ public class UserProfile implements INameableEntity {
         roles = rolesToSet;
     }
 
-    public UserProfile(final User user) {
+    public UsersProfile(final Users user) {
         super();
 
         name = user.getName();
@@ -104,7 +104,7 @@ public class UserProfile implements INameableEntity {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        final UserProfile other = (UserProfile) obj;
+        final UsersProfile other = (UsersProfile) obj;
         if (name == null) {
             if (other.name != null)
                 return false;

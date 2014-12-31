@@ -39,7 +39,7 @@ public class PrivilegeController extends AbstractController<RolePermission> impl
     // API
 
     // search
-
+/*
     @RequestMapping(params = { QueryConstants.Q_PARAM }, method = RequestMethod.GET)
     @ResponseBody
     @Secured(Privileges.ACCESS_ADMINISTRATION_PAGES)
@@ -53,7 +53,7 @@ public class PrivilegeController extends AbstractController<RolePermission> impl
     public List<RolePermission> searchAllPaginated(@RequestParam(QueryConstants.Q_PARAM) final String queryString, @RequestParam(value = QueryConstants.PAGE) final int page, @RequestParam(value = QueryConstants.SIZE) final int size) {
         return searchAllInternalPaginated(queryString, page, size);
     }
-
+*/
     // find - all/paginated
 
     @RequestMapping(params = { QueryConstants.PAGE, QueryConstants.SIZE, QueryConstants.SORT_BY }, method = RequestMethod.GET)
@@ -90,7 +90,7 @@ public class PrivilegeController extends AbstractController<RolePermission> impl
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseBody
     @Secured(Privileges.ACCESS_ADMINISTRATION_PAGES)
-    public RolePermission findOne(@PathVariable("id") final Long id, final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
+    public RolePermission findOne(@PathVariable("id") final Integer id, final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
         return findOneInternal(id, uriBuilder, response);
     }
 
@@ -108,7 +108,7 @@ public class PrivilegeController extends AbstractController<RolePermission> impl
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
     @Secured(Privileges.ADMINISTER_PERMISSIONS)
-    public void update(@PathVariable("id") final Long id, @RequestBody final RolePermission resource) {
+    public void update(@PathVariable("id") final Integer id, @RequestBody final RolePermission resource) {
         updateInternal(id, resource);
     }
 
@@ -117,7 +117,7 @@ public class PrivilegeController extends AbstractController<RolePermission> impl
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Secured(Privileges.ADMINISTER_PERMISSIONS)
-    public void delete(@PathVariable("id") final Long id) {
+    public void delete(@PathVariable("id") final Integer id) {
         deleteByIdInternal(id);
     }
 

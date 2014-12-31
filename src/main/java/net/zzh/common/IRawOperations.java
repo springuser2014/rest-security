@@ -9,7 +9,7 @@ public interface IRawOperations<T> {
 
     // find - one
 
-    T findOne(final long id);
+    T findOne(final int id);
 
     /**
      * - contract: if nothing is found, an empty list will be returned to the calling client <br>
@@ -39,9 +39,12 @@ public interface IRawOperations<T> {
 
     void update(final T resource);
 
+    // exists
+    boolean exists(final int id);
+    
     // delete
 
-    void delete(final long id);
+    void delete(final int id);
 
     void deleteAll();
 
@@ -50,9 +53,5 @@ public interface IRawOperations<T> {
     long count();
 
     // search
-
-    List<T> searchAll(final Triple<String, ClientOperation, String>... constraints);
-
-    T searchOne(final Triple<String, ClientOperation, String>... constraints);
 
 }

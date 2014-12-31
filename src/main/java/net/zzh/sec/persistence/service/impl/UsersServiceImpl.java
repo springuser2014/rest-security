@@ -1,13 +1,20 @@
 package net.zzh.sec.persistence.service.impl;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.apache.commons.lang3.tuple.Triple;
+
 import net.zzh.common.persistence.service.AbstractService;
 import net.zzh.common.search.ClientOperation;
 import net.zzh.common.security.SpringSecurityUtil;
-import net.zzh.sec.model.User;
-import net.zzh.sec.persistence.dao.IUserJpaDAO;
-import net.zzh.sec.persistence.service.IUserService;
-import net.zzh.sec.util.SearchUtilSec;
+import net.zzh.sec.model.Users;
+import net.zzh.sec.model.Users_;
+import net.zzh.sec.persistence.dao.IUsersJpaDAO;
+import net.zzh.sec.persistence.service.IUsersService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -16,47 +23,47 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class UsersServiceImpl extends AbstractService<User> implements IUserService {
+public class UsersServiceImpl extends AbstractService<Users> implements IUsersService {
 
-    @Autowired
-    IUserJpaDAO dao;
+	@Autowired
+	IUsersJpaDAO dao;
 
-    public UsersServiceImpl() {
-        super(User.class);
-    }
+	public UsersServiceImpl() {
+		super(Users.class);
+	}
 
-    // API
+	// API
 
-    // find
-/*
-    @Transactional(readOnly = true)
-    public Principal findByName(final String name) {
-        return dao.findByName(name);
-    }
-*/
-    // other
-/*
-    @Transactional(readOnly = true)
-    public Principal getCurrentPrincipal() {
-        final String principalName = SpringSecurityUtil.getNameOfCurrentPrincipal();
-        return getDao().findByName(principalName);
-    }
-*/
-    // Spring
+	// find
 
-    @Override
-    protected final IUserJpaDAO getDao() {
-        return dao;
-    }
+	// other
 
-    @Override
-    public Specification<User> resolveConstraint(final Triple<String, ClientOperation, String> constraint) {
-        return SearchUtilSec.resolveConstraint(constraint, User.class);
-    }
+	@Transactional(readOnly = true)
+	public Users getCurrentPrincipal() {
+		final String userName = SpringSecurityUtil.getNameOfCurrentPrincipal();
 
-    @Override
-    protected JpaSpecificationExecutor<User> getSpecificationExecutor() {
-        return dao;
-    }
+		return getDao().findOne(this.hasName(userName));
+	}
+
+	private Specification<Users> hasName(final String userName) {
+		return new Specification<Users>() {
+			@Override
+			public Predicate toPredicate(Root<Users> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+				return cb.equal(root.get(Users_.name), userName);
+			}
+		};
+	}
+
+	// Spring
+
+	@Override
+	protected final IUsersJpaDAO getDao() {
+		return dao;
+	}
+
+	@Override
+	protected JpaSpecificationExecutor<Users> getSpecificationExecutor() {
+		return dao;
+	}
 
 }

@@ -55,92 +55,19 @@ public abstract class AbstractRawService<T extends IEntity> implements IRawServi
     // API
 
     // search
-
-    @SuppressWarnings("unchecked")
-    public List<T> searchAll(final String queryString) {
-        Preconditions.checkNotNull(queryString);
-        List<Triple<String, ClientOperation, String>> parsedQuery = null;
-        try {
-            parsedQuery = SearchCommonUtil.parseQueryString(queryString);
-        } catch (final IllegalStateException illState) {
-            logger.error("IllegalStateException on find operation");
-            logger.warn("IllegalStateException on find operation", illState);
-            throw new BadRequestException(illState);
-        }
-
-        final List<T> results = searchAll(parsedQuery.toArray(new ImmutableTriple[parsedQuery.size()]));
-        return results;
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    public List<T> searchPaginated(final String queryString, final int page, final int size) {
-        List<Triple<String, ClientOperation, String>> parsedQuery = null;
-        try {
-            parsedQuery = SearchCommonUtil.parseQueryString(queryString);
-        } catch (final IllegalStateException illState) {
-            logger.error("IllegalStateException on find operation");
-            logger.warn("IllegalStateException on find operation", illState);
-            throw new ConflictException(illState);
-        }
-
-        final Page<T> resultPage = searchPaginated(page, size, parsedQuery.toArray(new ImmutableTriple[parsedQuery.size()]));
-        return Lists.newArrayList(resultPage.getContent());
-    }
-
-    @SuppressWarnings("null")
-    public List<T> searchAll(final Triple<String, ClientOperation, String>... constraints) {
-        Preconditions.checkState(constraints != null);
-        Preconditions.checkState(constraints.length > 0);
-        final Specification<T> firstSpec = resolveConstraint(constraints[0]);
-        Specifications<T> specifications = Specifications.where(firstSpec);
-        for (int i = 1; i < constraints.length; i++) {
-            specifications = specifications.and(resolveConstraint(constraints[i]));
-        }
-        if (firstSpec == null) {
-            return Lists.newArrayList();
-        }
-
-        return getSpecificationExecutor().findAll(specifications);
-    }
-
-    @SuppressWarnings("null")
-    public T searchOne(final Triple<String, ClientOperation, String>... constraints) {
-        Preconditions.checkState(constraints != null);
-        Preconditions.checkState(constraints.length > 0);
-        final Specification<T> firstSpec = resolveConstraint(constraints[0]);
-        Specifications<T> specifications = Specifications.where(firstSpec);
-        for (int i = 1; i < constraints.length; i++) {
-            specifications = specifications.and(resolveConstraint(constraints[i]));
-        }
-        if (firstSpec == null) {
-            return null;
-        }
-
-        return getSpecificationExecutor().findOne(specifications);
-    }
-
-    public Page<T> searchPaginated(final int page, final int size, final Triple<String, ClientOperation, String>... constraints) {
-        final Specification<T> firstSpec = resolveConstraint(constraints[0]);
-        Preconditions.checkState(firstSpec != null);
-        Specifications<T> specifications = Specifications.where(firstSpec);
-        for (int i = 1; i < constraints.length; i++) {
-            specifications = specifications.and(resolveConstraint(constraints[i]));
-        }
-
-        return getSpecificationExecutor().findAll(specifications, new PageRequest(page, size, null));
-    }
-
-    // exist
-
+    /*-- removed --*/
+    
+    // exists
+    
     @Transactional(readOnly = true)
-    public boolean exists(final long id) {
+    public boolean exists(final int id) {
         return getDao().exists(id);
     };
     
     // find - one
 
     @Transactional(readOnly = true)
-    public T findOne(final long id) {
+    public T findOne(final int id) {
         return getDao().findOne(id);
     }
 
@@ -211,7 +138,7 @@ public abstract class AbstractRawService<T extends IEntity> implements IRawServi
         eventPublisher.publishEvent(new AfterEntitiesDeletedEvent<T>(this, clazz));
     }
 
-    public void delete(final long id) {
+    public void delete(final int id) {
         final T entity = getDao().findOne(id);
         ServicePreconditions.checkEntityExists(entity);
 
@@ -227,14 +154,9 @@ public abstract class AbstractRawService<T extends IEntity> implements IRawServi
     }
 
     // template method
-    protected abstract PagingAndSortingRepository<T, Long> getDao();
+    protected abstract PagingAndSortingRepository<T, Integer> getDao();
 
     protected abstract JpaSpecificationExecutor<T> getSpecificationExecutor();
-
-    @SuppressWarnings({ "static-method", "unused" })
-    public Specification<T> resolveConstraint(final Triple<String, ClientOperation, String> constraint) {
-        throw new UnsupportedOperationException();
-    }
 
     // template
 

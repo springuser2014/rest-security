@@ -6,13 +6,24 @@ package net.zzh.sec.security;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import net.zzh.common.persistence.service.IPersistenceService;
 import net.zzh.common.search.ClientOperation;
 import net.zzh.common.util.SearchField;
-import net.zzh.sec.model.User;
+import net.zzh.sec.model.Test;
+import net.zzh.sec.model.Test_;
+import net.zzh.sec.model.Users;
 import net.zzh.sec.model.RolePermission;
 import net.zzh.sec.model.Role;
-import net.zzh.sec.persistence.service.IUserService;
+import net.zzh.sec.model.Users_;
+import net.zzh.sec.persistence.service.IUsersService;
 
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,10 +50,14 @@ import com.google.common.collect.Collections2;
 public class CustomUserDetailsService implements UserDetailsService {
 
 	@Autowired
-	private IUserService userService;
+	private IUsersService usersService;
 
 	@Autowired
 	private IPersistenceService persistenceService;
+
+	@Autowired(required=false)
+	@PersistenceContext
+	private EntityManager em;
 	
 	/**
 	 * 
@@ -58,13 +73,21 @@ public class CustomUserDetailsService implements UserDetailsService {
 		System.out.println("loadUserByUsername - check");
 
 		Preconditions.checkNotNull(username);
-		
-		ImmutableTriple<String, ClientOperation, String> nameConstraint = new ImmutableTriple<String, ClientOperation, String>(SearchField.name.name(), ClientOperation.EQ, username);
-		User user = userService.searchOne(nameConstraint);
-		
-		if (user == null) {
+
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<Users> query = builder.createQuery(Users.class);
+		Root<Users> root = query.from(Users.class);
+
+		Predicate hasName = builder.equal(root.get(Users_.name), username);
+		query.where(builder.and(hasName));
+		List list = em.createQuery(query.select(root)).getResultList();
+		Users user;
+		if(list.isEmpty()) {
 			throw new UsernameNotFoundException("Username was not found: " + username);
+		} else {
+			user = (Users) list.get(0);
 		}
+		
 		final List<Role> rolesOfUser = user.getRoles();
 		final List<RolePermission> privileges = new ArrayList<RolePermission>();
 		for (final Role roleOfUser : rolesOfUser) {
@@ -79,22 +102,22 @@ public class CustomUserDetailsService implements UserDetailsService {
 		boolean accountNonExpired = true;
 		boolean credentialsNonExpired = true;
 		boolean accountIsEnabled = true;
-		
+		/*
 		System.out.println(user.getName() + ", " +
 				user.getPass().toLowerCase() + ", " +
 				accountIsEnabled + ", " +
 				accountNonExpired + ", " +
 				credentialsNonExpired + ", " +
-				(user.getStatus() == 1 ? false : true) + ", " +
+				(user.getStatus() == 0 ? false : true) + ", " +
 				auths);
-		
+		*/
 		return new org.springframework.security.core.userdetails.User(
 				user.getName(),
 				user.getPass().toLowerCase(),
 				accountIsEnabled,
 				accountNonExpired,
 				credentialsNonExpired,
-				(user.getStatus() == 1 ? false : true),
+				(user.getStatus() == 0 ? false : true),
 				auths);
 	}
 }

@@ -3,7 +3,7 @@ package net.zzh.sec.client.template.auth;
 import net.zzh.common.client.marshall.IMarshaller;
 import net.zzh.common.client.web.HeaderUtil;
 import net.zzh.sec.client.SecBusinessPaths;
-import net.zzh.sec.model.dto.UserProfile;
+import net.zzh.sec.model.dto.UsersProfile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpEntity;
@@ -32,8 +32,8 @@ public class AuthenticationRestTemplate {
 
     // API
 
-    public final ResponseEntity<UserProfile> authenticate(final String username, final String password) {
-        return restTemplate.exchange(getUri(), HttpMethod.GET, new HttpEntity<UserProfile>(createHeaders(username, password)), UserProfile.class);
+    public final ResponseEntity<UsersProfile> authenticate(final String username, final String password) {
+        return restTemplate.exchange(getUri(), HttpMethod.GET, new HttpEntity<UsersProfile>(createHeaders(username, password)), UsersProfile.class);
     }
 
     // util

@@ -4,7 +4,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import net.zzh.common.client.template.AbstractNamedClientRestTemplate;
 import net.zzh.sec.client.SecBusinessPaths;
-import net.zzh.sec.model.Privilege;
+import net.zzh.sec.model.RolePermission;
 import net.zzh.sec.util.SecurityConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -12,13 +12,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Profile("client")
-public class PrivilegeClientRestTemplate extends AbstractNamedClientRestTemplate<Privilege> {
+public class PrivilegeClientRestTemplate extends AbstractNamedClientRestTemplate<RolePermission> {
 
     @Autowired
     private SecBusinessPaths paths;
 
     public PrivilegeClientRestTemplate() {
-        super(Privilege.class);
+        super(RolePermission.class);
     }
 
     // API

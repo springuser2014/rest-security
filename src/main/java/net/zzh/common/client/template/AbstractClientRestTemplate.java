@@ -47,9 +47,9 @@ public abstract class AbstractClientRestTemplate<T extends IEntity> extends Abst
 
     // update
 
-    public final void update(final T resource) {
+    public final void update(final int id, final T resource) {
         givenAuthenticated();
-        final ResponseEntity<T> responseEntity = restTemplate.exchange(getUri() + "/" + resource.getId(), HttpMethod.PUT, new HttpEntity<T>(resource, writeHeaders()), clazz);
+        final ResponseEntity<T> responseEntity = restTemplate.exchange(getUri() + "/" + id, HttpMethod.PUT, new HttpEntity<T>(resource, writeHeaders()), clazz);
         Preconditions.checkState(responseEntity.getStatusCode().value() == 200);
     }
 

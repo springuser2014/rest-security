@@ -21,12 +21,15 @@ import net.zzh.common.web.WebConstants;
 import net.zzh.sec.model.Role;
 import net.zzh.sec.model.RolePermission;
 import net.zzh.sec.model.RolePermissionPK;
+import net.zzh.sec.model.RolePermission_;
+import net.zzh.sec.model.Role_;
 import net.zzh.sec.model.Test;
 import net.zzh.sec.model.Test_;
-import net.zzh.sec.model.User;
+import net.zzh.sec.model.Users;
+import net.zzh.sec.model.Users_;
 import net.zzh.sec.persistence.service.IRolePermissionService;
 import net.zzh.sec.persistence.service.IRoleService;
-import net.zzh.sec.persistence.service.IUserService;
+import net.zzh.sec.persistence.service.IUsersService;
 import net.zzh.sec.util.SecurityConstants;
 import net.zzh.sec.util.SecurityConstants.Modules;
 import net.zzh.sec.util.SecurityConstants.Privileges;
@@ -59,7 +62,7 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 
 	@Autowired
 	//private IUserService principalService;
-	private IUserService userService;
+	private IUsersService usersService;
 
 	@Autowired
 	private IRoleService roleService;
@@ -97,7 +100,7 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 			 * privilegeService.deleteAll(); roleService.deleteAll(); principalService.deleteAll();
 			 */
 			createRoles();
-			createPrincipals();
+			createUsers();
 			createPrivileges();
 			
 			//System.out.println(logger.isDebugEnabled());
@@ -177,24 +180,34 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 		createPrivilegeIfNotExisting(Privileges.CAN_USER_WRITE);
 		*/
 
-		ImmutableTriple<String, ClientOperation, String> nameConstraint
-				= new ImmutableTriple<String, ClientOperation, String>(SearchField.name.name(), ClientOperation.EQ, Roles.ADMINISTRATOR);
-		Role roleAdmin = roleService.searchOne(nameConstraint);
+		int rid = 0;
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<Role> query = builder.createQuery(Role.class);
+		Root<Role> root = query.from(Role.class);
 
+		Predicate hasName = builder.equal(root.get(Role_.name), Roles.ADMINISTRATOR);
+		query.where(builder.and(hasName));
+		
+		List list = em.createQuery(query.select(root)).getResultList();
+		if(!list.isEmpty()) {
+			Role role = (Role) list.get(0);
+			rid = role.getRid();
+		}
+		
 		// User module
-		createPrivilegeIfNotExisting(roleAdmin.getRid(), Privileges.ACCESS_USER_PROFILES, Modules.USER);
-		createPrivilegeIfNotExisting(roleAdmin.getRid(), Privileges.ADMINISTER_PERMISSIONS, Modules.USER);
-		createPrivilegeIfNotExisting(roleAdmin.getRid(), Privileges.ADMINISTER_USERS, Modules.USER);
-		createPrivilegeIfNotExisting(roleAdmin.getRid(), Privileges.CHANGE_OWN_USERNAME, Modules.USER);
+		createPrivilegeIfNotExisting(rid, Privileges.ACCESS_USER_PROFILES, Modules.USER);
+		createPrivilegeIfNotExisting(rid, Privileges.ADMINISTER_PERMISSIONS, Modules.USER);
+		createPrivilegeIfNotExisting(rid, Privileges.ADMINISTER_USERS, Modules.USER);
+		createPrivilegeIfNotExisting(rid, Privileges.CHANGE_OWN_USERNAME, Modules.USER);
 		
 		// System module
-		createPrivilegeIfNotExisting(roleAdmin.getRid(), Privileges.ACCESS_ADMINISTRATION_PAGES, Modules.SYSTEM);
-		createPrivilegeIfNotExisting(roleAdmin.getRid(), Privileges.ACCESS_SITE_IN_MAINTENANCE_MODE, Modules.SYSTEM);
-		createPrivilegeIfNotExisting(roleAdmin.getRid(), Privileges.ACCESS_SITE_REPORTS, Modules.SYSTEM);
-		createPrivilegeIfNotExisting(roleAdmin.getRid(), Privileges.ADMINISTER_MODULES, Modules.SYSTEM);
-		createPrivilegeIfNotExisting(roleAdmin.getRid(), Privileges.ADMINISTER_SITE_CONFIGURATION, Modules.SYSTEM);
-		createPrivilegeIfNotExisting(roleAdmin.getRid(), Privileges.ADMINISTER_THEMES, Modules.SYSTEM);
-		createPrivilegeIfNotExisting(roleAdmin.getRid(), Privileges.BLOCK_IP_ADDRESSES, Modules.SYSTEM);
+		createPrivilegeIfNotExisting(rid, Privileges.ACCESS_ADMINISTRATION_PAGES, Modules.SYSTEM);
+		createPrivilegeIfNotExisting(rid, Privileges.ACCESS_SITE_IN_MAINTENANCE_MODE, Modules.SYSTEM);
+		createPrivilegeIfNotExisting(rid, Privileges.ACCESS_SITE_REPORTS, Modules.SYSTEM);
+		createPrivilegeIfNotExisting(rid, Privileges.ADMINISTER_MODULES, Modules.SYSTEM);
+		createPrivilegeIfNotExisting(rid, Privileges.ADMINISTER_SITE_CONFIGURATION, Modules.SYSTEM);
+		createPrivilegeIfNotExisting(rid, Privileges.ADMINISTER_THEMES, Modules.SYSTEM);
+		createPrivilegeIfNotExisting(rid, Privileges.BLOCK_IP_ADDRESSES, Modules.SYSTEM);
 	}
 
 	/**
@@ -207,13 +220,19 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 			final Privilege entity = new Privilege(name);
 			privilegeService.create(entity);
 		}*/
-		ImmutableTriple<String, ClientOperation, String> nameConstraint
-				= new ImmutableTriple<String, ClientOperation, String>(SearchField.name.name(), ClientOperation.EQ, name);
-		ImmutableTriple<String, ClientOperation, String> moduleConstraint
-				= new ImmutableTriple<String, ClientOperation, String>(SearchField.module.name(), ClientOperation.EQ, module);
+		Role role = roleService.findOne(roleID);
 		
-		RolePermission rolePermissionAdmin = rolePermissionService.searchOne(nameConstraint, moduleConstraint);
-		if(rolePermissionAdmin == null) {
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<RolePermission> query = builder.createQuery(RolePermission.class);
+		Root<RolePermission> root = query.from(RolePermission.class);
+
+		query.where(builder.and(
+				builder.equal(root.get(RolePermission_.role), role),
+				builder.equal(root.get(RolePermission_.module), module)
+				));
+		
+		List list = em.createQuery(query.select(root)).getResultList();
+		if(list.isEmpty()) {
 			RolePermission rolePermission = new RolePermission();
 			RolePermissionPK pk = new RolePermissionPK();
 			pk.setRid(roleID);
@@ -255,16 +274,15 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 	 * @param name
 	 */
 	final void createRoleIfNotExisting(final String name) {
-		/*final Role entityByName = roleService.findByName(name);
-		if (entityByName == null) {
-			final Role entity = new Role(name);
-			entity.setPrivileges(privileges);
-			roleService.create(entity);
-		}*/
-		ImmutableTriple<String, ClientOperation, String> nameConstraint
-				= new ImmutableTriple<String, ClientOperation, String>(SearchField.name.name(), ClientOperation.EQ, name);
-		Role roleAdmin = roleService.searchOne(nameConstraint);
-		if(roleAdmin == null) {
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<Role> query = builder.createQuery(Role.class);
+		Root<Role> root = query.from(Role.class);
+
+		Predicate hasName = builder.equal(root.get(Role_.name), name);
+		query.where(builder.and(hasName));
+		
+		List list = em.createQuery(query.select(root)).getResultList();
+		if(list.isEmpty()) {
 			final Role role = new Role();
 			role.setName(name);
 			role.setWeight(0);
@@ -273,19 +291,21 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 	}
 
 	/**
-	 * Principal/User
-	 * 创建管理员
+	 * User
+	 * 创建用户
 	 */
-	final void createPrincipals() {
-		/*final Role roleAdmin = roleService.findByName(Roles.ROLE_ADMIN);
+	final void createUsers() {
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<Role> query = builder.createQuery(Role.class);
+		Root<Role> root = query.from(Role.class);
 
-		// createPrincipalIfNotExisting(SecurityConstants.ADMIN_USERNAME, SecurityConstants.ADMIN_PASS, Sets.<Role> newHashSet(roleAdmin));
-		createPrincipalIfNotExisting(SecurityConstants.ADMIN_EMAIL, SecurityConstants.ADMIN_PASS, Sets.<Role> newHashSet(roleAdmin));
-		*/
-		ImmutableTriple<String, ClientOperation, String> nameConstraint
-				= new ImmutableTriple<String, ClientOperation, String>(SearchField.name.name(), ClientOperation.EQ, Roles.ADMINISTRATOR);
-		Role roleAdmin = roleService.searchOne(nameConstraint);
-		createPrincipalIfNotExisting(SecurityConstants.ADMIN_USERNAME, SecurityConstants.ADMIN_PASS, Sets.<Role> newHashSet(roleAdmin));
+		Predicate hasName = builder.equal(root.get(Role_.name), Roles.ADMINISTRATOR);
+		query.where(builder.and(hasName));
+		
+		List list = em.createQuery(query.select(root)).getResultList();
+		final Role roleAdmin = (Role) list.get(0);
+		
+		createUserIfNotExisting(SecurityConstants.ADMIN_USERNAME, SecurityConstants.ADMIN_PASS, Sets.<Role> newHashSet(roleAdmin));
 	}
 
 	/**
@@ -294,18 +314,17 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 	 * @param pass
 	 * @param roles
 	 */
-	final void createPrincipalIfNotExisting(final String loginName, final String pass, final Set<Role> roles) {
-		/*final Principal entityByName = principalService.findByName(loginName);
-		if (entityByName == null) {
-			final Principal entity = new Principal(loginName, pass, roles);
-			principalService.create(entity);
-		}*/
+	final void createUserIfNotExisting(final String loginName, final String pass, final Set<Role> roles) {
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<Users> query = builder.createQuery(Users.class);
+		Root<Users> root = query.from(Users.class);
 
-		ImmutableTriple<String, ClientOperation, String> nameConstraint
-				= new ImmutableTriple<String, ClientOperation, String>(SearchField.name.name(), ClientOperation.EQ, loginName);
-		User userAdmin = userService.searchOne(nameConstraint);
-		if (userAdmin == null) {
-			final User user = new User();
+		Predicate hasName = builder.equal(root.get(Users_.name), loginName);
+		query.where(builder.and(hasName));
+		
+		List list = em.createQuery(query.select(root)).getResultList();
+		if (list.isEmpty()) {
+			final Users user = new Users();
 			user.setName(loginName);
 			user.setPass(pass);
 			List<Role> roleList = new ArrayList<Role>();
@@ -319,7 +338,7 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 			user.setLogin(created);
 			user.setStatus(Byte.parseByte("1"));
 			user.setLanguage(WebConstants.DEFAULT_LANGUAGE);
-			userService.create(user);
+			usersService.create(user);
 		}
 	}
 

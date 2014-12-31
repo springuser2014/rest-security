@@ -2,7 +2,7 @@ package net.zzh.sec.client;
 
 import net.zzh.common.client.template.CommonPaths;
 import net.zzh.common.web.IUriMapper;
-import net.zzh.sec.model.Privilege;
+import net.zzh.sec.model.RolePermission;
 import net.zzh.sec.model.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +33,7 @@ public final class SecBusinessPaths {
     }
 
     public final String getUserUri() {
-        return getRootUri() + uriMapper.getUriBase(net.zzh.sec.model.dto.UserProfile.class);
+        return getRootUri() + uriMapper.getUriBase(net.zzh.sec.model.dto.UsersProfile.class);
     }
 
     public final String getRoleUri() {
@@ -41,7 +41,7 @@ public final class SecBusinessPaths {
     }
 
     public final String getPrivilegeUri() {
-        return getRootUri() + uriMapper.getUriBase(Privilege.class);
+        return getRootUri() + uriMapper.getUriBase(RolePermission.class);
     }
 
     public final String getAuthenticationUri() {

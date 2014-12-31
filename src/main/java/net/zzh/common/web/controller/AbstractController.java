@@ -49,23 +49,15 @@ public abstract class AbstractController<T extends IEntity> {
 
     // search
 
-    public List<T> searchAllInternal(@RequestParam(QueryConstants.Q_PARAM) final String queryString) {
-        return getService().searchAll(queryString);
-    }
-
-    public List<T> searchAllInternalPaginated(@RequestParam(QueryConstants.Q_PARAM) final String queryString, final int page, final int size) {
-        return getService().searchPaginated(queryString, page, size);
-    }
-
     // find - one
 
-    protected final T findOneInternal(final Long id, final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
+    protected final T findOneInternal(final Integer id, final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
         final T resource = findOneInternal(id);
         eventPublisher.publishEvent(new SingleResourceRetrievedEvent<T>(clazz, uriBuilder, response));
         return resource;
     }
 
-    protected final T findOneInternal(final Long id) {
+    protected final T findOneInternal(final Integer id) {
         return RestPreconditions.checkNotNull(getService().findOne(id));
     }
 
@@ -128,7 +120,7 @@ public abstract class AbstractController<T extends IEntity> {
     /**
      * - note: the operation is IDEMPOTENT <br/>
      */
-    protected final void updateInternal(final long id, final T resource) {
+    protected final void updateInternal(final int id, final T resource) {
         RestPreconditions.checkRequestElementNotNull(resource);
 //        RestPreconditions.checkRequestElementNotNull(resource.getId());
 //        RestPreconditions.checkRequestState(resource.getId() == id);
@@ -139,7 +131,7 @@ public abstract class AbstractController<T extends IEntity> {
 
     // delete/remove
 
-    protected final void deleteByIdInternal(final long id) {
+    protected final void deleteByIdInternal(final int id) {
         // InvalidDataAccessApiUsageException - ResourceNotFoundException
         // IllegalStateException - ResourceNotFoundException
         // DataAccessException - ignored

@@ -87,13 +87,13 @@ public class RestAuthenticationProvider extends AbstractUserDetailsAuthenticatio
 
         UserDetails loadedUser = null;
         try {
-            final ResponseEntity<net.zzh.sec.model.dto.UserProfile> authenticationResponse = authenticationApi.authenticate(name, password);
+            final ResponseEntity<net.zzh.sec.model.dto.UsersProfile> authenticationResponse = authenticationApi.authenticate(name, password);
             if (authenticationResponse.getStatusCode().value() == 401) {
                 // temporary - the idea here is to generate the not authorized exception - not by hand, but by returning wrong credentials which in turn will be refused later
                 return new org.springframework.security.core.userdetails.User("wrongUsername", "wrongPass", Lists.<GrantedAuthority> newArrayList());
             }
 
-            final net.zzh.sec.model.dto.UserProfile profileFromRest = authenticationResponse.getBody();
+            final net.zzh.sec.model.dto.UsersProfile profileFromRest = authenticationResponse.getBody();
 
             final List<String> privilegesFromRest = new ArrayList<String>();
             final List<Role> roles = profileFromRest.getRoles();

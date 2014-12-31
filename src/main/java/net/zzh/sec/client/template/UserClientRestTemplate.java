@@ -5,7 +5,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import net.zzh.common.client.template.AbstractNamedClientRestTemplate;
 import net.zzh.sec.client.SecBusinessPaths;
-import net.zzh.sec.model.dto.UserProfile;
+import net.zzh.sec.model.dto.UsersProfile;
 import net.zzh.sec.util.SecurityConstants;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +14,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Profile("client")
-public class UserClientRestTemplate extends AbstractNamedClientRestTemplate<UserProfile> {
+public class UserClientRestTemplate extends AbstractNamedClientRestTemplate<UsersProfile> {
 
     @Autowired
     private SecBusinessPaths paths;
 
     public UserClientRestTemplate() {
-        super(UserProfile.class);
+        super(UsersProfile.class);
     }
 
     // operations
