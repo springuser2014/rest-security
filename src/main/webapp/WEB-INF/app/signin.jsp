@@ -104,7 +104,7 @@
 					return false;
 				}
 				
-				var passPhrase = +new Date();
+				var passPhrase = ${passPhrase};
 				$.ajax({
 					dataType: "json",
 					type: "POST",

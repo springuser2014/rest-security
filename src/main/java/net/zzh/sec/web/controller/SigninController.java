@@ -3,6 +3,7 @@
  */
 package net.zzh.sec.web.controller;
 
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,6 +45,7 @@ public class SigninController {
 		model.addAttribute("title", messageSource.getMessage("message.header", new Object [] {}, null));
 		model.addAttribute("theme", message);
 		model.addAttribute("msg", messageSource.getMessage("message.welcomeback", new Object [] {"Username"}, null));
+		//model.addAttribute("passPhrase", );
 		
 		return "signin";
 	}
