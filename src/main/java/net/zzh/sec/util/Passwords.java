@@ -12,6 +12,8 @@ import java.util.Random;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
+import org.springframework.security.crypto.keygen.KeyGenerators;
+
 /**
  * @author zhenhuazhao
  * 
