@@ -11,25 +11,20 @@ import javax.persistence.*;
 @Entity
 @Table(name="sessions")
 @NamedQuery(name="Session.findAll", query="SELECT s FROM Session s")
-public class Session implements net.zzh.common.persistence.model.INameableEntity {
+public class Session implements Serializable, net.zzh.common.persistence.model.INameableEntity {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
 	private SessionPK id;
 
-	@Column(nullable=false)
 	private int cache;
 
-	@Column(nullable=false, length=128)
 	private String hostname;
 
-	@Lob
-	private byte[] session;
+	private Object session;
 
-	@Column(nullable=false)
 	private int timestamp;
 
-	@Column(nullable=false)
 	private int uid;
 
 	public Session() {
@@ -59,11 +54,11 @@ public class Session implements net.zzh.common.persistence.model.INameableEntity
 		this.hostname = hostname;
 	}
 
-	public byte[] getSession() {
+	public Object getSession() {
 		return this.session;
 	}
 
-	public void setSession(byte[] session) {
+	public void setSession(Object session) {
 		this.session = session;
 	}
 

@@ -12,15 +12,13 @@ import java.util.List;
 @Entity
 @Table(name="registry_file")
 @NamedQuery(name="RegistryFile.findAll", query="SELECT r FROM RegistryFile r")
-public class RegistryFile implements net.zzh.common.persistence.model.INameableEntity {
+public class RegistryFile implements Serializable, net.zzh.common.persistence.model.INameableEntity {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(unique=true, nullable=false, length=255)
 	private String filename;
 
-	@Column(nullable=false, length=64)
 	private String hash;
 
 	//bi-directional many-to-one association to Registry

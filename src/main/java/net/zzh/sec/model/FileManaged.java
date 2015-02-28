@@ -13,34 +13,26 @@ import java.util.List;
 @Entity
 @Table(name="file_managed")
 @NamedQuery(name="FileManaged.findAll", query="SELECT f FROM FileManaged f")
-public class FileManaged implements net.zzh.common.persistence.model.INameableEntity {
+public class FileManaged implements Serializable, net.zzh.common.persistence.model.INameableEntity {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(unique=true, nullable=false)
 	private int fid;
 
-	@Column(nullable=false, length=255)
 	private String filemime;
 
-	@Column(nullable=false, length=255)
 	private String filename;
 
-	@Column(nullable=false)
 	private int filesize;
 
-	@Column(nullable=false)
 	private byte status;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(nullable=false)
 	private Date timestamp;
 
-	@Column(nullable=false)
 	private int uid;
 
-	@Column(nullable=false, length=255)
 	private String uri;
 
 	//bi-directional many-to-one association to FileUsage

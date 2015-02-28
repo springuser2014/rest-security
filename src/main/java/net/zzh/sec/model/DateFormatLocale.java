@@ -11,13 +11,12 @@ import javax.persistence.*;
 @Entity
 @Table(name="date_format_locale")
 @NamedQuery(name="DateFormatLocale.findAll", query="SELECT d FROM DateFormatLocale d")
-public class DateFormatLocale implements net.zzh.common.persistence.model.INameableEntity {
+public class DateFormatLocale implements Serializable, net.zzh.common.persistence.model.INameableEntity {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
 	private DateFormatLocalePK id;
 
-	@Column(nullable=false, length=100)
 	private String format;
 
 	public DateFormatLocale() {

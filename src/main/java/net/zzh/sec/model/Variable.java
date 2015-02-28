@@ -11,17 +11,14 @@ import javax.persistence.*;
 @Entity
 @Table(name="variable")
 @NamedQuery(name="Variable.findAll", query="SELECT v FROM Variable v")
-public class Variable implements net.zzh.common.persistence.model.INameableEntity {
+public class Variable implements Serializable, net.zzh.common.persistence.model.INameableEntity {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(unique=true, nullable=false, length=128)
 	private String name;
 
-	@Lob
-	@Column(nullable=false)
-	private byte[] value;
+	private Object value;
 
 	public Variable() {
 	}
@@ -34,11 +31,11 @@ public class Variable implements net.zzh.common.persistence.model.INameableEntit
 		this.name = name;
 	}
 
-	public byte[] getValue() {
+	public Object getValue() {
 		return this.value;
 	}
 
-	public void setValue(byte[] value) {
+	public void setValue(Object value) {
 		this.value = value;
 	}
 

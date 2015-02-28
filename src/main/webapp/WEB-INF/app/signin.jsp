@@ -14,8 +14,6 @@
 
 	<!-- Bootstrap core CSS -->
 	<link href="${path}<spring:theme code='bootstrap-css'/>" rel="stylesheet">
-	
-	<script type="text/javascript" src="${path}/js/hmac-sha256.js"></script>
 
 	<style type="text/css">
 		body {
@@ -105,15 +103,15 @@
 					$('#error').html('Password must not null.');
 					return false;
 				}
-				var hash = CryptoJS.HmacSHA256($.trim($("#p").val()), $("#u").val());
-
+				
+				var passPhrase = +new Date();
 				$.ajax({
 					dataType: "json",
 					type: "POST",
 					url: "signin",
-					data: {u: $("#u").val(), p: hash},
-					username: $("#u").val(),
-					password: hash,
+					data: {u: $("#u").val(), p: $.trim($("#p").val()), t: $(".t").val(), k: passPhrase},
+					username: u,
+					password: p,
 					timeout: 60000,
 					success: function(data){
 						if (data.state) {

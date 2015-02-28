@@ -11,87 +11,74 @@ import javax.persistence.*;
 @Entity
 @Table(name="menu_router")
 @NamedQuery(name="MenuRouter.findAll", query="SELECT m FROM MenuRouter m")
-public class MenuRouter implements net.zzh.common.persistence.model.INameableEntity {
+public class MenuRouter implements Serializable, net.zzh.common.persistence.model.INameableEntity {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
 	private MenuRouterPK id;
 
-	@Lob
 	@Column(name="access_arguments")
-	private byte[] accessArguments;
+	private Object accessArguments;
 
-	@Column(name="access_callback", nullable=false, length=255)
+	@Column(name="access_callback")
 	private String accessCallback;
 
-	@Column(nullable=false)
 	private int context;
 
-	@Column(name="delivery_callback", nullable=false, length=255)
+	@Column(name="delivery_callback")
 	private String deliveryCallback;
 
-	@Lob
-	@Column(nullable=false)
-	private String description;
+	private Object description;
 
-	@Column(nullable=false)
 	private int fit;
 
-	@Lob
 	@Column(name="include_file")
-	private String includeFile;
+	private Object includeFile;
 
-	@Lob
-	@Column(name="load_functions", nullable=false)
-	private byte[] loadFunctions;
+	@Column(name="load_functions")
+	private Object loadFunctions;
 
-	@Column(name="number_parts", nullable=false)
+	@Column(name="number_parts")
 	private short numberParts;
 
-	@Lob
 	@Column(name="page_arguments")
-	private byte[] pageArguments;
+	private Object pageArguments;
 
-	@Column(name="page_callback", nullable=false, length=255)
+	@Column(name="page_callback")
 	private String pageCallback;
 
-	@Column(nullable=false, length=255)
 	private String position;
 
-	@Column(name="tab_parent", nullable=false, length=255)
+	@Column(name="tab_parent")
 	private String tabParent;
 
-	@Column(name="tab_root", nullable=false, length=255)
+	@Column(name="tab_root")
 	private String tabRoot;
 
-	@Column(name="theme_arguments", nullable=false, length=255)
+	@Column(name="theme_arguments")
 	private String themeArguments;
 
-	@Column(name="theme_callback", nullable=false, length=255)
+	@Column(name="theme_callback")
 	private String themeCallback;
 
-	@Column(nullable=false, length=255)
 	private String title;
 
-	@Column(name="title_arguments", nullable=false, length=255)
+	@Column(name="title_arguments")
 	private String titleArguments;
 
-	@Column(name="title_callback", nullable=false, length=255)
+	@Column(name="title_callback")
 	private String titleCallback;
 
-	@Lob
-	@Column(name="to_arg_functions", nullable=false)
-	private byte[] toArgFunctions;
+	@Column(name="to_arg_functions")
+	private Object toArgFunctions;
 
-	@Column(nullable=false)
 	private int type;
 
-	@Column(nullable=false)
 	private int weight;
 
 	//bi-directional many-to-one association to MenuLink
 	@ManyToOne
-	@JoinColumn(name="menu_links_mlid", nullable=false, insertable=false, updatable=false)
+	@JoinColumn(name="menu_links_mlid")
 	private MenuLink menuLink;
 
 	public MenuRouter() {
@@ -105,11 +92,11 @@ public class MenuRouter implements net.zzh.common.persistence.model.INameableEnt
 		this.id = id;
 	}
 
-	public byte[] getAccessArguments() {
+	public Object getAccessArguments() {
 		return this.accessArguments;
 	}
 
-	public void setAccessArguments(byte[] accessArguments) {
+	public void setAccessArguments(Object accessArguments) {
 		this.accessArguments = accessArguments;
 	}
 
@@ -137,11 +124,11 @@ public class MenuRouter implements net.zzh.common.persistence.model.INameableEnt
 		this.deliveryCallback = deliveryCallback;
 	}
 
-	public String getDescription() {
+	public Object getDescription() {
 		return this.description;
 	}
 
-	public void setDescription(String description) {
+	public void setDescription(Object description) {
 		this.description = description;
 	}
 
@@ -153,19 +140,19 @@ public class MenuRouter implements net.zzh.common.persistence.model.INameableEnt
 		this.fit = fit;
 	}
 
-	public String getIncludeFile() {
+	public Object getIncludeFile() {
 		return this.includeFile;
 	}
 
-	public void setIncludeFile(String includeFile) {
+	public void setIncludeFile(Object includeFile) {
 		this.includeFile = includeFile;
 	}
 
-	public byte[] getLoadFunctions() {
+	public Object getLoadFunctions() {
 		return this.loadFunctions;
 	}
 
-	public void setLoadFunctions(byte[] loadFunctions) {
+	public void setLoadFunctions(Object loadFunctions) {
 		this.loadFunctions = loadFunctions;
 	}
 
@@ -177,11 +164,11 @@ public class MenuRouter implements net.zzh.common.persistence.model.INameableEnt
 		this.numberParts = numberParts;
 	}
 
-	public byte[] getPageArguments() {
+	public Object getPageArguments() {
 		return this.pageArguments;
 	}
 
-	public void setPageArguments(byte[] pageArguments) {
+	public void setPageArguments(Object pageArguments) {
 		this.pageArguments = pageArguments;
 	}
 
@@ -257,11 +244,11 @@ public class MenuRouter implements net.zzh.common.persistence.model.INameableEnt
 		this.titleCallback = titleCallback;
 	}
 
-	public byte[] getToArgFunctions() {
+	public Object getToArgFunctions() {
 		return this.toArgFunctions;
 	}
 
-	public void setToArgFunctions(byte[] toArgFunctions) {
+	public void setToArgFunctions(Object toArgFunctions) {
 		this.toArgFunctions = toArgFunctions;
 	}
 

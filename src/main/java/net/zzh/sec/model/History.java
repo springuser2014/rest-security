@@ -11,13 +11,12 @@ import javax.persistence.*;
 @Entity
 @Table(name="history")
 @NamedQuery(name="History.findAll", query="SELECT h FROM History h")
-public class History implements net.zzh.common.persistence.model.INameableEntity {
+public class History implements Serializable, net.zzh.common.persistence.model.INameableEntity {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
 	private HistoryPK id;
 
-	@Column(nullable=false)
 	private int timestamp;
 
 	public History() {

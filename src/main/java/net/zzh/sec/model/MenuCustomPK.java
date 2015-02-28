@@ -12,10 +12,10 @@ public class MenuCustomPK implements Serializable {
 	//default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;
 
-	@Column(name="menu_name", unique=true, nullable=false, length=32)
+	@Column(name="menu_name")
 	private String menuName;
 
-	@Column(name="menu_links_mlid", insertable=false, updatable=false, unique=true, nullable=false)
+	@Column(name="menu_links_mlid", insertable=false, updatable=false)
 	private int menuLinksMlid;
 
 	public MenuCustomPK() {

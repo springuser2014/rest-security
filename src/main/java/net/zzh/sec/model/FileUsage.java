@@ -11,18 +11,17 @@ import javax.persistence.*;
 @Entity
 @Table(name="file_usage")
 @NamedQuery(name="FileUsage.findAll", query="SELECT f FROM FileUsage f")
-public class FileUsage implements net.zzh.common.persistence.model.INameableEntity {
+public class FileUsage implements Serializable, net.zzh.common.persistence.model.INameableEntity {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
 	private FileUsagePK id;
 
-	@Column(nullable=false)
 	private int count;
 
 	//bi-directional many-to-one association to FileManaged
 	@ManyToOne
-	@JoinColumn(name="fid", nullable=false, insertable=false, updatable=false)
+	@JoinColumn(name="fid")
 	private FileManaged fileManaged;
 
 	public FileUsage() {

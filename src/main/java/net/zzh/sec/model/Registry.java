@@ -11,21 +11,19 @@ import javax.persistence.*;
 @Entity
 @Table(name="registry")
 @NamedQuery(name="Registry.findAll", query="SELECT r FROM Registry r")
-public class Registry implements net.zzh.common.persistence.model.INameableEntity {
+public class Registry implements Serializable, net.zzh.common.persistence.model.INameableEntity {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
 	private RegistryPK id;
 
-	@Column(nullable=false, length=255)
 	private String module;
 
-	@Column(nullable=false)
 	private int weight;
 
 	//bi-directional many-to-one association to RegistryFile
 	@ManyToOne
-	@JoinColumn(name="filename", nullable=false)
+	@JoinColumn(name="filename")
 	private RegistryFile registryFile;
 
 	public Registry() {

@@ -11,16 +11,16 @@ import javax.persistence.*;
 @Entity
 @Table(name="test")
 @NamedQuery(name="Test.findAll", query="SELECT t FROM Test t")
-public class Test implements net.zzh.common.persistence.model.INameableEntity, Serializable {
+public class Test implements Serializable, net.zzh.common.persistence.model.INameableEntity {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(unique=true, nullable=false)
 	private int idtest;
 
-	@Column(length=45)
-	private String testcol;
+	private String testcol1;
+
+	private String testcol2;
 
 	public Test() {
 	}
@@ -33,12 +33,20 @@ public class Test implements net.zzh.common.persistence.model.INameableEntity, S
 		this.idtest = idtest;
 	}
 
-	public String getTestcol() {
-		return this.testcol;
+	public String getTestcol1() {
+		return this.testcol1;
 	}
 
-	public void setTestcol(String testcol) {
-		this.testcol = testcol;
+	public void setTestcol1(String testcol1) {
+		this.testcol1 = testcol1;
+	}
+
+	public String getTestcol2() {
+		return this.testcol2;
+	}
+
+	public void setTestcol2(String testcol2) {
+		this.testcol2 = testcol2;
 	}
 
 }

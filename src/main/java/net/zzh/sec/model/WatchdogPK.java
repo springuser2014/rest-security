@@ -12,10 +12,8 @@ public class WatchdogPK implements Serializable {
 	//default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;
 
-	@Column(unique=true, nullable=false)
 	private int wid;
 
-	@Column(unique=true, nullable=false)
 	private int uid;
 
 	public WatchdogPK() {

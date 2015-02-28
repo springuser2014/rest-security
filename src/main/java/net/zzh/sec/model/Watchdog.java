@@ -11,41 +11,29 @@ import javax.persistence.*;
 @Entity
 @Table(name="watchdog")
 @NamedQuery(name="Watchdog.findAll", query="SELECT w FROM Watchdog w")
-public class Watchdog implements net.zzh.common.persistence.model.INameableEntity {
+public class Watchdog implements Serializable, net.zzh.common.persistence.model.INameableEntity {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
 	private WatchdogPK id;
 
-	@Column(nullable=false, length=128)
 	private String hostname;
 
-	@Column(length=255)
 	private String link;
 
-	@Lob
-	@Column(nullable=false)
-	private String location;
+	private Object location;
 
-	@Lob
-	@Column(nullable=false)
-	private String message;
+	private Object message;
 
-	@Lob
-	private String referer;
+	private Object referer;
 
-	@Column(nullable=false)
 	private byte severity;
 
-	@Column(nullable=false)
 	private int timestamp;
 
-	@Column(nullable=false, length=64)
 	private String type;
 
-	@Lob
-	@Column(nullable=false)
-	private byte[] variables;
+	private Object variables;
 
 	public Watchdog() {
 	}
@@ -74,27 +62,27 @@ public class Watchdog implements net.zzh.common.persistence.model.INameableEntit
 		this.link = link;
 	}
 
-	public String getLocation() {
+	public Object getLocation() {
 		return this.location;
 	}
 
-	public void setLocation(String location) {
+	public void setLocation(Object location) {
 		this.location = location;
 	}
 
-	public String getMessage() {
+	public Object getMessage() {
 		return this.message;
 	}
 
-	public void setMessage(String message) {
+	public void setMessage(Object message) {
 		this.message = message;
 	}
 
-	public String getReferer() {
+	public Object getReferer() {
 		return this.referer;
 	}
 
-	public void setReferer(String referer) {
+	public void setReferer(Object referer) {
 		this.referer = referer;
 	}
 
@@ -122,11 +110,11 @@ public class Watchdog implements net.zzh.common.persistence.model.INameableEntit
 		this.type = type;
 	}
 
-	public byte[] getVariables() {
+	public Object getVariables() {
 		return this.variables;
 	}
 
-	public void setVariables(byte[] variables) {
+	public void setVariables(Object variables) {
 		this.variables = variables;
 	}
 

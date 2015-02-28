@@ -11,21 +11,17 @@ import javax.persistence.*;
 @Entity
 @Table(name="authmap")
 @NamedQuery(name="Authmap.findAll", query="SELECT a FROM Authmap a")
-public class Authmap implements net.zzh.common.persistence.model.INameableEntity {
+public class Authmap implements Serializable, net.zzh.common.persistence.model.INameableEntity {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(unique=true, nullable=false)
 	private int aid;
 
-	@Column(nullable=false, length=128)
 	private String authname;
 
-	@Column(nullable=false, length=128)
 	private String module;
 
-	@Column(nullable=false)
 	private int uid;
 
 	public Authmap() {

@@ -11,21 +11,17 @@ import javax.persistence.*;
 @Entity
 @Table(name="date_formats")
 @NamedQuery(name="DateFormat.findAll", query="SELECT d FROM DateFormat d")
-public class DateFormat implements net.zzh.common.persistence.model.INameableEntity {
+public class DateFormat implements Serializable, net.zzh.common.persistence.model.INameableEntity {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(unique=true, nullable=false)
 	private int dfid;
 
-	@Column(nullable=false, length=100)
 	private String format;
 
-	@Column(nullable=false)
 	private byte locked;
 
-	@Column(nullable=false, length=64)
 	private String type;
 
 	public DateFormat() {

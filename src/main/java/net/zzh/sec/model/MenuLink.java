@@ -12,84 +12,64 @@ import java.util.List;
 @Entity
 @Table(name="menu_links")
 @NamedQuery(name="MenuLink.findAll", query="SELECT m FROM MenuLink m")
-public class MenuLink implements net.zzh.common.persistence.model.INameableEntity {
+public class MenuLink implements Serializable, net.zzh.common.persistence.model.INameableEntity {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(unique=true, nullable=false)
 	private int mlid;
 
-	@Column(nullable=false)
 	private short customized;
 
-	@Column(nullable=false)
 	private short depth;
 
-	@Column(nullable=false)
 	private short expanded;
 
-	@Column(nullable=false)
 	private short external;
 
-	@Column(name="has_children", nullable=false)
+	@Column(name="has_children")
 	private short hasChildren;
 
-	@Column(nullable=false)
 	private short hidden;
 
-	@Column(name="link_path", nullable=false, length=255)
+	@Column(name="link_path")
 	private String linkPath;
 
-	@Column(name="link_title", nullable=false, length=255)
+	@Column(name="link_title")
 	private String linkTitle;
 
-	@Column(name="menu_name", nullable=false, length=32)
+	@Column(name="menu_name")
 	private String menuName;
 
-	@Column(nullable=false, length=255)
 	private String module;
 
-	@Lob
-	private byte[] options;
+	private Object options;
 
-	@Column(nullable=false)
 	private int p1;
 
-	@Column(nullable=false)
 	private int p2;
 
-	@Column(nullable=false)
 	private int p3;
 
-	@Column(nullable=false)
 	private int p4;
 
-	@Column(nullable=false)
 	private int p5;
 
-	@Column(nullable=false)
 	private int p6;
 
-	@Column(nullable=false)
 	private int p7;
 
-	@Column(nullable=false)
 	private int p8;
 
-	@Column(nullable=false)
 	private int p9;
 
-	@Column(nullable=false)
 	private int plid;
 
-	@Column(name="router_path", nullable=false, length=255)
+	@Column(name="router_path")
 	private String routerPath;
 
-	@Column(nullable=false)
 	private short updated;
 
-	@Column(nullable=false)
 	private int weight;
 
 	//bi-directional many-to-one association to MenuCustom
@@ -191,11 +171,11 @@ public class MenuLink implements net.zzh.common.persistence.model.INameableEntit
 		this.module = module;
 	}
 
-	public byte[] getOptions() {
+	public Object getOptions() {
 		return this.options;
 	}
 
-	public void setOptions(byte[] options) {
+	public void setOptions(Object options) {
 		this.options = options;
 	}
 

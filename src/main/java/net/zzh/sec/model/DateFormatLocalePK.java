@@ -12,10 +12,8 @@ public class DateFormatLocalePK implements Serializable {
 	//default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;
 
-	@Column(unique=true, nullable=false, length=64)
 	private String type;
 
-	@Column(unique=true, nullable=false, length=12)
 	private String language;
 
 	public DateFormatLocalePK() {

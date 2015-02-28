@@ -12,10 +12,8 @@ public class SessionPK implements Serializable {
 	//default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;
 
-	@Column(unique=true, nullable=false, length=128)
 	private String sid;
 
-	@Column(unique=true, nullable=false, length=128)
 	private String ssid;
 
 	public SessionPK() {

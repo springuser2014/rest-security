@@ -11,36 +11,28 @@ import javax.persistence.*;
 @Entity
 @Table(name="system")
 @NamedQuery(name="System.findAll", query="SELECT s FROM System s")
-public class System implements net.zzh.common.persistence.model.INameableEntity {
+public class System implements Serializable, net.zzh.common.persistence.model.INameableEntity {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(unique=true, nullable=false, length=255)
 	private String filename;
 
-	@Column(nullable=false)
 	private int bootstrap;
 
-	@Lob
-	private byte[] info;
+	private Object info;
 
-	@Column(nullable=false, length=255)
 	private String name;
 
-	@Column(nullable=false, length=255)
 	private String owner;
 
-	@Column(name="schema_version", nullable=false)
+	@Column(name="schema_version")
 	private short schemaVersion;
 
-	@Column(nullable=false)
 	private int status;
 
-	@Column(nullable=false, length=12)
 	private String type;
 
-	@Column(nullable=false)
 	private int weight;
 
 	public System() {
@@ -62,11 +54,11 @@ public class System implements net.zzh.common.persistence.model.INameableEntity 
 		this.bootstrap = bootstrap;
 	}
 
-	public byte[] getInfo() {
+	public Object getInfo() {
 		return this.info;
 	}
 
-	public void setInfo(byte[] info) {
+	public void setInfo(Object info) {
 		this.info = info;
 	}
 

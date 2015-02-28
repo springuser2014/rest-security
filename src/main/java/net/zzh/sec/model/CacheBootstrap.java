@@ -11,24 +11,19 @@ import javax.persistence.*;
 @Entity
 @Table(name="cache_bootstrap")
 @NamedQuery(name="CacheBootstrap.findAll", query="SELECT c FROM CacheBootstrap c")
-public class CacheBootstrap implements net.zzh.common.persistence.model.INameableEntity {
+public class CacheBootstrap implements Serializable, net.zzh.common.persistence.model.INameableEntity {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(unique=true, nullable=false, length=255)
 	private String cid;
 
-	@Column(nullable=false)
 	private int created;
 
-	@Lob
-	private byte[] data;
+	private Object data;
 
-	@Column(nullable=false)
 	private int expire;
 
-	@Column(nullable=false)
 	private short serialized;
 
 	public CacheBootstrap() {
@@ -50,11 +45,11 @@ public class CacheBootstrap implements net.zzh.common.persistence.model.INameabl
 		this.created = created;
 	}
 
-	public byte[] getData() {
+	public Object getData() {
 		return this.data;
 	}
 
-	public void setData(byte[] data) {
+	public void setData(Object data) {
 		this.data = data;
 	}
 

@@ -12,10 +12,8 @@ public class RegistryPK implements Serializable {
 	//default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;
 
-	@Column(unique=true, nullable=false, length=255)
 	private String name;
 
-	@Column(unique=true, nullable=false, length=9)
 	private String type;
 
 	public RegistryPK() {

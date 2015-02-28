@@ -11,24 +11,19 @@ import javax.persistence.*;
 @Entity
 @Table(name="cache_filter")
 @NamedQuery(name="CacheFilter.findAll", query="SELECT c FROM CacheFilter c")
-public class CacheFilter implements net.zzh.common.persistence.model.INameableEntity {
+public class CacheFilter implements Serializable, net.zzh.common.persistence.model.INameableEntity {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(unique=true, nullable=false, length=255)
 	private String cid;
 
-	@Column(nullable=false)
 	private int created;
 
-	@Lob
-	private byte[] data;
+	private Object data;
 
-	@Column(nullable=false)
 	private int expire;
 
-	@Column(nullable=false)
 	private short serialized;
 
 	public CacheFilter() {
@@ -50,11 +45,11 @@ public class CacheFilter implements net.zzh.common.persistence.model.INameableEn
 		this.created = created;
 	}
 
-	public byte[] getData() {
+	public Object getData() {
 		return this.data;
 	}
 
-	public void setData(byte[] data) {
+	public void setData(Object data) {
 		this.data = data;
 	}
 

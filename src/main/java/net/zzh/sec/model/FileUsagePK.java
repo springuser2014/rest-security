@@ -12,16 +12,13 @@ public class FileUsagePK implements Serializable {
 	//default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;
 
-	@Column(unique=true, nullable=false)
 	private int id;
 
-	@Column(insertable=false, updatable=false, unique=true, nullable=false)
+	@Column(insertable=false, updatable=false)
 	private int fid;
 
-	@Column(unique=true, nullable=false, length=64)
 	private String type;
 
-	@Column(unique=true, nullable=false, length=255)
 	private String module;
 
 	public FileUsagePK() {

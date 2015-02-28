@@ -11,21 +11,19 @@ import javax.persistence.*;
 @Entity
 @Table(name="menu_custom")
 @NamedQuery(name="MenuCustom.findAll", query="SELECT m FROM MenuCustom m")
-public class MenuCustom implements net.zzh.common.persistence.model.INameableEntity {
+public class MenuCustom implements Serializable, net.zzh.common.persistence.model.INameableEntity {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
 	private MenuCustomPK id;
 
-	@Lob
-	private String description;
+	private Object description;
 
-	@Column(nullable=false, length=255)
 	private String title;
 
 	//bi-directional many-to-one association to MenuLink
 	@ManyToOne
-	@JoinColumn(name="menu_links_mlid", nullable=false, insertable=false, updatable=false)
+	@JoinColumn(name="menu_links_mlid")
 	private MenuLink menuLink;
 
 	public MenuCustom() {
@@ -39,11 +37,11 @@ public class MenuCustom implements net.zzh.common.persistence.model.INameableEnt
 		this.id = id;
 	}
 
-	public String getDescription() {
+	public Object getDescription() {
 		return this.description;
 	}
 
-	public void setDescription(String description) {
+	public void setDescription(Object description) {
 		this.description = description;
 	}
 

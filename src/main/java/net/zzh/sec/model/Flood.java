@@ -11,24 +11,19 @@ import javax.persistence.*;
 @Entity
 @Table(name="flood")
 @NamedQuery(name="Flood.findAll", query="SELECT f FROM Flood f")
-public class Flood implements net.zzh.common.persistence.model.INameableEntity {
+public class Flood implements Serializable, net.zzh.common.persistence.model.INameableEntity {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(unique=true, nullable=false)
 	private int fid;
 
-	@Column(nullable=false, length=64)
 	private String event;
 
-	@Column(nullable=false)
 	private int expiration;
 
-	@Column(nullable=false, length=128)
 	private String identifier;
 
-	@Column(nullable=false)
 	private int timestamp;
 
 	public Flood() {

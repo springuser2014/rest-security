@@ -2,7 +2,6 @@ package net.zzh.sec.model;
 
 import java.io.Serializable;
 import javax.persistence.*;
-import java.util.Date;
 import java.util.List;
 
 
@@ -13,64 +12,57 @@ import java.util.List;
 @Entity
 @Table(name="users")
 @NamedQuery(name="Users.findAll", query="SELECT u FROM Users u")
-public class Users implements net.zzh.common.persistence.model.INameableEntity {
+public class Users implements Serializable, net.zzh.common.persistence.model.INameableEntity {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(unique=true, nullable=false)
 	private int uid;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(nullable=false)
-	private Date access;
+	private int access;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(nullable=false)
-	private Date created;
+	private int created;
 
-	@Lob
-	private byte[] data;
-
-	@Column(length=254)
 	private String init;
 
-	@Column(nullable=false, length=12)
-	private String language;
+	private String langcode;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(nullable=false)
-	private Date login;
+	private int login;
 
-	@Column(length=254)
 	private String mail;
 
-	@Column(nullable=false, length=60)
 	private String name;
 
-	@Column(nullable=false, length=128)
 	private String pass;
 
-	@Column(nullable=false)
-	private int picture;
+	@Column(name="preferred_admin_langcode")
+	private String preferredAdminLangcode;
 
-	@Column(nullable=false, length=255)
+	@Column(name="preferred_langcode")
+	private String preferredLangcode;
+
 	private String signature;
 
-	@Column(name="signature_format", length=255)
+	@Column(name="signature_format")
 	private String signatureFormat;
 
-	@Column(nullable=false)
 	private byte status;
 
-	@Column(nullable=false, length=255)
-	private String theme;
-
-	@Column(length=32)
 	private String timezone;
 
+	private String uuid;
+
 	//bi-directional many-to-many association to Role
-	@ManyToMany(mappedBy="users")
+	@ManyToMany
+	@JoinTable(
+		name="users_roles"
+		, joinColumns={
+			@JoinColumn(name="uid")
+			}
+		, inverseJoinColumns={
+			@JoinColumn(name="rid")
+			}
+		)
 	private List<Role> roles;
 
 	public Users() {
@@ -84,28 +76,20 @@ public class Users implements net.zzh.common.persistence.model.INameableEntity {
 		this.uid = uid;
 	}
 
-	public Date getAccess() {
+	public int getAccess() {
 		return this.access;
 	}
 
-	public void setAccess(Date access) {
+	public void setAccess(int access) {
 		this.access = access;
 	}
 
-	public Date getCreated() {
+	public int getCreated() {
 		return this.created;
 	}
 
-	public void setCreated(Date created) {
+	public void setCreated(int created) {
 		this.created = created;
-	}
-
-	public byte[] getData() {
-		return this.data;
-	}
-
-	public void setData(byte[] data) {
-		this.data = data;
 	}
 
 	public String getInit() {
@@ -116,19 +100,19 @@ public class Users implements net.zzh.common.persistence.model.INameableEntity {
 		this.init = init;
 	}
 
-	public String getLanguage() {
-		return this.language;
+	public String getLangcode() {
+		return this.langcode;
 	}
 
-	public void setLanguage(String language) {
-		this.language = language;
+	public void setLangcode(String langcode) {
+		this.langcode = langcode;
 	}
 
-	public Date getLogin() {
+	public int getLogin() {
 		return this.login;
 	}
 
-	public void setLogin(Date login) {
+	public void setLogin(int login) {
 		this.login = login;
 	}
 
@@ -156,12 +140,20 @@ public class Users implements net.zzh.common.persistence.model.INameableEntity {
 		this.pass = pass;
 	}
 
-	public int getPicture() {
-		return this.picture;
+	public String getPreferredAdminLangcode() {
+		return this.preferredAdminLangcode;
 	}
 
-	public void setPicture(int picture) {
-		this.picture = picture;
+	public void setPreferredAdminLangcode(String preferredAdminLangcode) {
+		this.preferredAdminLangcode = preferredAdminLangcode;
+	}
+
+	public String getPreferredLangcode() {
+		return this.preferredLangcode;
+	}
+
+	public void setPreferredLangcode(String preferredLangcode) {
+		this.preferredLangcode = preferredLangcode;
 	}
 
 	public String getSignature() {
@@ -188,20 +180,20 @@ public class Users implements net.zzh.common.persistence.model.INameableEntity {
 		this.status = status;
 	}
 
-	public String getTheme() {
-		return this.theme;
-	}
-
-	public void setTheme(String theme) {
-		this.theme = theme;
-	}
-
 	public String getTimezone() {
 		return this.timezone;
 	}
 
 	public void setTimezone(String timezone) {
 		this.timezone = timezone;
+	}
+
+	public String getUuid() {
+		return this.uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
 	public List<Role> getRoles() {

@@ -11,18 +11,17 @@ import javax.persistence.*;
 @Entity
 @Table(name="role_permission")
 @NamedQuery(name="RolePermission.findAll", query="SELECT r FROM RolePermission r")
-public class RolePermission implements net.zzh.common.persistence.model.INameableEntity {
+public class RolePermission implements Serializable, net.zzh.common.persistence.model.INameableEntity {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
 	private RolePermissionPK id;
 
-	@Column(nullable=false, length=255)
 	private String module;
 
 	//bi-directional many-to-one association to Role
 	@ManyToOne
-	@JoinColumn(name="rid", nullable=false, insertable=false, updatable=false)
+	@JoinColumn(name="rid")
 	private Role role;
 
 	public RolePermission() {
