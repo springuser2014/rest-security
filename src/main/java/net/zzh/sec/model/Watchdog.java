@@ -14,8 +14,9 @@ import javax.persistence.*;
 public class Watchdog implements Serializable, net.zzh.common.persistence.model.INameableEntity {
 	private static final long serialVersionUID = 1L;
 
-	@EmbeddedId
-	private WatchdogPK id;
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	private int wid;
 
 	private String hostname;
 
@@ -35,15 +36,20 @@ public class Watchdog implements Serializable, net.zzh.common.persistence.model.
 
 	private Object variables;
 
+	//bi-directional many-to-one association to Users
+	@ManyToOne
+	@JoinColumn(name="uid")
+	private Users user;
+
 	public Watchdog() {
 	}
 
-	public WatchdogPK getId() {
-		return this.id;
+	public int getWid() {
+		return this.wid;
 	}
 
-	public void setId(WatchdogPK id) {
-		this.id = id;
+	public void setWid(int wid) {
+		this.wid = wid;
 	}
 
 	public String getHostname() {
@@ -116,6 +122,14 @@ public class Watchdog implements Serializable, net.zzh.common.persistence.model.
 
 	public void setVariables(Object variables) {
 		this.variables = variables;
+	}
+
+	public Users getUser() {
+		return this.user;
+	}
+
+	public void setUser(Users user) {
+		this.user = user;
 	}
 
 }

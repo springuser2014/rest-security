@@ -48,9 +48,23 @@ public class Users implements Serializable, net.zzh.common.persistence.model.INa
 
 	private byte status;
 
+	private String theme;
+
 	private String timezone;
 
 	private String uuid;
+
+	//bi-directional many-to-one association to FileManaged
+	@OneToMany(mappedBy="user")
+	private List<FileManaged> fileManageds;
+
+	//bi-directional many-to-one association to Session
+	@OneToMany(mappedBy="user")
+	private List<Session> sessions;
+
+	//bi-directional one-to-one association to ShortcutSetUser
+	@OneToOne(mappedBy="user")
+	private ShortcutSetUser shortcutSetUser;
 
 	//bi-directional many-to-many association to Role
 	@ManyToMany
@@ -64,6 +78,18 @@ public class Users implements Serializable, net.zzh.common.persistence.model.INa
 			}
 		)
 	private List<Role> roles;
+
+	//bi-directional many-to-one association to UsersData
+	@OneToMany(mappedBy="user")
+	private List<UsersData> usersData;
+
+	//bi-directional many-to-one association to UsersRole
+	@OneToMany(mappedBy="user")
+	private List<UsersRole> usersRoles;
+
+	//bi-directional many-to-one association to Watchdog
+	@OneToMany(mappedBy="user")
+	private List<Watchdog> watchdogs;
 
 	public Users() {
 	}
@@ -180,6 +206,14 @@ public class Users implements Serializable, net.zzh.common.persistence.model.INa
 		this.status = status;
 	}
 
+	public String getTheme() {
+		return this.theme;
+	}
+
+	public void setTheme(String theme) {
+		this.theme = theme;
+	}
+
 	public String getTimezone() {
 		return this.timezone;
 	}
@@ -196,12 +230,130 @@ public class Users implements Serializable, net.zzh.common.persistence.model.INa
 		this.uuid = uuid;
 	}
 
+	public List<FileManaged> getFileManageds() {
+		return this.fileManageds;
+	}
+
+	public void setFileManageds(List<FileManaged> fileManageds) {
+		this.fileManageds = fileManageds;
+	}
+
+	public FileManaged addFileManaged(FileManaged fileManaged) {
+		getFileManageds().add(fileManaged);
+		fileManaged.setUser(this);
+
+		return fileManaged;
+	}
+
+	public FileManaged removeFileManaged(FileManaged fileManaged) {
+		getFileManageds().remove(fileManaged);
+		fileManaged.setUser(null);
+
+		return fileManaged;
+	}
+
+	public List<Session> getSessions() {
+		return this.sessions;
+	}
+
+	public void setSessions(List<Session> sessions) {
+		this.sessions = sessions;
+	}
+
+	public Session addSession(Session session) {
+		getSessions().add(session);
+		session.setUser(this);
+
+		return session;
+	}
+
+	public Session removeSession(Session session) {
+		getSessions().remove(session);
+		session.setUser(null);
+
+		return session;
+	}
+
+	public ShortcutSetUser getShortcutSetUser() {
+		return this.shortcutSetUser;
+	}
+
+	public void setShortcutSetUser(ShortcutSetUser shortcutSetUser) {
+		this.shortcutSetUser = shortcutSetUser;
+	}
+
 	public List<Role> getRoles() {
 		return this.roles;
 	}
 
 	public void setRoles(List<Role> roles) {
 		this.roles = roles;
+	}
+
+	public List<UsersData> getUsersData() {
+		return this.usersData;
+	}
+
+	public void setUsersData(List<UsersData> usersData) {
+		this.usersData = usersData;
+	}
+
+	public UsersData addUsersData(UsersData usersData) {
+		getUsersData().add(usersData);
+		usersData.setUser(this);
+
+		return usersData;
+	}
+
+	public UsersData removeUsersData(UsersData usersData) {
+		getUsersData().remove(usersData);
+		usersData.setUser(null);
+
+		return usersData;
+	}
+
+	public List<UsersRole> getUsersRoles() {
+		return this.usersRoles;
+	}
+
+	public void setUsersRoles(List<UsersRole> usersRoles) {
+		this.usersRoles = usersRoles;
+	}
+
+	public UsersRole addUsersRole(UsersRole usersRole) {
+		getUsersRoles().add(usersRole);
+		usersRole.setUser(this);
+
+		return usersRole;
+	}
+
+	public UsersRole removeUsersRole(UsersRole usersRole) {
+		getUsersRoles().remove(usersRole);
+		usersRole.setUser(null);
+
+		return usersRole;
+	}
+
+	public List<Watchdog> getWatchdogs() {
+		return this.watchdogs;
+	}
+
+	public void setWatchdogs(List<Watchdog> watchdogs) {
+		this.watchdogs = watchdogs;
+	}
+
+	public Watchdog addWatchdog(Watchdog watchdog) {
+		getWatchdogs().add(watchdog);
+		watchdog.setUser(this);
+
+		return watchdog;
+	}
+
+	public Watchdog removeWatchdog(Watchdog watchdog) {
+		getWatchdogs().remove(watchdog);
+		watchdog.setUser(null);
+
+		return watchdog;
 	}
 
 }

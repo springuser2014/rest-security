@@ -19,8 +19,8 @@ public class RolePermission implements Serializable, net.zzh.common.persistence.
 
 	private String module;
 
-	//bi-directional many-to-one association to Role
-	@ManyToOne
+	//bi-directional one-to-one association to Role
+	@OneToOne
 	@JoinColumn(name="rid")
 	private Role role;
 

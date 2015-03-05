@@ -98,7 +98,11 @@ public class RestAuthenticationProvider extends AbstractUserDetailsAuthenticatio
             final List<String> privilegesFromRest = new ArrayList<String>();
             final List<Role> roles = profileFromRest.getRoles();
             for (final Role role : roles) {
-                privilegesFromRest.addAll(Collections2.transform(role.getRolePermissions(), Functions.toStringFunction()));
+                //privilegesFromRest.addAll(Collections2.transform(role.getRolePermissions(), Functions.toStringFunction()));
+            	
+            	List list = new ArrayList();
+            	list.add(role.getRolePermission());
+                privilegesFromRest.addAll(Collections2.transform(list, Functions.toStringFunction()));
             }
             final String[] authorityStringsAsArray = privilegesFromRest.toArray(new String[privilegesFromRest.size()]);
             final List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(authorityStringsAsArray);

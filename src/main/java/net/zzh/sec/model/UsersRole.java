@@ -11,16 +11,16 @@ import javax.persistence.*;
 @Entity
 @Table(name="users_roles")
 @NamedQuery(name="UsersRole.findAll", query="SELECT u FROM UsersRole u")
-public class UsersRole implements net.zzh.common.persistence.model.INameableEntity {
+public class UsersRole implements Serializable, net.zzh.common.persistence.model.INameableEntity {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
 	private UsersRolePK id;
 
-	//bi-directional many-to-one association to Role
+	//bi-directional many-to-one association to Users
 	@ManyToOne
-	@JoinColumn(name="rid", nullable=false, insertable=false, updatable=false)
-	private Role role;
+	@JoinColumn(name="uid")
+	private Users user;
 
 	public UsersRole() {
 	}
@@ -33,12 +33,12 @@ public class UsersRole implements net.zzh.common.persistence.model.INameableEnti
 		this.id = id;
 	}
 
-	public Role getRole() {
-		return this.role;
+	public Users getUser() {
+		return this.user;
 	}
 
-	public void setRole(Role role) {
-		this.role = role;
+	public void setUser(Users user) {
+		this.user = user;
 	}
 
 }

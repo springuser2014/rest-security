@@ -23,9 +23,9 @@ public class Role implements Serializable, net.zzh.common.persistence.model.INam
 
 	private int weight;
 
-	//bi-directional many-to-one association to RolePermission
-	@OneToMany(mappedBy="role")
-	private List<RolePermission> rolePermissions;
+	//bi-directional one-to-one association to RolePermission
+	@OneToOne(mappedBy="role")
+	private RolePermission rolePermission;
 
 	//bi-directional many-to-many association to Users
 	@ManyToMany(mappedBy="roles")
@@ -58,26 +58,12 @@ public class Role implements Serializable, net.zzh.common.persistence.model.INam
 		this.weight = weight;
 	}
 
-	public List<RolePermission> getRolePermissions() {
-		return this.rolePermissions;
+	public RolePermission getRolePermission() {
+		return this.rolePermission;
 	}
 
-	public void setRolePermissions(List<RolePermission> rolePermissions) {
-		this.rolePermissions = rolePermissions;
-	}
-
-	public RolePermission addRolePermission(RolePermission rolePermission) {
-		getRolePermissions().add(rolePermission);
-		rolePermission.setRole(this);
-
-		return rolePermission;
-	}
-
-	public RolePermission removeRolePermission(RolePermission rolePermission) {
-		getRolePermissions().remove(rolePermission);
-		rolePermission.setRole(null);
-
-		return rolePermission;
+	public void setRolePermission(RolePermission rolePermission) {
+		this.rolePermission = rolePermission;
 	}
 
 	public List<Users> getUsers() {

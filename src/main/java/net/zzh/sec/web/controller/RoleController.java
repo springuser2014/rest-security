@@ -27,19 +27,19 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @Controller
 @RequestMapping(value = UriMappingConstants.ROLES)
-public class RoleController extends AbstractController<Role> implements ISortingController<Role> {
+public class RoleController/* extends AbstractController<Role> implements ISortingController<Role>*/ {
 
     @Autowired
     private IRoleService service;
 
     public RoleController() {
-        super(Role.class);
+        //super(Role.class);
     }
 
     // API
 
     // search
-
+/*
     @RequestMapping(params = { QueryConstants.Q_PARAM }, method = RequestMethod.GET)
     @ResponseBody
     @Secured(Privileges.CAN_ROLE_READ)
@@ -127,5 +127,5 @@ public class RoleController extends AbstractController<Role> implements ISorting
     protected final IRoleService getService() {
         return service;
     }
-
+*/
 }

@@ -17,8 +17,6 @@ import javax.persistence.criteria.Root;
 import net.zzh.common.persistence.service.IPersistenceService;
 import net.zzh.common.search.ClientOperation;
 import net.zzh.common.util.SearchField;
-import net.zzh.sec.model.Test;
-import net.zzh.sec.model.Test_;
 import net.zzh.sec.model.Users;
 import net.zzh.sec.model.RolePermission;
 import net.zzh.sec.model.Role;
@@ -91,7 +89,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 		final List<Role> rolesOfUser = user.getRoles();
 		final List<RolePermission> privileges = new ArrayList<RolePermission>();
 		for (final Role roleOfUser : rolesOfUser) {
-			privileges.addAll(roleOfUser.getRolePermissions());
+			//privileges.addAll(role.getRolePermissions());
+			privileges.add(roleOfUser.getRolePermission());
 		}
 		final Function<Object, String> toStringFunction = Functions.toStringFunction();
 		final Collection<String> rolesToString = Collections2.transform(privileges, toStringFunction);

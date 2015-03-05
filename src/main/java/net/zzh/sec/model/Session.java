@@ -17,15 +17,16 @@ public class Session implements Serializable, net.zzh.common.persistence.model.I
 	@EmbeddedId
 	private SessionPK id;
 
-	private int cache;
-
 	private String hostname;
 
 	private Object session;
 
 	private int timestamp;
 
-	private int uid;
+	//bi-directional many-to-one association to Users
+	@ManyToOne
+	@JoinColumn(name="uid")
+	private Users user;
 
 	public Session() {
 	}
@@ -36,14 +37,6 @@ public class Session implements Serializable, net.zzh.common.persistence.model.I
 
 	public void setId(SessionPK id) {
 		this.id = id;
-	}
-
-	public int getCache() {
-		return this.cache;
-	}
-
-	public void setCache(int cache) {
-		this.cache = cache;
 	}
 
 	public String getHostname() {
@@ -70,12 +63,12 @@ public class Session implements Serializable, net.zzh.common.persistence.model.I
 		this.timestamp = timestamp;
 	}
 
-	public int getUid() {
-		return this.uid;
+	public Users getUser() {
+		return this.user;
 	}
 
-	public void setUid(int uid) {
-		this.uid = uid;
+	public void setUser(Users user) {
+		this.user = user;
 	}
 
 }

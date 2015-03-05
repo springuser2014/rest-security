@@ -2,7 +2,6 @@ package net.zzh.sec.model;
 
 import java.io.Serializable;
 import javax.persistence.*;
-import java.util.List;
 
 
 /**
@@ -31,6 +30,8 @@ public class MenuLink implements Serializable, net.zzh.common.persistence.model.
 	private short hasChildren;
 
 	private short hidden;
+
+	private String langcode;
 
 	@Column(name="link_path")
 	private String linkPath;
@@ -65,20 +66,22 @@ public class MenuLink implements Serializable, net.zzh.common.persistence.model.
 
 	private int plid;
 
-	@Column(name="router_path")
-	private String routerPath;
+	@Column(name="route_name")
+	private String routeName;
+
+	@Column(name="route_parameters")
+	private Object routeParameters;
 
 	private short updated;
 
+	private String uuid;
+
 	private int weight;
 
-	//bi-directional many-to-one association to MenuCustom
-	@OneToMany(mappedBy="menuLink")
-	private List<MenuCustom> menuCustoms;
-
 	//bi-directional many-to-one association to MenuRouter
-	@OneToMany(mappedBy="menuLink")
-	private List<MenuRouter> menuRouters;
+	@ManyToOne
+	@JoinColumn(name="router_path")
+	private MenuRouter menuRouter;
 
 	public MenuLink() {
 	}
@@ -137,6 +140,14 @@ public class MenuLink implements Serializable, net.zzh.common.persistence.model.
 
 	public void setHidden(short hidden) {
 		this.hidden = hidden;
+	}
+
+	public String getLangcode() {
+		return this.langcode;
+	}
+
+	public void setLangcode(String langcode) {
+		this.langcode = langcode;
 	}
 
 	public String getLinkPath() {
@@ -259,12 +270,20 @@ public class MenuLink implements Serializable, net.zzh.common.persistence.model.
 		this.plid = plid;
 	}
 
-	public String getRouterPath() {
-		return this.routerPath;
+	public String getRouteName() {
+		return this.routeName;
 	}
 
-	public void setRouterPath(String routerPath) {
-		this.routerPath = routerPath;
+	public void setRouteName(String routeName) {
+		this.routeName = routeName;
+	}
+
+	public Object getRouteParameters() {
+		return this.routeParameters;
+	}
+
+	public void setRouteParameters(Object routeParameters) {
+		this.routeParameters = routeParameters;
 	}
 
 	public short getUpdated() {
@@ -275,6 +294,14 @@ public class MenuLink implements Serializable, net.zzh.common.persistence.model.
 		this.updated = updated;
 	}
 
+	public String getUuid() {
+		return this.uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
 	public int getWeight() {
 		return this.weight;
 	}
@@ -283,48 +310,12 @@ public class MenuLink implements Serializable, net.zzh.common.persistence.model.
 		this.weight = weight;
 	}
 
-	public List<MenuCustom> getMenuCustoms() {
-		return this.menuCustoms;
+	public MenuRouter getMenuRouter() {
+		return this.menuRouter;
 	}
 
-	public void setMenuCustoms(List<MenuCustom> menuCustoms) {
-		this.menuCustoms = menuCustoms;
-	}
-
-	public MenuCustom addMenuCustom(MenuCustom menuCustom) {
-		getMenuCustoms().add(menuCustom);
-		menuCustom.setMenuLink(this);
-
-		return menuCustom;
-	}
-
-	public MenuCustom removeMenuCustom(MenuCustom menuCustom) {
-		getMenuCustoms().remove(menuCustom);
-		menuCustom.setMenuLink(null);
-
-		return menuCustom;
-	}
-
-	public List<MenuRouter> getMenuRouters() {
-		return this.menuRouters;
-	}
-
-	public void setMenuRouters(List<MenuRouter> menuRouters) {
-		this.menuRouters = menuRouters;
-	}
-
-	public MenuRouter addMenuRouter(MenuRouter menuRouter) {
-		getMenuRouters().add(menuRouter);
-		menuRouter.setMenuLink(this);
-
-		return menuRouter;
-	}
-
-	public MenuRouter removeMenuRouter(MenuRouter menuRouter) {
-		getMenuRouters().remove(menuRouter);
-		menuRouter.setMenuLink(null);
-
-		return menuRouter;
+	public void setMenuRouter(MenuRouter menuRouter) {
+		this.menuRouter = menuRouter;
 	}
 
 }

@@ -24,7 +24,8 @@ public final class SecurityConvertionUtil {
     public static List<RolePermission> convertRolesToPermissions(final Iterable<Role> roles) {
         final List<RolePermission> permissions = new ArrayList<RolePermission>();
         for (final Role roleOfUser : roles) {
-        	permissions.addAll(roleOfUser.getRolePermissions());
+        	//permissions.addAll(roleOfUser.getRolePermissions());
+        	permissions.add(roleOfUser.getRolePermission());
         }
         return permissions;
     }

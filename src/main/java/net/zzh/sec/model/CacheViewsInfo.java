@@ -5,13 +5,13 @@ import javax.persistence.*;
 
 
 /**
- * The persistent class for the cache_field database table.
+ * The persistent class for the cache_views_info database table.
  * 
  */
 @Entity
-@Table(name="cache_field")
-@NamedQuery(name="CacheField.findAll", query="SELECT c FROM CacheField c")
-public class CacheField implements Serializable, net.zzh.common.persistence.model.INameableEntity {
+@Table(name="cache_views_info")
+@NamedQuery(name="CacheViewsInfo.findAll", query="SELECT c FROM CacheViewsInfo c")
+public class CacheViewsInfo implements Serializable, net.zzh.common.persistence.model.INameableEntity {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -34,7 +34,7 @@ public class CacheField implements Serializable, net.zzh.common.persistence.mode
 
 	private Object tags;
 
-	public CacheField() {
+	public CacheViewsInfo() {
 	}
 
 	public String getCid() {

@@ -5,18 +5,19 @@ import javax.persistence.*;
 
 
 /**
- * The persistent class for the cache_page database table.
+ * The persistent class for the queue database table.
  * 
  */
 @Entity
-@Table(name="cache_page")
-@NamedQuery(name="CachePage.findAll", query="SELECT c FROM CachePage c")
-public class CachePage implements Serializable, net.zzh.common.persistence.model.INameableEntity {
+@Table(name="queue")
+@NamedQuery(name="Queue.findAll", query="SELECT q FROM Queue q")
+public class Queue implements Serializable, net.zzh.common.persistence.model.INameableEntity {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private String cid;
+	@Column(name="item_id")
+	private int itemId;
 
 	private int created;
 
@@ -24,17 +25,17 @@ public class CachePage implements Serializable, net.zzh.common.persistence.model
 
 	private int expire;
 
-	private short serialized;
+	private String name;
 
-	public CachePage() {
+	public Queue() {
 	}
 
-	public String getCid() {
-		return this.cid;
+	public int getItemId() {
+		return this.itemId;
 	}
 
-	public void setCid(String cid) {
-		this.cid = cid;
+	public void setItemId(int itemId) {
+		this.itemId = itemId;
 	}
 
 	public int getCreated() {
@@ -61,12 +62,12 @@ public class CachePage implements Serializable, net.zzh.common.persistence.model
 		this.expire = expire;
 	}
 
-	public short getSerialized() {
-		return this.serialized;
+	public String getName() {
+		return this.name;
 	}
 
-	public void setSerialized(short serialized) {
-		this.serialized = serialized;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }

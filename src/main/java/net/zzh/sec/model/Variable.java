@@ -18,7 +18,7 @@ public class Variable implements Serializable, net.zzh.common.persistence.model.
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private String name;
 
-	private Object value;
+	private byte[] value;
 
 	public Variable() {
 	}
@@ -31,11 +31,11 @@ public class Variable implements Serializable, net.zzh.common.persistence.model.
 		this.name = name;
 	}
 
-	public Object getValue() {
+	public byte[] getValue() {
 		return this.value;
 	}
 
-	public void setValue(Object value) {
+	public void setValue(byte[] value) {
 		this.value = value;
 	}
 

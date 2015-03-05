@@ -2,6 +2,7 @@ package net.zzh.sec.model;
 
 import java.io.Serializable;
 import javax.persistence.*;
+import java.util.List;
 
 
 /**
@@ -14,8 +15,9 @@ import javax.persistence.*;
 public class MenuRouter implements Serializable, net.zzh.common.persistence.model.INameableEntity {
 	private static final long serialVersionUID = 1L;
 
-	@EmbeddedId
-	private MenuRouterPK id;
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	private String path;
 
 	@Column(name="access_arguments")
 	private Object accessArguments;
@@ -25,10 +27,13 @@ public class MenuRouter implements Serializable, net.zzh.common.persistence.mode
 
 	private int context;
 
-	@Column(name="delivery_callback")
-	private String deliveryCallback;
-
 	private Object description;
+
+	@Column(name="description_arguments")
+	private String descriptionArguments;
+
+	@Column(name="description_callback")
+	private String descriptionCallback;
 
 	private int fit;
 
@@ -48,6 +53,9 @@ public class MenuRouter implements Serializable, net.zzh.common.persistence.mode
 	private String pageCallback;
 
 	private String position;
+
+	@Column(name="route_name")
+	private String routeName;
 
 	@Column(name="tab_parent")
 	private String tabParent;
@@ -77,19 +85,18 @@ public class MenuRouter implements Serializable, net.zzh.common.persistence.mode
 	private int weight;
 
 	//bi-directional many-to-one association to MenuLink
-	@ManyToOne
-	@JoinColumn(name="menu_links_mlid")
-	private MenuLink menuLink;
+	@OneToMany(mappedBy="menuRouter")
+	private List<MenuLink> menuLinks;
 
 	public MenuRouter() {
 	}
 
-	public MenuRouterPK getId() {
-		return this.id;
+	public String getPath() {
+		return this.path;
 	}
 
-	public void setId(MenuRouterPK id) {
-		this.id = id;
+	public void setPath(String path) {
+		this.path = path;
 	}
 
 	public Object getAccessArguments() {
@@ -116,20 +123,28 @@ public class MenuRouter implements Serializable, net.zzh.common.persistence.mode
 		this.context = context;
 	}
 
-	public String getDeliveryCallback() {
-		return this.deliveryCallback;
-	}
-
-	public void setDeliveryCallback(String deliveryCallback) {
-		this.deliveryCallback = deliveryCallback;
-	}
-
 	public Object getDescription() {
 		return this.description;
 	}
 
 	public void setDescription(Object description) {
 		this.description = description;
+	}
+
+	public String getDescriptionArguments() {
+		return this.descriptionArguments;
+	}
+
+	public void setDescriptionArguments(String descriptionArguments) {
+		this.descriptionArguments = descriptionArguments;
+	}
+
+	public String getDescriptionCallback() {
+		return this.descriptionCallback;
+	}
+
+	public void setDescriptionCallback(String descriptionCallback) {
+		this.descriptionCallback = descriptionCallback;
 	}
 
 	public int getFit() {
@@ -186,6 +201,14 @@ public class MenuRouter implements Serializable, net.zzh.common.persistence.mode
 
 	public void setPosition(String position) {
 		this.position = position;
+	}
+
+	public String getRouteName() {
+		return this.routeName;
+	}
+
+	public void setRouteName(String routeName) {
+		this.routeName = routeName;
 	}
 
 	public String getTabParent() {
@@ -268,12 +291,26 @@ public class MenuRouter implements Serializable, net.zzh.common.persistence.mode
 		this.weight = weight;
 	}
 
-	public MenuLink getMenuLink() {
-		return this.menuLink;
+	public List<MenuLink> getMenuLinks() {
+		return this.menuLinks;
 	}
 
-	public void setMenuLink(MenuLink menuLink) {
-		this.menuLink = menuLink;
+	public void setMenuLinks(List<MenuLink> menuLinks) {
+		this.menuLinks = menuLinks;
+	}
+
+	public MenuLink addMenuLink(MenuLink menuLink) {
+		getMenuLinks().add(menuLink);
+		menuLink.setMenuRouter(this);
+
+		return menuLink;
+	}
+
+	public MenuLink removeMenuLink(MenuLink menuLink) {
+		getMenuLinks().remove(menuLink);
+		menuLink.setMenuRouter(null);
+
+		return menuLink;
 	}
 
 }

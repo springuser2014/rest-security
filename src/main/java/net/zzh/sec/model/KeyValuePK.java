@@ -4,19 +4,25 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 /**
- * The primary key class for the registry database table.
+ * The primary key class for the key_value database table.
  * 
  */
 @Embeddable
-public class RegistryPK implements Serializable {
+public class KeyValuePK implements Serializable {
 	//default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;
 
+	private String collection;
+
 	private String name;
 
-	private String type;
-
-	public RegistryPK() {
+	public KeyValuePK() {
+	}
+	public String getCollection() {
+		return this.collection;
+	}
+	public void setCollection(String collection) {
+		this.collection = collection;
 	}
 	public String getName() {
 		return this.name;
@@ -24,31 +30,25 @@ public class RegistryPK implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getType() {
-		return this.type;
-	}
-	public void setType(String type) {
-		this.type = type;
-	}
 
 	public boolean equals(Object other) {
 		if (this == other) {
 			return true;
 		}
-		if (!(other instanceof RegistryPK)) {
+		if (!(other instanceof KeyValuePK)) {
 			return false;
 		}
-		RegistryPK castOther = (RegistryPK)other;
+		KeyValuePK castOther = (KeyValuePK)other;
 		return 
-			this.name.equals(castOther.name)
-			&& this.type.equals(castOther.type);
+			this.collection.equals(castOther.collection)
+			&& this.name.equals(castOther.name);
 	}
 
 	public int hashCode() {
 		final int prime = 31;
 		int hash = 17;
+		hash = hash * prime + this.collection.hashCode();
 		hash = hash * prime + this.name.hashCode();
-		hash = hash * prime + this.type.hashCode();
 		
 		return hash;
 	}

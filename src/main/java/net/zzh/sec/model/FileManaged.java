@@ -2,7 +2,7 @@ package net.zzh.sec.model;
 
 import java.io.Serializable;
 import javax.persistence.*;
-import java.util.Date;
+import java.math.BigInteger;
 import java.util.List;
 
 
@@ -24,16 +24,22 @@ public class FileManaged implements Serializable, net.zzh.common.persistence.mod
 
 	private String filename;
 
-	private int filesize;
+	private BigInteger filesize;
+
+	private String langcode;
 
 	private byte status;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date timestamp;
-
-	private int uid;
+	private int timestamp;
 
 	private String uri;
+
+	private String uuid;
+
+	//bi-directional many-to-one association to Users
+	@ManyToOne
+	@JoinColumn(name="uid")
+	private Users user;
 
 	//bi-directional many-to-one association to FileUsage
 	@OneToMany(mappedBy="fileManaged")
@@ -66,12 +72,20 @@ public class FileManaged implements Serializable, net.zzh.common.persistence.mod
 		this.filename = filename;
 	}
 
-	public int getFilesize() {
+	public BigInteger getFilesize() {
 		return this.filesize;
 	}
 
-	public void setFilesize(int filesize) {
+	public void setFilesize(BigInteger filesize) {
 		this.filesize = filesize;
+	}
+
+	public String getLangcode() {
+		return this.langcode;
+	}
+
+	public void setLangcode(String langcode) {
+		this.langcode = langcode;
 	}
 
 	public byte getStatus() {
@@ -82,20 +96,12 @@ public class FileManaged implements Serializable, net.zzh.common.persistence.mod
 		this.status = status;
 	}
 
-	public Date getTimestamp() {
+	public int getTimestamp() {
 		return this.timestamp;
 	}
 
-	public void setTimestamp(Date timestamp) {
+	public void setTimestamp(int timestamp) {
 		this.timestamp = timestamp;
-	}
-
-	public int getUid() {
-		return this.uid;
-	}
-
-	public void setUid(int uid) {
-		this.uid = uid;
 	}
 
 	public String getUri() {
@@ -104,6 +110,22 @@ public class FileManaged implements Serializable, net.zzh.common.persistence.mod
 
 	public void setUri(String uri) {
 		this.uri = uri;
+	}
+
+	public String getUuid() {
+		return this.uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
+	public Users getUser() {
+		return this.user;
+	}
+
+	public void setUser(Users user) {
+		this.user = user;
 	}
 
 	public List<FileUsage> getFileUsages() {

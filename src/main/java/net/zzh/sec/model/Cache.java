@@ -18,6 +18,12 @@ public class Cache implements Serializable, net.zzh.common.persistence.model.INa
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private String cid;
 
+	@Column(name="checksum_deletions")
+	private int checksumDeletions;
+
+	@Column(name="checksum_invalidations")
+	private int checksumInvalidations;
+
 	private int created;
 
 	private Object data;
@@ -25,6 +31,8 @@ public class Cache implements Serializable, net.zzh.common.persistence.model.INa
 	private int expire;
 
 	private short serialized;
+
+	private Object tags;
 
 	public Cache() {
 	}
@@ -35,6 +43,22 @@ public class Cache implements Serializable, net.zzh.common.persistence.model.INa
 
 	public void setCid(String cid) {
 		this.cid = cid;
+	}
+
+	public int getChecksumDeletions() {
+		return this.checksumDeletions;
+	}
+
+	public void setChecksumDeletions(int checksumDeletions) {
+		this.checksumDeletions = checksumDeletions;
+	}
+
+	public int getChecksumInvalidations() {
+		return this.checksumInvalidations;
+	}
+
+	public void setChecksumInvalidations(int checksumInvalidations) {
+		this.checksumInvalidations = checksumInvalidations;
 	}
 
 	public int getCreated() {
@@ -67,6 +91,14 @@ public class Cache implements Serializable, net.zzh.common.persistence.model.INa
 
 	public void setSerialized(short serialized) {
 		this.serialized = serialized;
+	}
+
+	public Object getTags() {
+		return this.tags;
+	}
+
+	public void setTags(Object tags) {
+		this.tags = tags;
 	}
 
 }

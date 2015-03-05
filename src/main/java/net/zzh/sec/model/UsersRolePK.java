@@ -12,10 +12,10 @@ public class UsersRolePK implements Serializable {
 	//default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;
 
-	@Column(insertable=false, updatable=false, unique=true, nullable=false)
+	@Column(insertable=false, updatable=false)
 	private int uid;
 
-	@Column(insertable=false, updatable=false, unique=true, nullable=false)
+	@Column(insertable=false, updatable=false)
 	private int rid;
 
 	public UsersRolePK() {

@@ -23,8 +23,6 @@ import net.zzh.sec.model.RolePermission;
 import net.zzh.sec.model.RolePermissionPK;
 import net.zzh.sec.model.RolePermission_;
 import net.zzh.sec.model.Role_;
-import net.zzh.sec.model.Test;
-import net.zzh.sec.model.Test_;
 import net.zzh.sec.model.Users;
 import net.zzh.sec.model.Users_;
 import net.zzh.sec.persistence.service.IRolePermissionService;
@@ -115,15 +113,15 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 			 *  success
 			 */
 
-			CriteriaBuilder builder = em.getCriteriaBuilder();
-			CriteriaQuery<Test> query = builder.createQuery(Test.class);
-			Root<Test> root = query.from(Test.class);
-
-			Predicate hasBirthday = builder.equal(root.get(Test_.idtest), 1);
-			//Predicate isLongTermTest = builder.lessThan(root.get(Test_.createdAt), today.minusYears(2); 
-			query.where(builder.and(hasBirthday));
-			List list = em.createQuery(query.select(root)).getResultList();
-			System.out.println(list.size());
+//			CriteriaBuilder builder = em.getCriteriaBuilder();
+//			CriteriaQuery<Test> query = builder.createQuery(Test.class);
+//			Root<Test> root = query.from(Test.class);
+//
+//			Predicate hasBirthday = builder.equal(root.get(Test_.idtest), 1);
+//			//Predicate isLongTermTest = builder.lessThan(root.get(Test_.createdAt), today.minusYears(2); 
+//			query.where(builder.and(hasBirthday));
+//			List list = em.createQuery(query.select(root)).getResultList();
+//			System.out.println(list.size());
 			
 			// Create
 			//Test test = new Test();
@@ -234,7 +232,7 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 		List list = em.createQuery(query.select(root)).getResultList();
 		if(list.isEmpty()) {
 			RolePermission rolePermission = new RolePermission();
-			RolePermissionPK pk = new RolePermissionPK();
+			RolePermissionPK pk = new RolePermissionPK ();
 			pk.setRid(roleID);
 			pk.setPermission(name);
 			rolePermission.setId(pk);
@@ -332,12 +330,12 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
 			user.setRoles(roleList);
 			user.setTheme(WebConstants.ORIGINAL_DEFAULT_THEME_NAME);
 			user.setSignature("User’s signature.");
-			Date created = new Date();
-			user.setCreated(created);
-			user.setAccess(created);
-			user.setLogin(created);
+			Long created = new Date().getTime();
+			user.setCreated(created.intValue());
+			user.setAccess(created.intValue());
+			user.setLogin(created.intValue());
 			user.setStatus(Byte.parseByte("1"));
-			user.setLanguage(WebConstants.DEFAULT_LANGUAGE);
+			user.setLangcode(WebConstants.DEFAULT_LANGUAGE);
 			usersService.create(user);
 		}
 	}
